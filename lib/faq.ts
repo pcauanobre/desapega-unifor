@@ -28,6 +28,6 @@ export const PERGUNTAS = [
   },
   {
     q: "Vendi ou doei meu item, e agora?",
-    a: "Entre em Meus anúncios e exclua o item, assim a vitrine fica sempre atual pra quem tá procurando.",
+    a: "Entre em Meus anúncios e marque o item como vendido (ou doado). Ele sai da vitrine na hora e ela fica sempre atual pra quem tá procurando.",
   },
 ];
