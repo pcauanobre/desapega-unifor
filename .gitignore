@@ -49,3 +49,4 @@ CLAUDE.local.md
 # ferramentas locais de agente (nao fazem parte do projeto)
 .agents/
 .claude/
+skills-lock.json
