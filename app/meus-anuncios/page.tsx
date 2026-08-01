@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
+import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import type { Anuncio } from "@/lib/tipos";
 import { createClient } from "@/lib/supabase/client";
 import { TopBar } from "@/components/landing/TopBar";
@@ -66,7 +67,7 @@ export default function MeusAnuncios() {
         <span className="info-kicker">MEUS ANÚNCIOS</span>
         <h1 className="info-title">Seus desapegos no ar</h1>
         <p className="info-sub">
-          Acompanha os cliques, edita o que mudou e tira do ar o que já foi.
+          Acompanhe os cliques, edite o que mudou e tire do ar o que já foi.
         </p>
 
         {erro && <p className="shelf-sub" style={{ marginTop: 24 }}>{erro}</p>}
@@ -86,11 +87,19 @@ export default function MeusAnuncios() {
           </div>
         )}
         {!erro && anuncios !== null && anuncios.length === 0 && (
-          <div className="info-bloco">
-            <p className="info-p">Você ainda não anunciou nada. Bora desapegar?</p>
-            <div className="info-cta">
-              <Link className="btn btn-hero" href="/anunciar/novo">Anunciar um item</Link>
-            </div>
+          <div className="ma-vazio">
+            <span className="ma-vazio-ico">
+              <StorefrontOutlinedIcon sx={{ fontSize: 32 }} />
+            </span>
+            <h2 className="ma-vazio-t">Sua vitrine ainda tá vazia</h2>
+            <p className="ma-vazio-p">
+              Todo mundo tem alguma coisa parada na gaveta. Anuncie seu
+              primeiro desapego e acompanhe por aqui os cliques que ele
+              receber.
+            </p>
+            <Link className="btn btn-hero" href="/anunciar/novo">
+              Anunciar meu primeiro item
+            </Link>
           </div>
         )}
 

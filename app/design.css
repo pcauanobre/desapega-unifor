@@ -264,6 +264,15 @@
 .dl-op.marcada{color:var(--azul)}
 .dl-op svg{color:var(--azul)}
 
+/* ---------- estado vazio dos meus anúncios ---------- */
+.ma-vazio{margin-top:28px;border:1.5px dashed var(--borda-input);border-radius:18px;background:#fff;
+  padding:52px 28px 46px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;
+  animation:fadeUp 460ms var(--ease) both}
+.ma-vazio-ico{width:64px;height:64px;border-radius:50%;background:#EDF3FF;color:var(--azul);
+  display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.ma-vazio-t{font-family:var(--sora);font-weight:700;font-size:21px;letter-spacing:-.02em;color:var(--navy);margin:0}
+.ma-vazio-p{font-size:14px;color:var(--txt-2);max-width:440px;line-height:1.6;margin:0 0 16px}
+
 /* ---------- faq no fim da LP ---------- */
 .faqsec{background:#fff;border-top:1px solid var(--borda);padding:56px 0 68px}
 .faqsec-inner{max-width:860px}
