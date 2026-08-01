@@ -432,6 +432,10 @@
 .ma-ico-verde:hover{background:var(--verde);color:#fff}
 .ma-vendido-ico{width:58px;height:58px;border-radius:50%;background:#E8F7EE;color:var(--verde);
   display:inline-flex;align-items:center;justify-content:center;margin-bottom:4px}
+/* anúncio encerrado: card apagadinho com o selo por cima da foto */
+.ma-encerrado .card{opacity:.6;filter:grayscale(.4)}
+.ma-selo{position:absolute;top:22px;left:22px;z-index:6;background:var(--verde);color:#fff;
+  font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px;box-shadow:0 4px 12px rgba(7,28,61,.24)}
 .pagina-1280 a.ma-ico{color:var(--navy)}
 .pagina-1280 a.ma-ico:hover{color:#fff}
 .ct-perigo{margin-top:44px;border:1px solid #F1C7C7;background:#FFFAFA;border-radius:14px;padding:22px;
@@ -667,6 +671,42 @@
 .pd-vend-nome{font-weight:700;color:var(--navy);font-size:15px}
 .pd-vend-curso{font-size:12.5px;color:var(--txt-3);display:inline-flex;align-items:center;gap:5px}
 .pd-vend-curso svg{color:var(--azul)}
+/* o par avatar+nome vira link pro perfil público do vendedor */
+.pd-vend-link{display:flex;align-items:center;gap:14px;border-radius:10px;padding:4px 8px;margin:-4px -8px;
+  transition:background 150ms ease}
+.pd-vend-link:hover{background:#F2F6FF}
+.pagina-1280 a.pd-vend-link .pd-vend-nome{color:var(--navy)}
+.pagina-1280 a.pd-vend-link:hover .pd-vend-nome{color:var(--azul)}
+.pagina-1280 a.pd-vend-link .pd-vend-curso{color:var(--txt-3)}
+
+/* ---------- perfil público do vendedor ---------- */
+.pf-cabeca{display:flex;align-items:center;gap:20px;margin-top:6px;animation:fadeUp 420ms var(--ease) both}
+.pf-avatar{width:84px;height:84px;border-radius:50%;background:#E9F0FF;color:var(--azul);flex:none;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;border:3px solid #fff;
+  box-shadow:0 6px 18px rgba(7,28,61,.14)}
+.pf-avatar img{width:100%;height:100%;object-fit:cover}
+.pf-curso{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--txt-2);margin:8px 0 0}
+.pf-curso svg{color:var(--azul)}
+.pf-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:26px;
+  animation:fadeUp 460ms 80ms var(--ease) both}
+.pf-stat{background:#fff;border:1px solid var(--borda);border-radius:14px;padding:16px 18px;
+  display:flex;flex-direction:column;gap:3px}
+.pf-stat svg{color:var(--azul);margin-bottom:5px}
+.pf-stat strong{font-family:var(--sora);font-weight:700;font-size:17px;color:var(--navy);letter-spacing:-.01em}
+.pf-stat span{font-size:12px;color:var(--txt-3)}
+.pf-stat-verde svg{color:var(--verde)}
+.pf-secao{font-family:var(--sora);font-weight:700;font-size:20px;letter-spacing:-.02em;color:var(--navy);
+  margin:36px 0 16px;display:flex;align-items:center;gap:10px}
+.pf-conta{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--azul);background:#E9F0FF;
+  padding:3px 9px;border-radius:99px}
+.pf-vendido{position:relative}
+.pf-vendido .card{filter:grayscale(.35);opacity:.82}
+.pf-vendido:hover .card{filter:none;opacity:1}
+.pf-selo{position:absolute;top:22px;left:22px;z-index:6;font-family:var(--sora);font-weight:700;
+  font-size:11px;letter-spacing:.1em;color:#fff;background:var(--navy);padding:5px 10px;border-radius:7px;
+  box-shadow:0 4px 12px rgba(7,28,61,.3)}
+.pf-selo.verde{background:var(--verde)}
+
 .btn-zap{background:#0B7C57;color:#fff;font-size:14px;padding:11px 16px;margin-left:auto}
 .btn-zap:hover{background:#086445;transform:translateY(-1px)}
 .pd-lock{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--txt-2);

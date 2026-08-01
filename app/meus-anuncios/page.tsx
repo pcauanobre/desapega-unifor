@@ -18,12 +18,13 @@ import { BloquearScroll } from "@/components/BloquearScroll";
 import { useSaidaAnimada } from "@/components/useSaidaAnimada";
 
 /**
- * O QUE: a rota dos teus anúncios: cada um com cliques recebidos, tempo
- *        no ar, botão de editar e de excluir.
+ * O QUE: a rota dos teus anúncios: cliques recebidos, marcar como vendido,
+ *        editar e excluir (vendido e excluir confirmam em popup). Vendido
+ *        não some da lista: ganha o selo e perde os botões de venda.
  * POR QUE: separada da conta (que virou só perfil); é o painel de quem
  *          anuncia.
  * CHAMA: central de anúncios e link da conta. Sem login volta pro /entrar.
- * QUEBRA SE: a API mudar GET ?autor=me, PUT ou DELETE.
+ * QUEBRA SE: a API mudar GET ?autor=me (e ?vendidos=1), PATCH ou DELETE.
  */
 export default function MeusAnuncios() {
   const router = useRouter();
@@ -33,7 +34,9 @@ export default function MeusAnuncios() {
   const [vendendo, setVendendo] = useState<Anuncio | null>(null);
   const [vendidoOk, setVendidoOk] = useState(false);
   const [finalizando, setFinalizando] = useState(false);
+  const [excluindo, setExcluindo] = useState<Anuncio | null>(null);
   const { saindo, fecharCom } = useSaidaAnimada();
+  const { saindo: saindoExcluir, fecharCom: fecharComExcluir } = useSaidaAnimada();
 
   useEffect(() => {
     createClient()
@@ -43,33 +46,52 @@ export default function MeusAnuncios() {
           router.replace("/entrar");
           return;
         }
-        fetch("/api/anuncios?autor=me")
-          .then(async (r) => {
-            const corpo = await r.json();
-            if (!r.ok) throw new Error(corpo.erro ?? "erro ao listar");
-            setAnuncios(corpo.anuncios);
+        // Ativos na frente, vendidos no fim: encerrar não apaga nada.
+        Promise.all([
+          fetch("/api/anuncios?autor=me"),
+          fetch("/api/anuncios?autor=me&vendidos=1"),
+        ])
+          .then(async ([rAtivos, rVendidos]) => {
+            const ativos = await rAtivos.json();
+            const vendidos = await rVendidos.json();
+            if (!rAtivos.ok) throw new Error(ativos.erro ?? "erro ao listar");
+            if (!rVendidos.ok) throw new Error(vendidos.erro ?? "erro ao listar");
+            setAnuncios([...ativos.anuncios, ...vendidos.anuncios]);
           })
           .catch((e: Error) => setErro(e.message));
       });
   }, [router]);
 
-  async function excluir(id: string) {
-    if (apagando) return;
-    setApagando(id);
-    const r = await fetch(`/api/anuncios/${id}`, { method: "DELETE" });
+  async function confirmarExcluir() {
+    if (!excluindo || apagando) return;
+    setApagando(excluindo.id);
+    const r = await fetch(`/api/anuncios/${excluindo.id}`, { method: "DELETE" });
     setApagando(null);
-    if (r.ok) setAnuncios((atuais) => (atuais ?? []).filter((a) => a.id !== id));
+    if (r.ok) {
+      const id = excluindo.id;
+      setAnuncios((atuais) => (atuais ?? []).filter((a) => a.id !== id));
+      fecharExcluir();
+    }
   }
 
-  /* Vendido = missão cumprida: tira da vitrine e comemora no popup. */
+  function fecharExcluir() {
+    fecharComExcluir(() => setExcluindo(null));
+  }
+
+  /* Vendido = missão cumprida: o PATCH carimba vendido_em no banco, o
+     anúncio sai da vitrine e segue aqui (e no perfil) com o selo. */
   async function confirmarVendido() {
     if (!vendendo || finalizando) return;
     setFinalizando(true);
-    const r = await fetch(`/api/anuncios/${vendendo.id}`, { method: "DELETE" });
+    const r = await fetch(`/api/anuncios/${vendendo.id}`, { method: "PATCH" });
     setFinalizando(false);
     if (r.ok) {
       const id = vendendo.id;
-      setAnuncios((atuais) => (atuais ?? []).filter((a) => a.id !== id));
+      setAnuncios((atuais) =>
+        (atuais ?? []).map((a) =>
+          a.id === id ? { ...a, vendido_em: new Date().toISOString() } : a,
+        ),
+      );
       setVendidoOk(true);
     }
   }
@@ -133,27 +155,39 @@ export default function MeusAnuncios() {
         {!erro && anuncios !== null && anuncios.length > 0 && (
           <div className="grid ct-grid">
             {anuncios.map((a) => (
-              <div className="ct-item" key={a.id}>
+              <div
+                className={"ct-item" + (a.vendido_em ? " ma-encerrado" : "")}
+                key={a.id}
+              >
+                {a.vendido_em && (
+                  <span className="ma-selo">
+                    {a.is_doacao ? "Doado" : "Vendido"}
+                  </span>
+                )}
                 <div className="ma-icones">
-                  <button
-                    className="ma-ico ma-ico-verde"
-                    onClick={() => setVendendo(a)}
-                    title={a.is_doacao ? "Marcar como doado" : "Marcar como vendido"}
-                    aria-label={a.is_doacao ? "Marcar como doado" : "Marcar como vendido"}
-                  >
-                    <CheckIcon sx={{ fontSize: 18 }} />
-                  </button>
-                  <Link
-                    className="ma-ico"
-                    href={`/anunciar/novo?editar=${a.id}`}
-                    title="Editar anúncio"
-                    aria-label="Editar anúncio"
-                  >
-                    <EditIcon sx={{ fontSize: 17 }} />
-                  </Link>
+                  {!a.vendido_em && (
+                    <>
+                      <button
+                        className="ma-ico ma-ico-verde"
+                        onClick={() => setVendendo(a)}
+                        title={a.is_doacao ? "Marcar como doado" : "Marcar como vendido"}
+                        aria-label={a.is_doacao ? "Marcar como doado" : "Marcar como vendido"}
+                      >
+                        <CheckIcon sx={{ fontSize: 18 }} />
+                      </button>
+                      <Link
+                        className="ma-ico"
+                        href={`/anunciar/novo?editar=${a.id}`}
+                        title="Editar anúncio"
+                        aria-label="Editar anúncio"
+                      >
+                        <EditIcon sx={{ fontSize: 17 }} />
+                      </Link>
+                    </>
+                  )}
                   <button
                     className="ma-ico ma-ico-vermelho"
-                    onClick={() => excluir(a.id)}
+                    onClick={() => setExcluindo(a)}
                     disabled={apagando === a.id}
                     title="Excluir anúncio"
                     aria-label="Excluir anúncio"
@@ -192,9 +226,9 @@ export default function MeusAnuncios() {
                   {vendendo.is_doacao ? "Já foi doado?" : "Já encontrou dono novo?"}
                 </h2>
                 <p className="aviso-p" style={{ textAlign: "center" }}>
-                  Marcar &ldquo;{vendendo.titulo}&rdquo; como{" "}
-                  {vendendo.is_doacao ? "doado" : "vendido"} encerra o anúncio
-                  e tira ele da vitrine na hora.
+                  Nada é apagado. &ldquo;{vendendo.titulo}&rdquo; sai da
+                  vitrine na hora e continua aqui nos seus anúncios, com o
+                  selo de {vendendo.is_doacao ? "doado" : "vendido"}.
                 </p>
                 <div className="wiz-acoes">
                   <button className="btn wiz-voltar" onClick={fecharVendido}>
@@ -217,14 +251,45 @@ export default function MeusAnuncios() {
                 </span>
                 <h2 className="aviso-titulo">Desapego concluído!</h2>
                 <p className="aviso-p" style={{ textAlign: "center" }}>
-                  O anúncio saiu da vitrine e o item segue vida nova por aí.
-                  Bora anunciar o próximo?
+                  O anúncio saiu da vitrine e ficou aqui com o selo de{" "}
+                  {vendendo.is_doacao ? "doado" : "vendido"}. Bora anunciar
+                  o próximo?
                 </p>
                 <button className="btn btn-primary btn-block" onClick={fecharVendido}>
                   Fechar
                 </button>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {excluindo && (
+        <div
+          className={"aviso-overlay" + (saindoExcluir ? " is-saindo" : "")}
+          role="dialog"
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !apagando) fecharExcluir();
+          }}
+        >
+          <BloquearScroll />
+          <div className="aviso-card" style={{ textAlign: "center" }}>
+            <h2 className="aviso-titulo">Excluir de vez?</h2>
+            <p className="aviso-p" style={{ textAlign: "center" }}>
+              Excluir &ldquo;{excluindo.titulo}&rdquo; apaga o anúncio e os
+              cliques dele pra sempre, sem desfazer. Se o item já saiu, o
+              selo de vendido guarda ele no seu histórico.
+            </p>
+            <div className="wiz-acoes">
+              <button className="btn wiz-voltar" onClick={fecharExcluir}>
+                Cancelar
+              </button>
+              <button className="btn ct-apagar" onClick={confirmarExcluir}>
+                {apagando && <span className="spinner" />}
+                {apagando ? "Excluindo…" : "Sim, excluir"}
+              </button>
+            </div>
           </div>
         </div>
       )}
