@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# regras locais de IA (nao versionado)
+CLAUDE.local.md
