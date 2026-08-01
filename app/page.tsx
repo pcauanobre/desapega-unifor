@@ -51,7 +51,7 @@ export default function Home() {
           </p>
           <div className="hero-ctas">
             <Link className="btn btn-hero" href="/produtos">
-              Ver os desapegos
+              Ver produtos
             </Link>
             <Link className="btn btn-hero-ghost" href="/anunciar">
               Quero anunciar
