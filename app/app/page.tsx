@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { Anuncio } from "@/lib/tipos";
 import { Logo } from "@/components/Logo";
+import { CardAnuncio } from "@/components/CardAnuncio";
 
 /**
  * O QUE: vitrine base do app: busca os anúncios na API e lista em cards.
@@ -49,44 +50,14 @@ export default function AppHome() {
         )}
 
         {!erro && anuncios !== null && anuncios.length > 0 && (
-          <ul className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             {anuncios.map((a) => (
               <CardAnuncio key={a.id} anuncio={a} />
             ))}
-          </ul>
+          </div>
         )}
       </section>
     </main>
   );
 }
 
-/* Card simples da vitrine base (o definitivo vem com o design mobile). */
-function CardAnuncio({ anuncio }: { anuncio: Anuncio }) {
-  return (
-    <li className="overflow-hidden rounded-lg bg-white shadow-sm">
-      {anuncio.imagem_url && (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-          src={anuncio.imagem_url}
-          alt={anuncio.titulo}
-          className="h-32 w-full object-cover"
-        />
-      )}
-      <div className="p-3">
-        <p className="truncate text-sm font-semibold text-[#071C3D]">
-          {anuncio.titulo}
-        </p>
-        <p className="text-xs text-neutral-500">{anuncio.categoria}</p>
-        {anuncio.is_doacao ? (
-          <span className="mt-1 inline-block rounded bg-[#E6F7F0] px-2 py-0.5 text-xs font-semibold text-[#0B7C57]">
-            DOAÇÃO
-          </span>
-        ) : (
-          <p className="mt-1 text-sm font-bold text-[#0A5CFF]">
-            R$ {Number(anuncio.preco).toFixed(2).replace(".", ",")}
-          </p>
-        )}
-      </div>
-    </li>
-  );
-}

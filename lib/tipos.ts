@@ -1,5 +1,11 @@
 import type { Categoria } from "./categorias";
 
+export type EstadoDoItem =
+  | "Como novo"
+  | "Bom estado"
+  | "Usado"
+  | "Funcionando";
+
 /**
  * O QUE: o formato de um anúncio, igual à tabela `anuncios` do banco.
  * POR QUE: um tipo só pro dado circular igual entre API, vitrine e forms.
@@ -14,6 +20,7 @@ export type Anuncio = {
   preco: number | null;
   is_doacao: boolean;
   imagem_url: string | null;
+  estado: EstadoDoItem | null;
   autor_id: string;
   autor_nome: string;
   created_at: string;

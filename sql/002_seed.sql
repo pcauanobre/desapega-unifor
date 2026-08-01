@@ -1,36 +1,48 @@
 -- 002: dados de demonstração pra vitrine não nascer vazia.
--- Rodar DEPOIS de criar a primeira conta no app: o seed usa o primeiro
--- usuário cadastrado como autor de todos os anúncios de exemplo.
+-- Rodar DEPOIS do 003 (coluna estado) e depois de existir o primeiro
+-- usuário (o seed usa o primeiro cadastrado como autor).
 -- Fotos: picsum.photos com seed fixa (sempre a mesma foto pro mesmo item).
 
+-- Limpa só os anúncios do usuário demo antes de reinserir (idempotente).
+delete from public.anuncios
+where autor_id = (select id from auth.users order by created_at limit 1);
+
 insert into public.anuncios
-  (titulo, descricao, categoria, preco, is_doacao, imagem_url, autor_id, autor_nome)
-select t.titulo, t.descricao, t.categoria, t.preco, t.is_doacao, t.imagem_url,
-       u.id, coalesce(u.raw_user_meta_data->>'nome', 'Aluno Unifor')
+  (titulo, descricao, categoria, preco, is_doacao, imagem_url, estado, autor_nome, created_at, autor_id)
+select t.titulo, t.descricao, t.categoria, t.preco, t.is_doacao, t.imagem_url, t.estado,
+       t.autor_nome, now() - t.faz::interval, u.id
 from (values
-  ('Livro Cálculo Vol. 1 (Guidorizzi)',
+  ('Cálculo Vol. 1 (Guidorizzi, 6ª ed.)',
    'Usado um semestre, sem rabisco. Capa com marca de uso leve.',
-   'Livros', 45.00, false, 'https://picsum.photos/seed/calculo/640/480'),
-  ('Calculadora HP 50g',
-   'Funcionando perfeita, com capa e cabo. Ideal pra engenharia.',
-   'Eletrônicos', 180.00, false, 'https://picsum.photos/seed/hp50g/640/480'),
-  ('Jaleco tamanho M',
+   'Livros', 45.00, false, 'https://picsum.photos/seed/calculo/640/480', 'Bom estado',
+   'Marina R. · Eng. Civil', '2 hours'),
+  ('Calculadora HP 12C Platinum',
+   'Funcionando perfeita, com capa e pilha nova. Ideal pras engenharias.',
+   'Engenharia', 180.00, false, 'https://picsum.photos/seed/hp12c/640/480', 'Como novo',
+   'Diego A. · Administração', '4 hours'),
+  ('Jaleco branco manga longa tam. M',
    'Usei em 2 semestres de laboratório. Lavado e sem manchas.',
-   'Vestuário', null, true, 'https://picsum.photos/seed/jaleco/640/480'),
-  ('Kit Arduino Uno + protoboard',
-   'Kit completo com jumpers, leds e sensores básicos. Pouco uso.',
-   'Computação', 95.00, false, 'https://picsum.photos/seed/arduino/640/480'),
+   'Vestuário', null, true, 'https://picsum.photos/seed/jaleco/640/480', 'Usado',
+   'Ana Paula · Enfermagem', '5 hours'),
+  ('Arduino Uno R3 + jumpers e protoboard',
+   'Kit completo com leds e sensores básicos. Pouco uso.',
+   'Eletrônicos', 60.00, false, 'https://picsum.photos/seed/arduino/640/480', 'Funcionando',
+   'Caio M. · Eng. Elétrica', '7 hours'),
   ('Apostilas de Física 1 e 2',
-   'Xerox encadernada das apostilas com exercícios resolvidos.',
-   'Engenharia', 20.00, false, 'https://picsum.photos/seed/fisica/640/480'),
-  ('Cadeira de escritório',
-   'Cadeira giratória em bom estado, saindo por mudança.',
-   'Móveis', 120.00, false, 'https://picsum.photos/seed/cadeira/640/480'),
-  ('Livro Algoritmos (Cormen)',
+   'Xerox encadernada com exercícios resolvidos das duas cadeiras.',
+   'Engenharia', 20.00, false, 'https://picsum.photos/seed/fisica/640/480', 'Bom estado',
+   'Bruno T. · Eng. Mecânica', '10 hours'),
+  ('Cadeira de escritório giratória',
+   'Em bom estado, saindo por mudança. Retirar no campus.',
+   'Móveis', 120.00, false, 'https://picsum.photos/seed/cadeira/640/480', 'Usado',
+   'Letícia F. · Arquitetura', '14 hours'),
+  ('Algoritmos: Teoria e Prática (Cormen)',
    'Edição em português. Doando pra quem tá começando computação.',
-   'Livros', null, true, 'https://picsum.photos/seed/cormen/640/480'),
-  ('Mochila pra notebook 15"',
-   'Mochila reforçada com forro. Zíper novo trocado.',
-   'Outros', 40.00, false, 'https://picsum.photos/seed/mochila/640/480')
-) as t (titulo, descricao, categoria, preco, is_doacao, imagem_url)
-cross join (select id, raw_user_meta_data from auth.users order by created_at limit 1) as u;
+   'Livros', null, true, 'https://picsum.photos/seed/cormen/640/480', 'Bom estado',
+   'Pedro C. · Ciência da Computação', '20 hours'),
+  ('Notebook stand + mochila 15"',
+   'Suporte de alumínio e mochila reforçada com forro.',
+   'Computação', 40.00, false, 'https://picsum.photos/seed/mochila/640/480', 'Como novo',
+   'Julia S. · Design', '32 hours')
+) as t (titulo, descricao, categoria, preco, is_doacao, imagem_url, estado, autor_nome, faz)
+cross join (select id from auth.users order by created_at limit 1) as u;
