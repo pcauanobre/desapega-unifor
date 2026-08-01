@@ -264,6 +264,11 @@
 .dl-op.marcada{color:var(--azul)}
 .dl-op svg{color:var(--azul)}
 
+/* ---------- faq no fim da LP ---------- */
+.faqsec{background:#fff;border-top:1px solid var(--borda);padding:56px 0 68px}
+.faqsec-inner{max-width:860px}
+.faqsec-lista{margin-top:22px}
+
 /* ---------- scroll-reveal da LP ---------- */
 .rv{opacity:0;transform:translateY(28px);transition:opacity 650ms var(--ease),transform 650ms var(--ease)}
 .rv-visivel{opacity:1;transform:none}

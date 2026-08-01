@@ -11,6 +11,7 @@ import { ComoFunciona } from "@/components/landing/ComoFunciona";
 import { Rodape } from "@/components/landing/Rodape";
 import { AvisoLegal } from "@/components/AvisoLegal";
 import { Revelar } from "@/components/Revelar";
+import { FaqSecao } from "@/components/landing/FaqSecao";
 
 /**
  * O QUE: a LP de apresentação (rota /): hero explicando a proposta,
@@ -89,6 +90,7 @@ export default function Home() {
       </section>
 
       <ComoFunciona />
+      <FaqSecao />
       <Rodape />
     </div>
   );

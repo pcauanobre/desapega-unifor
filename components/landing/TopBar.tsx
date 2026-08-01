@@ -28,7 +28,6 @@ export function TopBar() {
           <span>Universidade de Fortaleza, Ceará</span>
         </div>
         <div className="row gap-22">
-          <Link href="/ajuda">Ajuda</Link>
           <Link href="/regras">Regras do desapego</Link>
           {logado ? (
             <Link href="/conta" className="utilbar-login">
