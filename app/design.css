@@ -283,6 +283,28 @@
 .card-doacao-txt{font-family:var(--sora);font-weight:700;font-size:14px;color:var(--verde);
   letter-spacing:-.01em;display:inline-flex;align-items:center;gap:5px}
 
+/* ---------- central do desapego (escolha anunciar x meus anuncios) ---------- */
+.esc-wrap{padding-top:44px;padding-bottom:72px}
+.esc-grid{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.esc-card{position:relative;height:520px;border-radius:20px;overflow:hidden;display:block;cursor:pointer;
+  box-shadow:0 14px 34px rgba(7,28,61,.12);
+  transition:transform .45s var(--ease),box-shadow .45s ease,filter .45s ease}
+.esc-esq{animation:escInEsq .7s var(--ease) both}
+.esc-dir{animation:escInDir .7s 90ms var(--ease) both}
+@keyframes escInEsq{from{opacity:0;transform:translateX(-46px)}to{opacity:1;transform:none}}
+@keyframes escInDir{from{opacity:0;transform:translateX(46px)}to{opacity:1;transform:none}}
+.esc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.esc-veu{position:absolute;inset:0;z-index:1;
+  background:linear-gradient(to top,rgba(7,28,61,.84) 0%,rgba(7,28,61,.28) 46%,rgba(7,28,61,.06) 72%)}
+.esc-card.is-on{transform:translateY(-8px) scale(1.015);box-shadow:0 26px 60px rgba(7,28,61,.3)}
+.esc-card.is-on .esc-img{transform:scale(1.05)}
+.esc-card.is-off{filter:brightness(.5) saturate(.7)}
+.esc-texto{position:absolute;left:28px;right:28px;bottom:26px;z-index:2;display:flex;flex-direction:column;gap:7px}
+.esc-kicker{font-size:11.5px;letter-spacing:.18em;color:#9DC0FF;font-weight:700}
+.esc-titulo{font-family:var(--sora);font-weight:700;font-size:27px;letter-spacing:-.02em;color:#fff}
+.esc-sub{font-size:13.5px;color:#D6E4FF;max-width:380px;line-height:1.55;opacity:.95}
+.esc-card.is-on .esc-kicker{color:#BFD5FF}
+
 /* ---------- anunciar ---------- */
 .an-form{margin-top:26px;display:flex;flex-direction:column;gap:16px;max-width:640px}
 .an-textarea{border:1px solid var(--borda-input);border-radius:var(--r-sm);padding:11px 13px;font-size:14px;
