@@ -44,7 +44,7 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-inner">
           <h1 className="hero-title">
-            De aluno pra aluno, <em>o comércio circular do campus</em>.
+            De aluno pra aluno, <em>o comércio circular do campus.</em>
           </h1>
           <p className="hero-sub">
             O marketplace dos alunos da Unifor pra quem quer vender o que
