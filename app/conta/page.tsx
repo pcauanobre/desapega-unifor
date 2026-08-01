@@ -251,8 +251,8 @@ export default function Conta() {
           <div>
             <h2 className="info-h">Apagar meus dados</h2>
             <p className="info-p">
-              Remove sua conta, seu perfil e TODOS os seus anúncios de uma
-              vez. Sem volta.
+              Remove sua conta, seu perfil e <b>TODOS</b> os seus anúncios
+              de uma vez. Sem volta.
             </p>
           </div>
           <button className="btn ct-apagar" onClick={() => setConfirmando(true)}>

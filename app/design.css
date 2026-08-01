@@ -36,6 +36,9 @@
   --mono:var(--font-jetbrains),ui-monospace,monospace;
 }
 
+/* o body precisa do mesmo fundo: o globals do Next escurece ele no dark
+   mode do aparelho e qualquer vão (ex.: espaço da bottom nav) vira faixa preta */
+body{background:var(--bg)}
 .pagina-1280{background:var(--bg);color:var(--txt);font-family:var(--sans);-webkit-font-smoothing:antialiased;min-width:1280px}
 .pagina-1280 a{color:var(--azul);text-decoration:none}
 .pagina-1280 a:hover{color:var(--azul-hover)}
@@ -938,7 +941,7 @@
     box-shadow:0 10px 24px rgba(10,92,255,.42);transition:transform 180ms var(--ease)}
   .bnav-btn:active{transform:scale(.94)}
   .bnav-fab i{font-style:normal;font-size:10.5px;font-weight:700;color:var(--txt-3);padding:3px 0 8px}
-  .bnav-espaco{display:block;height:calc(78px + env(safe-area-inset-bottom))}
+  .bnav-espaco{display:block;height:calc(78px + env(safe-area-inset-bottom));background:var(--bg)}
 }
 @keyframes sheetIn{from{transform:translateY(100%)}to{transform:none}}
 @keyframes sheetOut{to{transform:translateY(100%)}}

@@ -45,8 +45,8 @@ export function AvisoLegal() {
         <h2 className="aviso-titulo">Aviso importante</h2>
         <p className="aviso-p">
           Este site é um projeto acadêmico, criado exclusivamente como parte
-          do processo seletivo do laboratório VORTEX. Ele não tem vínculo
-          oficial com a Universidade de Fortaleza.
+          do processo seletivo do laboratório <b>VORTEX</b>. Ele não tem
+          vínculo oficial com a Universidade de Fortaleza.
         </p>
         <p className="aviso-p">
           Apesar de ter nascido como exercício, a plataforma funciona de
