@@ -107,7 +107,7 @@ export default function Entrar() {
     } else {
       setEnviando(false);
       setModo("login");
-      setSucesso("Conta criada! Agora entra com teu email e senha.");
+      setSucesso("Conta criada! Entre com seu email e senha.");
     }
   }
 
