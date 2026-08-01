@@ -1,74 +1,52 @@
+import Link from "next/link";
 import type { Anuncio } from "@/lib/tipos";
 import { tempoRelativo } from "@/lib/tempo";
 
 /**
- * O QUE: o card de anúncio da vitrine, no layout do design: foto com badge
- *        de estado, categoria em caixa alta, título, autor + tempo, e preço
- *        ou tag de DOAÇÃO.
- * POR QUE: um card só pra landing e pro app mobile, mesma cara em tudo.
+ * O QUE: o card de anúncio no markup exato do design: foto (ou placeholder
+ *        listrado com legenda), badge de estado, categoria em mono, título,
+ *        vendedor + tempo, e preço ou tag de DOAÇÃO.
+ * POR QUE: um card só pra landing e pro app, fiel ao código fonte.
  * CHAMA: vitrine da landing e feed do /app.
- * QUEBRA SE: o tipo Anuncio mudar sem atualizar aqui.
+ * QUEBRA SE: as classes .card-* do design.css mudarem.
  */
 export function CardAnuncio({ anuncio }: { anuncio: Anuncio }) {
   return (
-    <article className="overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow hover:shadow-md">
-      <div className="relative h-44 bg-[repeating-linear-gradient(45deg,#E8EEF9_0,#E8EEF9_12px,#F3F7FD_12px,#F3F7FD_24px)]">
+    <Link className="card" href="/entrar">
+      <div className="card-photo">
         {anuncio.imagem_url ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={anuncio.imagem_url}
-            alt={anuncio.titulo}
-            className="h-full w-full object-cover"
-            loading="lazy"
-          />
+          <img src={anuncio.imagem_url} alt={anuncio.titulo} loading="lazy" />
         ) : (
-          <p className="flex h-full items-center justify-center font-mono text-xs text-[#8DA2C0]">
-            foto · {anuncio.titulo.toLowerCase().slice(0, 24)}
-          </p>
-        )}
-        {anuncio.estado && (
-          <span className="absolute left-3 top-3 rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-[#071C3D] shadow-sm">
-            {anuncio.estado}
+          <span className="card-photo-label">
+            foto · {anuncio.titulo.toLowerCase().slice(0, 28)}
           </span>
         )}
+        {anuncio.estado && <span className="card-cond">{anuncio.estado}</span>}
       </div>
-
-      <div className="p-4">
-        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8DA2C0]">
-          {anuncio.categoria}
-        </p>
-        <h3 className="mt-1 line-clamp-2 font-[family-name:var(--font-sora)] text-[17px] font-bold leading-snug text-[#071C3D]">
-          {anuncio.titulo}
-        </h3>
-
-        <div className="mt-3 flex items-end justify-between gap-2 border-t border-[#EDF1F8] pt-3">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-[#071C3D]">
-              {anuncio.autor_nome}
-            </p>
-            <p className="text-xs text-[#8DA2C0]">
-              {tempoRelativo(anuncio.created_at)}
-            </p>
-          </div>
+      <div className="card-body">
+        <div className="card-cat">{anuncio.categoria.toUpperCase()}</div>
+        <h3 className="card-title">{anuncio.titulo}</h3>
+        <div className="card-foot">
+          <span className="card-seller">
+            <b>{anuncio.autor_nome}</b>
+            <span>{tempoRelativo(anuncio.created_at)}</span>
+          </span>
           {anuncio.is_doacao ? (
-            <span className="rounded-lg bg-[#E6F7F0] px-3 py-1.5 text-xs font-bold tracking-wide text-[#0B7C57]">
-              DOAÇÃO
-            </span>
+            <span className="card-donation">DOAÇÃO</span>
           ) : (
-            <p className="whitespace-nowrap font-[family-name:var(--font-sora)] text-xl font-bold text-[#0A5CFF]">
-              R$ {formatarPreco(anuncio.preco)}
-            </p>
+            <span className="card-price">{brl(anuncio.preco)}</span>
           )}
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 
-/* Preço inteiro sem centavos ("R$ 45"), com centavos só quando existem. */
-function formatarPreco(preco: number | null): string {
-  const n = Number(preco ?? 0);
-  return Number.isInteger(n)
-    ? String(n)
-    : n.toFixed(2).replace(".", ",");
+/* "R$ 1.250" sem centavos, formato do design (brl em app.js). */
+function brl(valor: number | null): string {
+  return (
+    "R$ " +
+    Number(valor ?? 0).toLocaleString("pt-BR", { maximumFractionDigits: 0 })
+  );
 }

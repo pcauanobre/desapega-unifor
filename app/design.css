@@ -1,0 +1,230 @@
+/* Folha de estilo portada do código fonte do design (Claude design).
+   Tokens no :root; o resto ordenado por tela. Mudanças na portagem:
+   1. fontes vêm do next/font (variáveis --font-*), não do Google <link>;
+   2. os estilos de <body> viraram a classe .pagina-1280, porque o app
+      mobile (/app) é responsivo e não pode herdar min-width:1280px;
+   3. caminhos de assets apontam pra /public;
+   4. seção "adições" no fim (erro de login), marcada como nossa. */
+
+:root{
+  --azul:#0A5CFF;
+  --azul-hover:#0847CC;
+  --navy:#071C3D;
+  --navy-2:#0B2A5B;
+  --navy-txt:#AEBBD6;
+  --navy-txt-fraco:#6E84AE;
+  --azul-claro:#BFD5FF;
+  --azul-claro-2:#7FB0FF;
+  --bg:#F5F6FA;
+  --branco:#fff;
+  --borda:#E7EAF2;
+  --borda-2:#E1E7F2;
+  --borda-input:#D7DDE8;
+  --txt:#10162B;
+  --txt-2:#5A6480;
+  --txt-3:#8494B4;
+  --txt-4:#98A1B8;
+  --verde:#0B7C57;
+  --verde-bg:#E6F7F0;
+  --verde-borda:#BFE9D6;
+  --r-sm:8px;
+  --r-md:12px;
+  --r-lg:14px;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --sora:var(--font-sora),system-ui,sans-serif;
+  --sans:var(--font-jakarta),system-ui,sans-serif;
+  --mono:var(--font-jetbrains),ui-monospace,monospace;
+}
+
+.pagina-1280{background:var(--bg);color:var(--txt);font-family:var(--sans);-webkit-font-smoothing:antialiased;min-width:1280px}
+.pagina-1280 a{color:var(--azul);text-decoration:none}
+.pagina-1280 a:hover{color:var(--azul-hover)}
+.pagina-1280 button,.pagina-1280 input,.pagina-1280 select{font-family:inherit}
+.mono{font-family:var(--mono)}
+.row{display:flex;align-items:center}
+.gap-8{gap:8px}.gap-10{gap:10px}.gap-22{gap:22px}
+.green{color:var(--verde)}
+.container{max-width:1240px;margin:0 auto;padding-left:24px;padding-right:24px}
+
+@keyframes shimmer{0%{background-position:-420px 0}100%{background-position:420px 0}}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes popIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- botões ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:var(--r-sm);
+  font-weight:700;cursor:pointer;border:none;transition:background 160ms ease,transform 160ms ease,box-shadow 160ms ease,border-color 160ms ease}
+.btn-white{background:#fff;color:var(--azul-hover);font-size:14px;padding:12px 20px;box-shadow:0 2px 0 rgba(7,28,61,.2)}
+.btn-white:hover{color:var(--azul-hover);transform:translateY(-2px);box-shadow:0 5px 14px rgba(7,28,61,.28)}
+.btn-ghost{background:transparent;color:#fff;font-size:14px;padding:12px 20px;border:1.5px solid rgba(255,255,255,.6)}
+.btn-ghost:hover{color:#fff;background:rgba(255,255,255,.14);border-color:#fff}
+.btn-outline{background:#fff;color:var(--navy);font-size:14.5px;padding:14px 28px;border:1.5px solid #D3DAE8}
+.btn-outline:hover{border-color:var(--azul);background:#F7F9FF}
+.btn-primary{background:var(--azul);color:#fff;font-size:14.5px;font-weight:600;padding:13px}
+.btn-primary:hover{background:var(--azul-hover)}
+.btn-block{width:100%;margin-top:10px}
+.select{border:1.5px solid var(--borda-2);background:#fff;color:var(--txt);font-size:13.5px;font-weight:600;
+  padding:9px 12px;border-radius:var(--r-sm);cursor:pointer;outline:none}
+
+/* ---------- barra utilitária ---------- */
+.utilbar{background:var(--navy);color:var(--navy-txt);font-size:12.5px}
+.utilbar-inner{display:flex;align-items:center;justify-content:space-between;padding-top:9px;padding-bottom:9px}
+.utilbar a{color:var(--navy-txt)}
+.utilbar a:hover{color:#fff}
+.utilbar-tag{font-size:11px;color:var(--navy-txt-fraco)}
+.utilbar-login{font-weight:700;color:#fff!important}
+
+/* ---------- header ---------- */
+.header{background:var(--azul);background-image:radial-gradient(900px 260px at 78% -40%,rgba(255,255,255,.18),transparent 70%);position:relative;z-index:5}
+.header-inner{display:flex;align-items:center;gap:28px;padding-top:18px;padding-bottom:22px}
+.brand{display:flex;align-items:center;gap:14px;flex:none}
+.brand-mark{height:46px;width:auto;display:block}
+.brand-mark-sm{height:40px}
+.brand-divider{width:1px;height:34px;background:rgba(255,255,255,.32)}
+.brand-name{display:flex;flex-direction:column;line-height:1.02}
+.brand-name-1{font-family:var(--sora);font-weight:700;font-size:19px;color:#fff;letter-spacing:-.01em}
+.brand-name-2{font-family:var(--sora);font-weight:500;font-size:19px;color:var(--azul-claro);letter-spacing:-.01em}
+.brand-name-1.sm,.brand-name-2.sm{font-size:17px}
+.brand-name-2.alt{color:var(--azul-claro-2)}
+
+.search{flex:1;max-width:620px;display:flex;align-items:stretch;background:#fff;border-radius:var(--r-sm);
+  overflow:hidden;box-shadow:0 2px 0 rgba(7,28,61,.18)}
+.search-cat{border:none;outline:none;background:#F2F5FB;color:#3D4A66;font-size:13.5px;font-weight:600;
+  padding:0 14px;border-right:1px solid #E2E8F2;cursor:pointer}
+.search-input{flex:1;border:none;outline:none;padding:13px 14px;font-size:14px;color:var(--txt);background:#fff}
+.search-btn{border:none;background:var(--azul);color:#fff;padding:0 18px;cursor:pointer;font-size:14px;font-weight:700;
+  display:flex;align-items:center;gap:7px;transition:background 180ms ease}
+.search-btn:hover{background:var(--azul-hover)}
+.search-icon{font-size:15px}
+.header-actions{display:flex;align-items:center;gap:10px;flex:none;margin-left:auto}
+
+/* ---------- faixa de números ---------- */
+.statsbar{background:#fff;border-bottom:1px solid var(--borda)}
+.statsbar-inner{display:flex;align-items:center;gap:34px;padding-top:14px;padding-bottom:14px;font-size:13.5px;color:var(--txt-2)}
+.statsbar strong{font-family:var(--sora);font-weight:700;color:var(--navy)}
+.statsbar-sep{width:1px;height:16px;background:var(--borda)}
+
+/* ---------- vitrine ---------- */
+.shelf-head{padding-top:36px;padding-bottom:8px}
+.shelf-head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+.shelf-title{font-family:var(--sora);font-weight:700;font-size:28px;letter-spacing:-.025em;color:var(--navy);margin:0}
+.shelf-sub{font-size:14.5px;color:var(--txt-2);margin:7px 0 0}
+.shelf-sortlabel{font-size:13px;color:#77809A}
+.shelf-body{padding-top:20px;padding-bottom:72px}
+.shelf-more{display:flex;justify-content:center;margin-top:38px}
+
+.chips{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:24px 0 4px}
+.chip{border:1.5px solid var(--borda-2);background:#fff;color:#3D4A66;font-size:13.5px;font-weight:600;
+  padding:10px 16px;border-radius:var(--r-sm);cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  transition:all 180ms var(--ease)}
+.chip:hover{border-color:var(--azul)}
+.chip.is-active{background:var(--azul);border-color:var(--azul);color:#fff}
+.chip-count{font-family:var(--mono);font-size:11px;opacity:.6}
+
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+
+.card{background:#fff;border:1px solid var(--borda);border-radius:var(--r-lg);padding:12px;cursor:pointer;
+  display:block;color:inherit;animation:riseIn 420ms var(--ease) both;
+  transition:transform 220ms var(--ease),box-shadow 220ms ease,border-color 220ms ease}
+.card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(7,28,61,.13);border-color:#CFDCF7;color:inherit}
+.card-photo{position:relative;height:172px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  background:repeating-linear-gradient(135deg,#EEF2FA,#EEF2FA 9px,#E3EAF7 9px,#E3EAF7 18px)}
+.card-photo img{width:100%;height:100%;object-fit:cover}
+.card-photo-label{font-family:var(--mono);font-size:11px;color:var(--txt-3);padding:0 12px;text-align:center}
+.card-cond{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.94);color:#3D4A66;font-size:11px;
+  font-weight:700;padding:5px 9px;border-radius:6px;white-space:nowrap}
+.card-body{padding:14px 4px 4px}
+.card-cat{font-family:var(--mono);font-size:10.5px;color:var(--txt-3);letter-spacing:.06em}
+.card-title{font-family:var(--sora);font-weight:600;font-size:15.5px;line-height:1.32;color:var(--navy);
+  margin:7px 0 0;min-height:41px;text-wrap:pretty}
+.card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:13px;border-top:1px solid #EEF1F7}
+.card-seller{display:flex;flex-direction:column;gap:2px}
+.card-seller b{font-size:12.5px;color:var(--txt-2);font-weight:600}
+.card-seller span{font-size:11.5px;color:var(--txt-4)}
+.card-price{font-family:var(--sora);font-weight:700;font-size:18px;color:var(--azul);letter-spacing:-.01em}
+.card-donation{background:var(--verde-bg);color:var(--verde);font-size:11.5px;font-weight:700;letter-spacing:.06em;
+  padding:7px 11px;border-radius:6px;border:1px solid var(--verde-borda)}
+
+/* skeleton */
+.sk{background:#fff;border:1px solid var(--borda);border-radius:var(--r-lg);padding:12px}
+.sk-bar{background:linear-gradient(90deg,#EEF1F7 0%,#F7F9FC 40%,#EEF1F7 80%);background-size:420px 100%;
+  animation:shimmer 1.25s linear infinite}
+.sk-photo{height:172px;border-radius:10px}
+.sk-line-1{height:11px;width:38%;border-radius:5px;margin-top:16px}
+.sk-line-2{height:15px;width:82%;border-radius:5px;margin-top:11px}
+.sk-foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+.sk-foot i{display:block;height:20px;border-radius:6px;background:#EEF1F7}
+.sk-foot i:first-child{width:74px}
+.sk-foot i:last-child{width:52px}
+
+/* ---------- footer ---------- */
+.footer{background:var(--navy);color:var(--navy-txt)}
+.footer-inner{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;padding-top:48px}
+.footer-desc{font-size:14px;line-height:1.6;margin:18px 0 0;max-width:320px}
+.footer-col{display:flex;flex-direction:column;gap:11px}
+.footer-head{font-size:11px;color:var(--navy-txt-fraco);letter-spacing:.08em}
+.footer a{color:var(--navy-txt);font-size:14px}
+.footer a:hover{color:#fff}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--navy-txt-fraco);
+  border-top:1px solid rgba(174,187,214,.2);margin-top:28px;padding-top:22px;padding-bottom:40px}
+.footer-bottom .mono{font-size:11.5px}
+
+/* ---------- login ---------- */
+.login-body{background:#EAF3FE}
+.login{position:relative;width:100%;min-height:100vh;display:grid;grid-template-columns:1fr;overflow:hidden}
+.login-bg{grid-area:1/1;display:flex;min-height:100vh}
+.login-photo{flex:0 0 60%;position:relative;background:url("/campus.png") center/cover no-repeat}
+.login-side{flex:1;background:#DCEAFB url("/bg-shapes.png") right center/cover no-repeat}
+.login-photo-caption{position:absolute;left:56px;bottom:44px;display:flex;align-items:center;gap:18px;color:#fff;
+  font-size:14px;font-weight:600}
+.login-shapes{display:flex;align-items:center;gap:12px}
+.login-shapes i{width:18px;height:18px;background:rgba(255,255,255,.9);display:block;border-radius:5px}
+.login-shapes .ci{border-radius:50%}
+
+.login-cardwrap{grid-area:1/1;display:flex;align-items:center;justify-content:flex-start;padding:48px 0 48px 51%}
+.login-card{width:440px;background:#fff;border-radius:var(--r-md);box-shadow:0 18px 44px rgba(7,28,61,.14);
+  padding:32px 36px;animation:popIn 300ms var(--ease) both}
+.login-brand{display:flex;flex-direction:column;align-items:center;gap:8px}
+.login-mark{height:38px;width:auto;display:block}
+.login-lockup{font-family:var(--sora);font-size:13px;letter-spacing:-.01em;color:var(--txt-2)}
+.login-lockup b{font-weight:700;color:var(--azul)}
+.login-lockup span{font-weight:500}
+.login-title{font-family:var(--sora);font-weight:700;font-size:19px;letter-spacing:-.015em;text-align:center;margin:14px 0 0}
+.login-sub{font-size:13px;color:var(--txt-2);text-align:center;margin:6px 0 0}
+.login-fields{display:flex;flex-direction:column;gap:13px;margin-top:22px}
+
+.field{display:flex;flex-direction:column;gap:6px}
+.field-label{font-size:12.5px;font-weight:700;color:var(--txt)}
+.field input,.field select{border:1px solid var(--borda-input);border-radius:var(--r-sm);padding:11px 13px;
+  font-size:14px;color:var(--txt);outline:none;background:#fff;width:100%;
+  transition:border-color 160ms ease,box-shadow 160ms ease}
+.field select{cursor:pointer}
+.field input:focus,.field select:focus{border-color:var(--azul);box-shadow:0 0 0 3px rgba(10,92,255,.14)}
+.field-pwd{position:relative;display:flex;align-items:center}
+.field-pwd input{padding-right:42px}
+.pwd-toggle{position:absolute;right:6px;width:30px;height:30px;border:none;background:transparent;color:var(--azul);
+  font-size:15px;cursor:pointer;border-radius:6px;transition:background 160ms ease}
+.pwd-toggle:hover{background:#EEF4FF}
+
+.check{display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:12.5px;color:var(--txt-2);line-height:1.5}
+.check input{margin-top:2px;width:15px;height:15px;accent-color:var(--azul);cursor:pointer}
+.check.inline{align-items:center;font-size:13px;color:var(--txt)}
+.check.inline input{margin-top:0}
+.login-row{display:flex;align-items:center;justify-content:space-between}
+.login-row a{font-size:13px}
+.login-alt{text-align:center;margin:2px 0 0;font-size:12.5px;color:#8A93A8}
+.login-alt a{font-weight:600}
+
+.spinner{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;
+  display:inline-block;animation:spin 700ms linear infinite}
+.spinner[hidden]{display:none}
+
+/* modos do formulário: o componente troca a classe no wrapper */
+.only-register{display:none}
+.is-register .only-register{display:flex}
+.is-register .only-login{display:none}
+
+/* ---------- adições nossas (fora do código fonte original) ---------- */
+/* erro real de autenticação, que o protótipo não tinha */
+.login-erro{margin:10px 0 0;padding:10px 12px;border-radius:var(--r-sm);background:#FDECEC;
+  border:1px solid #F5C8C8;color:#8C2B2B;font-size:12.5px;text-align:center}

@@ -1,23 +1,47 @@
+import { Brand } from "@/components/Brand";
+
 /**
- * O QUE: rodapé navy com a marca em branco e uma linha sobre o projeto.
- * POR QUE: fecha a landing conforme o design (fundo navy, marca branca).
+ * O QUE: o footer navy de 4 colunas do design: marca + descrição,
+ *        categorias, plataforma e contato, com a linha de copyright.
+ * POR QUE: markup idêntico ao código fonte.
  * CHAMA: landing (app/page.tsx).
- * QUEBRA SE: mark-white.svg sumir de public/.
+ * QUEBRA SE: as classes .footer-* do design.css mudarem.
  */
 export function Rodape() {
   return (
-    <footer className="bg-[#071C3D] px-6 py-10">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/mark-white.svg" alt="" className="h-9" />
-          <p className="font-[family-name:var(--font-sora)] font-bold text-white">
-            Desapega <span className="font-medium text-[#BFD5FF]">Unifor</span>
+    <footer className="footer">
+      <div className="container footer-inner">
+        <div>
+          <Brand pequena />
+          <p className="footer-desc">
+            Compra, venda e doação de materiais entre estudantes da
+            Universidade de Fortaleza.
           </p>
         </div>
-        <p className="text-sm text-[#BFD5FF]">
-          Marketplace de economia circular do campus · feito de aluno pra aluno
-        </p>
+        <div className="footer-col">
+          <span className="footer-head mono">CATEGORIAS</span>
+          <a href="#">Livros</a>
+          <a href="#">Computação</a>
+          <a href="#">Engenharia</a>
+          <a href="#">Eletrônicos</a>
+        </div>
+        <div className="footer-col">
+          <span className="footer-head mono">PLATAFORMA</span>
+          <a href="#">Como funciona</a>
+          <a href="#">Regras do desapego</a>
+          <a href="#">Segurança nas trocas</a>
+          <a href="#">Doações</a>
+        </div>
+        <div className="footer-col">
+          <span className="footer-head mono">CONTATO</span>
+          <a href="#">desapega@unifor.br</a>
+          <a href="#">Instagram</a>
+          <a href="#">Central de ajuda</a>
+        </div>
+      </div>
+      <div className="container footer-bottom">
+        <span>© 2026 Desapega Unifor</span>
+        <span className="mono">Fortaleza, CE</span>
       </div>
     </footer>
   );

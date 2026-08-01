@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import SearchIcon from "@mui/icons-material/Search";
-import { Logo } from "@/components/Logo";
+import { Brand } from "@/components/Brand";
 import { CATEGORIAS } from "@/lib/categorias";
 
 type Props = {
@@ -10,34 +9,35 @@ type Props = {
   busca: string;
   onCategoria: (v: string) => void;
   onBusca: (v: string) => void;
+  onBuscar: () => void;
 };
 
 /**
- * O QUE: o header azul da landing: marca, busca com seletor de categoria
- *        acoplado (estilo portal da universidade) e os dois CTAs.
- * POR QUE: é a peça central do design. A busca controla o filtro da
- *          vitrine na mesma página, então só recebe e emite estado.
+ * O QUE: o header azul do design: marca, busca com categoria acoplada e os
+ *        CTAs "Quero anunciar" / "Quero buscar".
+ * POR QUE: markup idêntico ao código fonte; a diferença é que aqui a busca
+ *          controla o filtro real da vitrine.
  * CHAMA: landing (app/page.tsx).
- * QUEBRA SE: a lista de categorias mudar de formato.
+ * QUEBRA SE: as classes .header/.search do design.css mudarem.
  */
-export function HeaderBusca({ categoria, busca, onCategoria, onBusca }: Props) {
+export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }: Props) {
   return (
-    <header className="bg-[#0A5CFF] px-6 py-5">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-6">
-        <Logo fundo="azul" simboloAltura={46} />
+    <header className="header">
+      <div className="container header-inner">
+        <Brand />
 
         <form
-          className="flex min-w-0 flex-1 overflow-hidden rounded-lg bg-white"
+          className="search"
           onSubmit={(e) => {
             e.preventDefault();
-            document.getElementById("vitrine")?.scrollIntoView({ behavior: "smooth" });
+            onBuscar();
           }}
         >
           <select
+            className="search-cat"
+            aria-label="Categoria"
             value={categoria}
             onChange={(e) => onCategoria(e.target.value)}
-            className="border-r border-neutral-200 bg-white px-3 py-3 text-sm text-[#071C3D] outline-none"
-            aria-label="Categoria"
           >
             <option value="">Todas as categorias</option>
             {CATEGORIAS.map((c) => (
@@ -47,30 +47,28 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca }: Props) {
             ))}
           </select>
           <input
+            className="search-input"
+            type="text"
+            placeholder="Buscar item"
             value={busca}
             onChange={(e) => onBusca(e.target.value)}
-            placeholder="Buscar item"
-            className="min-w-0 flex-1 px-4 py-3 text-sm text-[#071C3D] outline-none placeholder:text-neutral-400"
           />
-          <button
-            type="submit"
-            className="flex items-center gap-1.5 bg-[#071C3D] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#0B2B5C]"
-          >
-            <SearchIcon sx={{ fontSize: 18 }} />
-            Buscar
+          <button className="search-btn" type="submit">
+            <span className="search-icon">⌕</span>Buscar
           </button>
         </form>
 
-        <div className="flex gap-3">
-          <Link
-            href="/app"
-            className="rounded-lg bg-white px-5 py-3 text-sm font-bold text-[#0A5CFF] transition-transform hover:scale-[1.02]"
-          >
+        <div className="header-actions">
+          <Link className="btn btn-white" href="/entrar">
             Quero anunciar
           </Link>
           <a
+            className="btn btn-ghost"
             href="#vitrine"
-            className="rounded-lg border border-white/70 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-white/10"
+            onClick={(e) => {
+              e.preventDefault();
+              onBuscar();
+            }}
           >
             Quero buscar
           </a>
