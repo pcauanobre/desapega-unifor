@@ -16,6 +16,8 @@ import { validarAnuncio } from "@/lib/validar-anuncio";
  * CHAMA: vitrine da landing, feed mobile e aba "meus anúncios".
  * QUEBRA SE: o banco estiver fora ou a categoria vier fora da lista (400).
  */
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function GET(req: NextRequest) {
   if (!supabaseConfigurado()) {
     return NextResponse.json(SEM_BANCO, { status: 503 });
@@ -23,12 +25,24 @@ export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const categoria = req.nextUrl.searchParams.get("categoria");
   const autor = req.nextUrl.searchParams.get("autor");
+  const vendidos = req.nextUrl.searchParams.get("vendidos") === "1";
 
   let query = supabase
     .from("anuncios")
     .select(COLUNAS_PUBLICAS)
-    .order("created_at", { ascending: false })
     .limit(30);
+
+  // Vitrine mostra só o que tá no ar; o histórico (?vendidos=1) é por
+  // autor, pro perfil público.
+  if (vendidos) {
+    query = query
+      .not("vendido_em", "is", null)
+      .order("vendido_em", { ascending: false });
+  } else {
+    query = query
+      .is("vendido_em", null)
+      .order("created_at", { ascending: false });
+  }
 
   if (categoria) {
     if (!CATEGORIAS.includes(categoria as Categoria)) {
@@ -46,6 +60,15 @@ export async function GET(req: NextRequest) {
       );
     }
     query = query.eq("autor_id", user.id);
+  } else if (autor) {
+    // Perfil público de qualquer autor, pelo uuid.
+    if (!UUID.test(autor)) {
+      return NextResponse.json({ erro: "autor inválido" }, { status: 400 });
+    }
+    query = query.eq("autor_id", autor);
+  } else if (vendidos) {
+    // Histórico só existe no contexto de um autor.
+    return NextResponse.json({ erro: "autor obrigatório" }, { status: 400 });
   }
 
   const { data, error } = await query;

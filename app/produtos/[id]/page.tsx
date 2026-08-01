@@ -109,15 +109,22 @@ export default function PaginaProduto() {
             </div>
 
             <div className="pd-vendedor">
-              <span className="pd-avatar">{anuncio.autor_nome.charAt(0)}</span>
-              <span>
-                <span className="pd-vend-nome">{anuncio.autor_nome}</span>
-                <br />
-                <span className="pd-vend-curso">
-                  <SchoolIcon sx={{ fontSize: 14 }} />
-                  {anuncio.autor_curso ?? "Aluno da Unifor"}
+              {/* clicar na pessoa abre o perfil público com o histórico */}
+              <Link
+                className="pd-vend-link"
+                href={`/perfil/${anuncio.autor_id}`}
+                title={`Ver perfil de ${anuncio.autor_nome}`}
+              >
+                <span className="pd-avatar">{anuncio.autor_nome.charAt(0)}</span>
+                <span>
+                  <span className="pd-vend-nome">{anuncio.autor_nome}</span>
+                  <br />
+                  <span className="pd-vend-curso">
+                    <SchoolIcon sx={{ fontSize: 14 }} />
+                    {anuncio.autor_curso ?? "Aluno da Unifor"}
+                  </span>
                 </span>
-              </span>
+              </Link>
 
               {anuncio.contato ? (
                 <a

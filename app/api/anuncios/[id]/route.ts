@@ -114,6 +114,55 @@ export async function PUT(
 }
 
 /**
+ * O QUE: marca um anúncio como vendido/doado (carimbo em vendido_em).
+ * POR QUE: vendido não é apagado: sai da vitrine mas vira histórico e
+ *          estatística no perfil público do autor. A RLS garante que só
+ *          o dono consegue; id alheio responde 404.
+ * CHAMA: botão de check dos meus anúncios.
+ * QUEBRA SE: sem login (401) ou id que não é uuid (404 direto).
+ */
+export async function PATCH(
+  _req: NextRequest,
+  ctx: { params: Promise<{ id: string }> },
+) {
+  if (!supabaseConfigurado()) {
+    return NextResponse.json(
+      { erro: "banco ainda não configurado: copie o .env.example pra .env.local" },
+      { status: 503 },
+    );
+  }
+  const { id } = await ctx.params;
+  if (!UUID.test(id)) {
+    return NextResponse.json({ erro: "anúncio não encontrado" }, { status: 404 });
+  }
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ erro: "faça login" }, { status: 401 });
+  }
+
+  const { data, error } = await supabase
+    .from("anuncios")
+    .update({ vendido_em: new Date().toISOString() })
+    .eq("id", id)
+    .is("vendido_em", null)
+    .select("id");
+
+  if (error) {
+    console.error("PATCH /api/anuncios/[id]:", error.message);
+    return NextResponse.json(
+      { erro: "não deu pra encerrar agora" },
+      { status: 500 },
+    );
+  }
+  if (!data || data.length === 0) {
+    return NextResponse.json({ erro: "anúncio não encontrado" }, { status: 404 });
+  }
+  return NextResponse.json({ ok: true });
+}
+
+/**
  * O QUE: apaga um anúncio pelo id. Responde { ok: true } ou erro em JSON.
  * POR QUE: a RLS do banco só deixa apagar linha do próprio autor, então
  *          mesmo que alguém chame a rota com id alheio, o banco nega e a
