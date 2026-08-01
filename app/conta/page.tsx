@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PersonIcon from "@mui/icons-material/Person";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
@@ -162,6 +163,11 @@ export default function Conta() {
       <TopBar />
       <HeaderNav />
       <main className="container info-wrap" style={{ maxWidth: 760 }}>
+        <div>
+          <Link className="pd-voltar" style={{ marginTop: 0 }} href="/produtos">
+            ← Voltar
+          </Link>
+        </div>
         {!pronto && (
           <div>
             <div className="sk-bar pd-sk-l2" />
