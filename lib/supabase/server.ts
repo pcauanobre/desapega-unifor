@@ -4,6 +4,20 @@ import { cookies } from "next/headers";
 type CookieToSet = { name: string; value: string; options: CookieOptions };
 
 /**
+ * O QUE: diz se as chaves públicas do Supabase existem no ambiente.
+ * POR QUE: sem .env.local o projeto ainda abre, e as rotas respondem 503
+ *          com instrução clara em vez de estourar erro 500 sem explicação.
+ * CHAMA: todas as rotas de /api/anuncios, primeira linha.
+ * QUEBRA SE: nada; só reflete o ambiente.
+ */
+export function supabaseConfigurado() {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  );
+}
+
+/**
  * O QUE: cria o cliente Supabase pro lado servidor (rotas da API e Server
  *        Components), lendo a sessão do usuário a partir dos cookies.
  * POR QUE: é assim que as rotas sabem QUEM tá logado sem receber token por

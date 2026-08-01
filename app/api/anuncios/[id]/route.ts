@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, supabaseConfigurado } from "@/lib/supabase/server";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -15,6 +15,12 @@ export async function DELETE(
   _req: NextRequest,
   ctx: { params: Promise<{ id: string }> },
 ) {
+  if (!supabaseConfigurado()) {
+    return NextResponse.json(
+      { erro: "banco ainda não configurado: copie o .env.example pra .env.local" },
+      { status: 503 },
+    );
+  }
   const { id } = await ctx.params;
   if (!UUID.test(id)) {
     return NextResponse.json({ erro: "anúncio não encontrado" }, { status: 404 });

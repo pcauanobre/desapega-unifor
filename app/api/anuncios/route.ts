@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, supabaseConfigurado } from "@/lib/supabase/server";
+
+const SEM_BANCO = {
+  erro: "banco ainda não configurado: copie o .env.example pra .env.local",
+};
 import { CATEGORIAS, type Categoria } from "@/lib/categorias";
 import { validarAnuncio } from "@/lib/validar-anuncio";
 
@@ -12,6 +16,9 @@ import { validarAnuncio } from "@/lib/validar-anuncio";
  * QUEBRA SE: o banco estiver fora ou a categoria vier fora da lista (400).
  */
 export async function GET(req: NextRequest) {
+  if (!supabaseConfigurado()) {
+    return NextResponse.json(SEM_BANCO, { status: 503 });
+  }
   const supabase = await createClient();
   const categoria = req.nextUrl.searchParams.get("categoria");
   const autor = req.nextUrl.searchParams.get("autor");
@@ -61,6 +68,9 @@ export async function GET(req: NextRequest) {
  *            ou banco fora (500 genérico, detalhe só no log).
  */
 export async function POST(req: NextRequest) {
+  if (!supabaseConfigurado()) {
+    return NextResponse.json(SEM_BANCO, { status: 503 });
+  }
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
