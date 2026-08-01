@@ -46,8 +46,15 @@ export function CardAnuncio({
     >
       <div className="card-photo">
         {fotos.length > 0 ? (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img key={atual} src={fotos[atual]} alt={anuncio.titulo} loading="lazy" />
+          <div
+            className="mini-trilho"
+            style={{ transform: `translateX(-${atual * 100}%)` }}
+          >
+            {fotos.map((foto, i) => (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img key={i} src={foto} alt={anuncio.titulo} loading="lazy" />
+            ))}
+          </div>
         ) : (
           <span className="card-photo-label">
             foto · {anuncio.titulo.toLowerCase().slice(0, 28)}
