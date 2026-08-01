@@ -1,5 +1,6 @@
 import { PERGUNTAS } from "@/lib/faq";
 import { Revelar } from "@/components/Revelar";
+import { FaqItem } from "@/components/FaqItem";
 
 /**
  * O QUE: a seção de FAQ do fim da LP: acordeão nativo com as mesmas
@@ -21,10 +22,7 @@ export function FaqSecao() {
         <div className="faqsec-lista">
           {PERGUNTAS.map(({ q, a }, i) => (
             <Revelar key={q} atraso={Math.min(i * 70, 350)}>
-              <details className="faq-item">
-                <summary className="faq-q">{q}</summary>
-                <p className="faq-a">{a}</p>
-              </details>
+              <FaqItem q={q} a={a} />
             </Revelar>
           ))}
         </div>

@@ -3,6 +3,7 @@ import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
 import { Rodape } from "@/components/landing/Rodape";
 import { PERGUNTAS } from "@/lib/faq";
+import { FaqItem } from "@/components/FaqItem";
 
 /**
  * O QUE: a central de ajuda: perguntas frequentes em acordeão nativo.
@@ -25,10 +26,7 @@ export default function Ajuda() {
         </p>
         <div className="info-bloco">
           {PERGUNTAS.map(({ q, a }) => (
-            <details key={q} className="faq-item">
-              <summary className="faq-q">{q}</summary>
-              <p className="faq-a">{a}</p>
-            </details>
+            <FaqItem key={q} q={q} a={a} />
           ))}
         </div>
         <div className="info-cta">

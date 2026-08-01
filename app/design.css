@@ -685,16 +685,20 @@
 .faq-item{border:1px solid var(--borda);border-radius:12px;background:#fff;margin-top:12px;
   transition:border-color 180ms ease,box-shadow 180ms ease}
 .faq-item:hover{border-color:#CFDCF7}
-.faq-item[open]{box-shadow:0 10px 26px rgba(7,28,61,.08)}
+.faq-item.is-aberto{box-shadow:0 10px 26px rgba(7,28,61,.08)}
 .faq-q{font-family:var(--sora);font-weight:600;font-size:15px;color:var(--navy);cursor:pointer;
-  padding:17px 20px;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:14px}
-.faq-q::-webkit-details-marker{display:none}
-.faq-q::after{content:"+";font-family:var(--mono);font-size:16px;color:var(--azul);transition:transform 200ms var(--ease)}
-.faq-item[open] .faq-q::after{transform:rotate(45deg)}
-.faq-a{padding:0 20px 17px;font-size:14.5px;line-height:1.65;color:var(--txt-2);
-  overflow:hidden;animation:faqDesce 320ms var(--ease) both}
-@keyframes faqDesce{from{opacity:0;transform:translateY(-10px);max-height:0;padding-bottom:0}
-  to{opacity:1;transform:none;max-height:240px;padding-bottom:17px}}
+  padding:17px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  width:100%;border:none;background:none;text-align:left}
+.faq-q::after{content:"+";font-family:var(--mono);font-size:16px;color:var(--azul);transition:transform 260ms var(--ease)}
+.faq-item.is-aberto .faq-q::after{transform:rotate(45deg)}
+/* a dobra anima nos DOIS sentidos: grid 0fr→1fr transiciona altura de
+   conteúdo variável, coisa que max-height fixo e <details> não fazem */
+.faq-dobra{display:grid;grid-template-rows:0fr;transition:grid-template-rows 420ms var(--ease)}
+.faq-item.is-aberto .faq-dobra{grid-template-rows:1fr}
+.faq-a{min-height:0;overflow:hidden;padding:0 20px;margin:0;font-size:14.5px;line-height:1.65;color:var(--txt-2);
+  opacity:0;transform:translateY(-8px);
+  transition:opacity 340ms ease,transform 420ms var(--ease),padding-bottom 420ms var(--ease)}
+.faq-item.is-aberto .faq-a{opacity:1;transform:none;padding-bottom:17px}
 
 .regra{display:flex;gap:16px;border:1px solid var(--borda);border-radius:12px;background:#fff;
   padding:18px 20px;margin-top:12px;transition:transform 200ms var(--ease),box-shadow 200ms ease}
