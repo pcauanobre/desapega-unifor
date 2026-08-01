@@ -291,18 +291,23 @@
 .login-topbrand{animation:fadeDown 500ms 150ms var(--ease) both}
 .login-social{animation:fadeUp 500ms 260ms var(--ease) both}
 .login-card{animation:popIn 420ms 120ms var(--ease) both}
-.login-brand{animation:fadeDown 420ms 230ms var(--ease) both}
-.login-title{animation:fadeUp 420ms 290ms var(--ease) both}
-.login-sub{animation:fadeUp 420ms 340ms var(--ease) both}
-.login-fields > *{animation:fadeUp 400ms var(--ease) both}
-.login-fields > *:nth-child(1){animation-delay:380ms}
-.login-fields > *:nth-child(2){animation-delay:425ms}
-.login-fields > *:nth-child(3){animation-delay:470ms}
-.login-fields > *:nth-child(4){animation-delay:515ms}
-.login-fields > *:nth-child(5){animation-delay:560ms}
-.login-fields > *:nth-child(6){animation-delay:605ms}
-.login-fields > *:nth-child(7){animation-delay:650ms}
-.login-fields > *:nth-child(8){animation-delay:695ms}
+/* Troca entrar/cadastro DEPOIS da entrada: campos novos surgem juntos,
+   sem herdar a fila de delays (senão fica dessincronizado). */
+.is-register .only-register{animation:fadeUp 280ms var(--ease) both}
+/* A cascata de entrada só roda na chegada à página (.com-entrada some
+   depois de ~1,3s via React). */
+.com-entrada .login-brand{animation:fadeDown 420ms 230ms var(--ease) both}
+.com-entrada .login-title{animation:fadeUp 420ms 290ms var(--ease) both}
+.com-entrada .login-sub{animation:fadeUp 420ms 340ms var(--ease) both}
+.com-entrada .login-fields > *{animation:fadeUp 400ms var(--ease) both}
+.com-entrada .login-fields > *:nth-child(1){animation-delay:380ms}
+.com-entrada .login-fields > *:nth-child(2){animation-delay:425ms}
+.com-entrada .login-fields > *:nth-child(3){animation-delay:470ms}
+.com-entrada .login-fields > *:nth-child(4){animation-delay:515ms}
+.com-entrada .login-fields > *:nth-child(5){animation-delay:560ms}
+.com-entrada .login-fields > *:nth-child(6){animation-delay:605ms}
+.com-entrada .login-fields > *:nth-child(7){animation-delay:650ms}
+.com-entrada .login-fields > *:nth-child(8){animation-delay:695ms}
 
 /* Cards da vitrine entram em cascata (o riseIn já existe no .card). */
 .grid > *:nth-child(1){animation-delay:0ms}

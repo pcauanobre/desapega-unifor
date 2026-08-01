@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -44,6 +44,7 @@ const TEXTOS = {
 export default function Entrar() {
   const router = useRouter();
   const [modo, setModo] = useState<"login" | "register">("login");
+  const [entrada, setEntrada] = useState(true);
   const [nome, setNome] = useState("");
   const [matricula, setMatricula] = useState("");
   const [curso, setCurso] = useState("");
@@ -53,6 +54,13 @@ export default function Entrar() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const t = TEXTOS[modo];
+
+  // A cascata de entrada dos campos roda uma vez; depois dela, trocar de
+  // modo mostra os campos novos sem a fila de delays.
+  useEffect(() => {
+    const timer = setTimeout(() => setEntrada(false), 1300);
+    return () => clearTimeout(timer);
+  }, []);
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
@@ -123,14 +131,17 @@ export default function Entrar() {
                 <span className="ico"><XIcon sx={{ fontSize: 17 }} /></span>
                 <span className="ico"><LinkedInIcon sx={{ fontSize: 20 }} /></span>
               </span>
-              <span>Projeto Desapega | Universidade de Fortaleza</span>
+              <span>Projeto Desapega Unifor | Universidade de Fortaleza</span>
             </div>
           </div>
           <div className="login-side" />
         </div>
 
         <div className="login-cardwrap">
-          <form className="login-card" onSubmit={enviar}>
+          <form
+            className={"login-card" + (entrada ? " com-entrada" : "")}
+            onSubmit={enviar}
+          >
             <div className="login-brand">
               <Link href="/produtos" title="Ir pra vitrine">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
