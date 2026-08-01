@@ -10,19 +10,19 @@ export function StatsBar() {
     <div className="statsbar">
       <div className="container statsbar-inner">
         <span>
-          <strong>347</strong> itens circulando
+          <strong>64</strong> itens circulando
         </span>
         <span className="statsbar-sep" />
         <span>
-          <strong className="green">112</strong> doações
+          <strong className="green">19</strong> doações
         </span>
         <span className="statsbar-sep" />
         <span>
-          <strong>580</strong> alunos
+          <strong>142</strong> alunos
         </span>
         <span className="statsbar-sep" />
         <span>
-          <strong>R$ 21 mil</strong> economizados
+          <strong>R$ 4,7 mil</strong> economizados
         </span>
       </div>
     </div>

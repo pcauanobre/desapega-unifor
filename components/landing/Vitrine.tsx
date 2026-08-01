@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import TuneIcon from "@mui/icons-material/Tune";
 import type { Anuncio } from "@/lib/tipos";
 import { CATEGORIAS } from "@/lib/categorias";
 import { CardAnuncio } from "@/components/CardAnuncio";
 import { Droplist } from "@/components/Droplist";
+import { FiltrosPopup, type Filtros } from "@/components/FiltrosPopup";
 
 type Props = {
   anuncios: Anuncio[] | null;
@@ -19,6 +21,9 @@ type Props = {
   ordenar: string;
   onOrdenar: (v: string) => void;
   onCarregarMais: () => void;
+  tetoPreco: number;
+  filtros: Filtros | null;
+  onFiltrar: (f: Filtros | null) => void;
 };
 
 /**
@@ -34,7 +39,9 @@ export function Vitrine(props: Props) {
   const {
     anuncios, filtrados, extras, temMais, mostrandoSkeleton, carregandoMais,
     erro, categoria, onCategoria, ordenar, onOrdenar, onCarregarMais,
+    tetoPreco, filtros, onFiltrar,
   } = props;
+  const [filtroAberto, setFiltroAberto] = useState(false);
 
   const contar = (c: string) =>
     (anuncios ?? []).filter((a) => (c === "" ? true : a.categoria === c)).length;
@@ -61,6 +68,12 @@ export function Vitrine(props: Props) {
             </p>
           </div>
           <div className="row gap-10">
+            <button
+              className={"fx-botao" + (filtros ? " ativo" : "")}
+              onClick={() => setFiltroAberto(true)}
+            >
+              <TuneIcon sx={{ fontSize: 17 }} /> Filtros
+            </button>
             <span className="shelf-sortlabel">Ordenar por</span>
             <Droplist
               rotuloAria="Ordenar por"
@@ -128,6 +141,18 @@ export function Vitrine(props: Props) {
           </button>
         </div>
       </div>
+
+      {filtroAberto && (
+        <FiltrosPopup
+          teto={tetoPreco}
+          atual={filtros}
+          onFechar={() => setFiltroAberto(false)}
+          onAplicar={(f) => {
+            setFiltroAberto(false);
+            onFiltrar(f);
+          }}
+        />
+      )}
     </main>
   );
 }

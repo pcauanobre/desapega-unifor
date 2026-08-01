@@ -6,6 +6,7 @@ import { TopBar } from "@/components/landing/TopBar";
 import { HeaderBusca } from "@/components/landing/HeaderBusca";
 import { Vitrine } from "@/components/landing/Vitrine";
 import { Rodape } from "@/components/landing/Rodape";
+import type { Filtros } from "@/components/FiltrosPopup";
 
 /* Skeletons do design + paginação da vitrine (8 de cara, +4 por clique). */
 const DELAY = { filtro: 700, mais: 900 };
@@ -27,6 +28,7 @@ export default function Produtos() {
   const [categoriaHeader, setCategoriaHeader] = useState("");
   const [busca, setBusca] = useState("");
   const [ordenar, setOrdenar] = useState("recentes");
+  const [filtros, setFiltros] = useState<Filtros | null>(null);
   const [mostrandoSkeleton, setMostrandoSkeleton] = useState(false);
   const [visiveis, setVisiveis] = useState(PAGINA.inicial);
   const [carregandoMais, setCarregandoMais] = useState(false);
@@ -83,12 +85,30 @@ export default function Produtos() {
     document.getElementById("vitrine")?.scrollIntoView({ behavior: "smooth" });
   }
 
+  /* Teto do slider de preço: o maior preço da vitrine, arredondado pra
+     cima de 50 em 50 (mínimo 100 pra faixa não nascer esmagada). */
+  const tetoPreco = useMemo(() => {
+    const maior = Math.max(0, ...(anuncios ?? []).map((a) => a.preco ?? 0));
+    return Math.max(100, Math.ceil(maior / 50) * 50);
+  }, [anuncios]);
+
   const filtrados = useMemo(() => {
     let lista = anuncios ?? [];
     if (categoria) lista = lista.filter((a) => a.categoria === categoria);
     if (busca.trim()) {
       const termo = busca.trim().toLowerCase();
       lista = lista.filter((a) => a.titulo.toLowerCase().includes(termo));
+    }
+    if (filtros) {
+      const f = filtros;
+      lista = lista.filter((a) => {
+        if (f.estados.length && (!a.estado || !f.estados.includes(a.estado))) {
+          return false;
+        }
+        if (a.is_doacao) return f.doacoes;
+        const p = a.preco ?? 0;
+        return p >= f.min && (f.max >= tetoPreco || p <= f.max);
+      });
     }
     if (ordenar === "menor") {
       lista = [...lista].sort((a, b) => (a.preco ?? 0) - (b.preco ?? 0));
@@ -98,7 +118,7 @@ export default function Produtos() {
       lista = lista.filter((a) => a.is_doacao);
     }
     return lista;
-  }, [anuncios, categoria, busca, ordenar]);
+  }, [anuncios, categoria, busca, ordenar, filtros, tetoPreco]);
 
   /* Carregar mais: abre o espaço de skeleton (a Vitrine desce até ele) e
      depois revela a próxima página dos filtrados. */
@@ -141,6 +161,9 @@ export default function Produtos() {
           setVisiveis(PAGINA.inicial);
         }}
         onCarregarMais={carregarMais}
+        tetoPreco={tetoPreco}
+        filtros={filtros}
+        onFiltrar={(f) => comSkeleton(DELAY.filtro, () => setFiltros(f))}
       />
       <Rodape />
     </div>

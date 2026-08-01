@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PersonIcon from "@mui/icons-material/Person";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
@@ -239,18 +238,6 @@ export default function Conta() {
             </button>
           </form>
         )}
-
-        <div className="info-bloco">
-          <h2 className="info-h">Meus anúncios</h2>
-          <p className="info-p">
-            Cliques recebidos, edição e exclusão moram na página dos teus anúncios.
-          </p>
-          <div className="info-cta" style={{ marginTop: 16 }}>
-            <Link className="btn btn-hero" href="/meus-anuncios">
-              Abrir meus anúncios
-            </Link>
-          </div>
-        </div>
 
         <div className="ct-perigo">
           <div>
