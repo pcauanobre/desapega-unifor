@@ -76,7 +76,6 @@ export default function Conta() {
     }
     window.addEventListener("paste", colar);
     return () => window.removeEventListener("paste", colar);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uid]);
 
   /* Foto escolhida abre o editor; o upload acontece só depois do corte. */
