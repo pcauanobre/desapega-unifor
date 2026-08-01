@@ -30,6 +30,8 @@ export default function Conta() {
   const [perfil, setPerfil] = useState<Perfil | null>(null);
   const [confirmando, setConfirmando] = useState(false);
   const [apagando, setApagando] = useState(false);
+  const [senhaConfirma, setSenhaConfirma] = useState("");
+  const [erroApagar, setErroApagar] = useState<string | null>(null);
 
   useEffect(() => {
     createClient()
@@ -59,13 +61,30 @@ export default function Conta() {
   }
 
   async function apagarTudo() {
-    if (apagando) return;
+    if (apagando || !perfil) return;
+    if (senhaConfirma.length < 6) {
+      setErroApagar("Digite tua senha pra confirmar.");
+      return;
+    }
     setApagando(true);
+    setErroApagar(null);
     const supabase = createClient();
+
+    // Reautentica antes do irreversível: só o dono da senha apaga a conta.
+    const { error: senhaErrada } = await supabase.auth.signInWithPassword({
+      email: perfil.email,
+      password: senhaConfirma,
+    });
+    if (senhaErrada) {
+      setApagando(false);
+      setErroApagar("Senha incorreta.");
+      return;
+    }
+
     const { error } = await supabase.rpc("deletar_minha_conta");
     if (error) {
       setApagando(false);
-      setConfirmando(false);
+      setErroApagar("Não deu pra apagar agora. Tenta de novo.");
       return;
     }
     await supabase.auth.signOut();
@@ -137,9 +156,27 @@ export default function Conta() {
             <h2 className="aviso-titulo">Apagar tudo mesmo?</h2>
             <p className="aviso-p" style={{ textAlign: "center" }}>
               Conta, perfil e anúncios somem de vez. Essa ação não tem desfazer.
+              Confirma tua senha pra continuar.
             </p>
+            <label className="field" style={{ marginTop: 14 }}>
+              <span className="field-label">Tua senha</span>
+              <input
+                type="password"
+                placeholder="Senha"
+                value={senhaConfirma}
+                onChange={(e) => setSenhaConfirma(e.target.value)}
+              />
+            </label>
+            {erroApagar && <p className="login-erro">{erroApagar}</p>}
             <div className="wiz-acoes">
-              <button className="btn wiz-voltar" onClick={() => setConfirmando(false)}>
+              <button
+                className="btn wiz-voltar"
+                onClick={() => {
+                  setConfirmando(false);
+                  setSenhaConfirma("");
+                  setErroApagar(null);
+                }}
+              >
                 Cancelar
               </button>
               <button className="btn ct-apagar" style={{ flex: 1 }} onClick={apagarTudo}>

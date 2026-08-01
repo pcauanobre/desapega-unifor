@@ -70,7 +70,7 @@ export default function Entrar() {
     const supabase = createClient();
 
     if (modo === "login") {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password: senha,
       });
@@ -83,7 +83,9 @@ export default function Entrar() {
         );
         return;
       }
-      router.push("/produtos");
+      // Perfil que nunca passou pelo setup cai no wizard antes da vitrine.
+      const completo = data.user?.user_metadata?.perfil_completo === true;
+      router.push(completo ? "/produtos" : "/bem-vindo");
       router.refresh();
       return;
     }

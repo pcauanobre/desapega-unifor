@@ -18,7 +18,13 @@ import { quandoPublicado } from "@/lib/tempo";
  * CHAMA: vitrine da landing e /produtos.
  * QUEBRA SE: as classes .card-* e .mini-* do design.css mudarem.
  */
-export function CardAnuncio({ anuncio }: { anuncio: Anuncio }) {
+export function CardAnuncio({
+  anuncio,
+  atraso = 0,
+}: {
+  anuncio: Anuncio;
+  atraso?: number;
+}) {
   const fotos = anuncio.fotos?.length
     ? anuncio.fotos
     : anuncio.imagem_url
@@ -33,7 +39,11 @@ export function CardAnuncio({ anuncio }: { anuncio: Anuncio }) {
   }
 
   return (
-    <Link className="card" href={`/produtos/${anuncio.id}`}>
+    <Link
+      className="card"
+      href={`/produtos/${anuncio.id}`}
+      style={atraso > 0 ? { animationDelay: `${atraso}ms` } : undefined}
+    >
       <div className="card-photo">
         {fotos.length > 0 ? (
           /* eslint-disable-next-line @next/next/no-img-element */

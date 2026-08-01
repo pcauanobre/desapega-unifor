@@ -111,7 +111,12 @@ export function Vitrine(props: Props) {
         ) : (
           <div className="grid">
             {lista.map((a, i) => (
-              <CardAnuncio key={`${i}-${a.id}`} anuncio={a} />
+              <CardAnuncio
+                key={`${i}-${a.id}`}
+                anuncio={a}
+                /* itens anexados pelo "carregar mais" sobem em onda, um a um */
+                atraso={i >= filtrados.length ? (i - filtrados.length) * 65 : 0}
+              />
             ))}
           </div>
         )}
