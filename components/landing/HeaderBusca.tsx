@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Brand } from "@/components/Brand";
 import { CATEGORIAS } from "@/lib/categorias";
+import { Droplist } from "@/components/Droplist";
 
 type Props = {
   categoria: string;
@@ -33,19 +34,16 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
             onBuscar();
           }}
         >
-          <select
-            className="search-cat"
-            aria-label="Categoria"
-            value={categoria}
-            onChange={(e) => onCategoria(e.target.value)}
-          >
-            <option value="">Todas as categorias</option>
-            {CATEGORIAS.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
+          <Droplist
+            rotuloAria="Categoria"
+            variante="busca"
+            valor={categoria}
+            onMudar={onCategoria}
+            opcoes={[
+              { valor: "", rotulo: "Todas as categorias" },
+              ...CATEGORIAS.map((c) => ({ valor: c, rotulo: c })),
+            ]}
+          />
           <input
             className="search-input"
             type="text"

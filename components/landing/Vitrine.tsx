@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import type { Anuncio } from "@/lib/tipos";
 import { CATEGORIAS } from "@/lib/categorias";
 import { CardAnuncio } from "@/components/CardAnuncio";
+import { Droplist } from "@/components/Droplist";
 
 type Props = {
   anuncios: Anuncio[] | null;
@@ -59,16 +60,17 @@ export function Vitrine(props: Props) {
           </div>
           <div className="row gap-10">
             <span className="shelf-sortlabel">Ordenar por</span>
-            <select
-              className="select"
-              value={ordenar}
-              onChange={(e) => onOrdenar(e.target.value)}
-            >
-              <option value="recentes">Mais recentes</option>
-              <option value="menor">Menor preço</option>
-              <option value="maior">Maior preço</option>
-              <option value="doacoes">Só doações</option>
-            </select>
+            <Droplist
+              rotuloAria="Ordenar por"
+              valor={ordenar}
+              onMudar={onOrdenar}
+              opcoes={[
+                { valor: "recentes", rotulo: "Mais recentes" },
+                { valor: "menor", rotulo: "Menor preço" },
+                { valor: "maior", rotulo: "Maior preço" },
+                { valor: "doacoes", rotulo: "Só doações" },
+              ]}
+            />
           </div>
         </div>
         <div className="chips">

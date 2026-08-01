@@ -4,6 +4,37 @@
  * CHAMA: CardAnuncio.
  * QUEBRA SE: nada; data inválida vira string vazia.
  */
+/**
+ * O QUE: "Hoje, 14:18" / "Ontem, 09:40" / "Anteontem, 21:05", e mais velho
+ *        que isso vira "15/03, 21:05".
+ * POR QUE: formato de classificados que o Pedro pediu pros cards.
+ * CHAMA: CardAnuncio.
+ * QUEBRA SE: nada; data inválida vira string vazia.
+ */
+export function quandoPublicado(iso: string): string {
+  const data = new Date(iso);
+  if (Number.isNaN(data.getTime())) return "";
+
+  const hora = data.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const inicioDoDia = (d: Date) =>
+    new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const dias = Math.round(
+    (inicioDoDia(new Date()) - inicioDoDia(data)) / 86_400_000,
+  );
+
+  if (dias <= 0) return `Hoje, ${hora}`;
+  if (dias === 1) return `Ontem, ${hora}`;
+  if (dias === 2) return `Anteontem, ${hora}`;
+  const diaMes = data.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+  });
+  return `${diaMes}, ${hora}`;
+}
+
 export function tempoRelativo(iso: string): string {
   const data = new Date(iso);
   if (Number.isNaN(data.getTime())) return "";

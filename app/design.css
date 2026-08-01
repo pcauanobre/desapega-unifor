@@ -233,6 +233,45 @@
 .pagina-1280 a.btn-outline,.pagina-1280 a.btn-outline:hover{color:var(--navy)}
 .pagina-1280 a.btn-zap,.pagina-1280 a.btn-zap:hover{color:#fff}
 
+/* droplist customizado */
+.dl{position:relative}
+.search .dl{display:flex;align-items:stretch}
+.dl-gatilho{border:1.5px solid var(--borda-2);background:#fff;color:var(--txt);font-size:13.5px;font-weight:600;
+  padding:9px 12px;border-radius:var(--r-sm);cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  transition:border-color 160ms ease,box-shadow 160ms ease}
+.dl-gatilho:hover{border-color:var(--azul)}
+.dl.aberto .dl-gatilho{border-color:var(--azul);box-shadow:0 0 0 3px rgba(10,92,255,.12)}
+.dl-gatilho-busca{border:none;background:#F2F5FB;color:#3D4A66;font-size:13.5px;font-weight:600;
+  padding:0 14px;border-right:1px solid #E2E8F2;cursor:pointer;display:flex;align-items:center;gap:8px}
+.dl-chevron{color:var(--txt-3);transition:transform 200ms var(--ease)}
+.dl.aberto .dl-chevron{transform:rotate(180deg)}
+.dl-menu{position:absolute;top:calc(100% + 8px);left:0;min-width:210px;background:#fff;
+  border:1px solid var(--borda);border-radius:12px;box-shadow:0 16px 40px rgba(7,28,61,.16);
+  padding:6px;z-index:40;animation:popIn 200ms var(--ease) both}
+.dl-op{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
+  padding:10px 12px;border:none;background:transparent;border-radius:8px;font-size:13.5px;
+  font-weight:600;color:var(--txt);cursor:pointer;text-align:left;transition:background 140ms ease}
+.dl-op:hover{background:#F2F6FF}
+.dl-op.marcada{color:var(--azul)}
+.dl-op svg{color:var(--azul)}
+
+/* mini-carrossel dos cards */
+.mini-seta{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;
+  border:none;background:rgba(255,255,255,.94);color:var(--navy);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;opacity:0;transition:opacity 160ms ease,transform 160ms ease;
+  box-shadow:0 2px 8px rgba(7,28,61,.22);z-index:2}
+.card:hover .mini-seta{opacity:1}
+.mini-seta:hover{transform:translateY(-50%) scale(1.1)}
+.mini-esq{left:8px}
+.mini-dir{right:8px}
+.mini-pontos{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
+.mini-ponto{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.65);
+  box-shadow:0 1px 3px rgba(7,28,61,.3);transition:background 160ms ease}
+.mini-ponto.ativo{background:#fff}
+.card-local{display:flex;align-items:center;gap:4px;font-size:11.5px;color:var(--txt-4)}
+.card-local svg{color:var(--txt-3)}
+.card-local .sep{margin:0 3px;color:#D3DAE8}
+
 /* popup de aviso legal */
 .aviso-overlay{position:fixed;inset:0;background:rgba(7,28,61,.55);backdrop-filter:blur(3px);z-index:80;
   display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn 240ms ease both}
