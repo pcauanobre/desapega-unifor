@@ -85,7 +85,7 @@ export function EtapaCampos({ etapa, perfil, onMudar, onFoto }: Props) {
           <div className="wiz-foto-acoes">
             <label className="btn btn-outline wiz-foto-btn">
               <AddAPhotoIcon sx={{ fontSize: 18 }} />
-              Escolher da galeria
+              Escolher foto
               <input
                 type="file"
                 accept="image/*"
@@ -97,9 +97,6 @@ export function EtapaCampos({ etapa, perfil, onMudar, onFoto }: Props) {
                 }}
               />
             </label>
-            <p className="wiz-sub">
-              Ou copia uma imagem de qualquer lugar e dá Ctrl+V aqui na tela.
-            </p>
           </div>
         </div>
       </div>

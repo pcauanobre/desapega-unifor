@@ -321,8 +321,9 @@
 .card-local{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--txt-2);
   flex:1;min-width:0}
 .card-local svg{color:var(--txt-3);flex:none}
-.card-local .trunca{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.card-local .quando{white-space:nowrap;flex:none}
+/* o bloco NUNCA corta (prioridade da linha); se apertar, quem cede é o horário */
+.card-local .trunca{white-space:nowrap;flex:none}
+.card-local .quando{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .card-local .sep{margin:0 4px;color:#D3DAE8;flex:none}
 .card-foot .card-price,.card-foot .card-doacao-txt{white-space:nowrap;flex:none}
 .card-doacao-txt{font-family:var(--sora);font-weight:700;font-size:14px;color:var(--verde);
