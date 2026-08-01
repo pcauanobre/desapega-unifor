@@ -64,7 +64,7 @@ export function Vitrine(props: Props) {
           <div>
             <h1 className="shelf-title">Últimos desapegos</h1>
             <p className="shelf-sub">
-              Itens anunciados por alunos da Unifor nas últimas 48 horas.
+              Itens anunciados por alunos da Unifor.
             </p>
           </div>
           <div className="row gap-10">
