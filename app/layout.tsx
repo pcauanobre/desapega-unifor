@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Sora, Plus_Jakarta_Sans, JetBrains_Mono, Open_Sans } from "next/font/google";
 import "./globals.css";
 import "./design.css";
+import { AvisoLegal } from "@/components/AvisoLegal";
 
 // As três fontes do código fonte do design: Sora (títulos, preços, marca),
 // Plus Jakarta Sans (corpo) e JetBrains Mono (microlabels).
@@ -47,7 +48,10 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${sora.variable} ${jakarta.variable} ${jetbrains.variable} ${openSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <AvisoLegal />
+        {children}
+      </body>
     </html>
   );
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORIAS } from "@/lib/categorias";
+import { LOCAIS } from "@/lib/locais";
 import type { Anuncio } from "@/lib/tipos";
 import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
@@ -15,14 +16,6 @@ import { BloquearScroll } from "@/components/BloquearScroll";
 import { EditorFoto } from "@/components/EditorFoto";
 
 const ESTADOS = ["Como novo", "Bom estado", "Usado", "Funcionando"];
-
-/* Pontos de retirada do campus (blocos + lugares de encontro comuns). */
-const LOCAIS = [
-  "Praça central", "Biblioteca central", "Cantina central", "Ginásio",
-  "Estacionamento norte", "Estacionamento sul",
-  ..."ABCDEFGHIJKLMNPQRS".split("").map((letra) => `Bloco ${letra}`),
-  "Outro ponto (a combinar)",
-];
 
 /**
  * O QUE: o formulário de anúncio, nos dois modos: criar (POST) e editar

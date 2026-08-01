@@ -5,26 +5,27 @@ import { BloquearScroll } from "@/components/BloquearScroll";
 import { useSaidaAnimada } from "@/components/useSaidaAnimada";
 
 /**
- * O QUE: popup de aviso legal da LP: projeto acadêmico do processo
+ * O QUE: popup de aviso legal do site: projeto acadêmico do processo
  *        seletivo, sem vínculo oficial com a universidade, dados
  *        fictícios, e remoção de marca sob solicitação.
  * POR QUE: o site usa nome e referências da Unifor como contexto do
  *          exercício; o aviso deixa a natureza do projeto explícita.
- * CHAMA: LP (app/page.tsx). Aparece uma vez por navegador (localStorage).
- * QUEBRA SE: nada; sem localStorage ele só aparece de novo.
+ * CHAMA: layout raiz: toda visita vê o aviso, em qualquer página de
+ *        entrada, uma vez por sessão do navegador (sessionStorage).
+ * QUEBRA SE: nada; sem sessionStorage ele só aparece de novo.
  */
 export function AvisoLegal() {
   const [aberto, setAberto] = useState(false);
   const { saindo, fecharCom } = useSaidaAnimada();
 
   useEffect(() => {
-    if (localStorage.getItem("desapega-aviso-visto")) return;
+    if (sessionStorage.getItem("desapega-aviso-visto")) return;
     const id = requestAnimationFrame(() => setAberto(true));
     return () => cancelAnimationFrame(id);
   }, []);
 
   function fechar() {
-    localStorage.setItem("desapega-aviso-visto", "1");
+    sessionStorage.setItem("desapega-aviso-visto", "1");
     fecharCom(() => setAberto(false));
   }
 

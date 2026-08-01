@@ -8,6 +8,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import type { Anuncio } from "@/lib/tipos";
 import { quandoPublicado } from "@/lib/tempo";
+import { encurtarLocal } from "@/lib/locais";
 
 /**
  * O QUE: o card de anúncio da vitrine com mini-carrossel de fotos (setas
@@ -95,7 +96,7 @@ export function CardAnuncio({
           <span className="card-local">
             <PlaceIcon sx={{ fontSize: 16 }} />
             <span className="card-bloco">
-              {anuncio.bloco ?? "Campus"}
+              {encurtarLocal(anuncio.bloco)}
               <span className="sep">|</span>
             </span>
             <span className="quando">{quandoPublicado(anuncio.created_at)}</span>
