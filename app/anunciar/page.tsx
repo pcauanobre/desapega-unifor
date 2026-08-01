@@ -52,6 +52,11 @@ export default function CentralAnunciar() {
       <TopBar />
       <HeaderNav />
       <main className="container esc-wrap">
+        <div>
+          <Link className="pd-voltar" style={{ marginTop: 0 }} href="/produtos">
+            ← Voltar
+          </Link>
+        </div>
         <span className="info-kicker">CENTRAL DO DESAPEGO</span>
         <h1 className="info-title">O que vamos fazer hoje?</h1>
         <div className="esc-grid">

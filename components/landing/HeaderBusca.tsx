@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Brand } from "@/components/Brand";
 import { CATEGORIAS } from "@/lib/categorias";
@@ -27,6 +28,7 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
   // getSession lê do armazenamento local (sem rede): o rótulo certo chega
   // junto com o primeiro paint do header, sem piscar nem sumir botão.
   const [logado, setLogado] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     createClient()
@@ -69,9 +71,12 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
         </form>
 
         <div className="header-actions">
-          <Link className="btn btn-white" href="/anunciar">
-            {logado ? "Central de Anúncios" : "Quero anunciar"}
-          </Link>
+          {/* já tá na central? o botão de ir pra ela não faz sentido */}
+          {pathname !== "/anunciar" && (
+            <Link className="btn btn-white" href="/anunciar">
+              {logado ? "Central de Anúncios" : "Quero anunciar"}
+            </Link>
+          )}
         </div>
       </div>
     </header>
