@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import AddIcon from "@mui/icons-material/Add";
-import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import { createClient } from "@/lib/supabase/client";
 
@@ -14,9 +14,9 @@ import { createClient } from "@/lib/supabase/client";
 const SEM_NAV = ["/entrar", "/bem-vindo"];
 
 /**
- * O QUE: a bottom nav do app mobile: Início, Anúncios, o botão saltado de
- *        Anunciar, Perfil (o público, do próprio usuário) e Conta. Só
- *        aparece até 760px (CSS); no desktop a navegação segue no topo.
+ * O QUE: a bottom nav do app mobile: Início (a landing), Vitrine, o botão
+ *        saltado de Anunciar, Anúncios e Conta. Só aparece até 760px
+ *        (CSS); no desktop a navegação segue no topo.
  * POR QUE: no celular o polegar mora embaixo; é o desenho do protótipo
  *          mobile do design.
  * CHAMA: layout raiz, em todas as páginas fora de SEM_NAV.
@@ -42,19 +42,16 @@ export function BottomNav() {
     <>
       <div className="bnav-espaco" />
       <nav className="bnav" aria-label="Navegação do app">
-        <Link
-          className={classe(pathname === "/" || pathname.startsWith("/produtos"))}
-          href="/produtos"
-        >
-          <StorefrontOutlinedIcon sx={{ fontSize: 23 }} />
+        <Link className={classe(pathname === "/")} href="/">
+          <HomeOutlinedIcon sx={{ fontSize: 23 }} />
           Início
         </Link>
         <Link
-          className={classe(pathname.startsWith("/meus-anuncios"))}
-          href={logado("/meus-anuncios")}
+          className={classe(pathname.startsWith("/produtos"))}
+          href="/produtos"
         >
-          <Inventory2OutlinedIcon sx={{ fontSize: 23 }} />
-          Anúncios
+          <StorefrontOutlinedIcon sx={{ fontSize: 23 }} />
+          Vitrine
         </Link>
         <span className="bnav-fab">
           <Link className="bnav-btn" href={logado("/anunciar/novo")} aria-label="Anunciar">
@@ -63,11 +60,11 @@ export function BottomNav() {
           <i>Anunciar</i>
         </span>
         <Link
-          className={classe(pathname.startsWith("/perfil"))}
-          href={uid ? `/perfil/${uid}` : "/entrar"}
+          className={classe(pathname.startsWith("/meus-anuncios"))}
+          href={logado("/meus-anuncios")}
         >
-          <BadgeOutlinedIcon sx={{ fontSize: 23 }} />
-          Perfil
+          <Inventory2OutlinedIcon sx={{ fontSize: 23 }} />
+          Anúncios
         </Link>
         <Link className={classe(pathname.startsWith("/conta"))} href={logado("/conta")}>
           <SettingsOutlinedIcon sx={{ fontSize: 23 }} />

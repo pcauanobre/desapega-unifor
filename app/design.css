@@ -588,8 +588,10 @@
 
 /* LP de apresentação (rota /): hero cinematográfico de foto cheia 16:9,
    levemente escurecido, + prévia da vitrine + como funciona. */
+/* gradiente lateral: escurece só atrás do texto e deixa a foto do campus
+   respirar do lado direito, em vez de afogar a imagem inteira */
 .hero{position:relative;overflow:hidden;display:flex;align-items:center;
-  background:linear-gradient(180deg,rgba(5,15,36,.62) 0%,rgba(5,15,36,.74) 55%,rgba(5,15,36,.88) 100%),
+  background:linear-gradient(90deg,rgba(5,15,36,.82) 0%,rgba(5,15,36,.6) 42%,rgba(5,15,36,.16) 78%,rgba(5,15,36,.08) 100%),
     url("/hero-campus.jpg") center 55%/cover no-repeat;
   height:min(56.25vw,72vh);min-height:480px;border-bottom:1px solid var(--borda)}
 .hero-inner{width:100%;animation:fadeUp 600ms 120ms var(--ease) both}
@@ -823,8 +825,11 @@
   .statsbar-inner{flex-wrap:wrap;gap:8px 18px;font-size:12px;padding-top:11px;padding-bottom:11px}
   .statsbar-sep{display:none}
 
-  /* hero da LP */
-  .hero{height:auto;min-height:0;padding:52px 0 56px}
+  /* hero da LP: no celular o texto cobre a foto, então o véu volta a ser
+     vertical e mais leve, com altura suficiente pra imagem aparecer */
+  .hero{height:auto;min-height:420px;padding:48px 0 52px;
+    background:linear-gradient(180deg,rgba(5,15,36,.72) 0%,rgba(5,15,36,.55) 55%,rgba(5,15,36,.66) 100%),
+      url("/hero-campus.jpg") center 45%/cover no-repeat}
   .hero-title{font-size:30px}
   .hero-sub{font-size:14.5px;margin-top:14px}
   .hero-ctas{flex-wrap:wrap;margin-top:24px}
@@ -904,10 +909,9 @@
   .wiz-fundo{padding:24px 14px}
   .wiz-card{padding:24px 20px}
 
-  /* footer empilhado */
-  .footer-inner{grid-template-columns:1fr 1fr;gap:24px;padding-top:32px}
-  .footer-inner > div:first-child{grid-column:1/-1}
-  .footer-bottom{flex-direction:column;align-items:flex-start;gap:6px;padding-bottom:26px}
+  /* no app de bolso o rodapé institucional sai de cena; a bottom nav é
+     quem navega, e o aviso legal continua no popup */
+  .footer{display:none}
 
   /* popups viram sheet: sobem do rodapé e descem inteiros ao fechar */
   .aviso-overlay{align-items:flex-end;padding:0}
