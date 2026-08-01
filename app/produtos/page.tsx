@@ -28,16 +28,19 @@ export default function Produtos() {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // Filtros iniciais vindos da busca da LP (?categoria=&q=).
+    // Filtros iniciais vindos da busca da LP (?categoria=&q=), aplicados
+    // junto com a chegada dos dados pra não disparar render em cascata.
     const params = new URLSearchParams(window.location.search);
-    setCategoria(params.get("categoria") ?? "");
-    setBusca(params.get("q") ?? "");
+    const categoriaInicial = params.get("categoria") ?? "";
+    const buscaInicial = params.get("q") ?? "";
 
     fetch("/api/anuncios")
       .then(async (r) => {
         const corpo = await r.json();
         if (!r.ok) throw new Error(corpo.erro ?? "erro ao listar");
         setAnuncios(corpo.anuncios);
+        if (categoriaInicial) setCategoria(categoriaInicial);
+        if (buscaInicial) setBusca(buscaInicial);
       })
       .catch((e: Error) => setErro(e.message));
     return () => {
