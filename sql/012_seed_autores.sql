@@ -2,10 +2,11 @@
 -- vira um usuário no auth (com nome, curso, semestre e foto de perfil da
 -- API pravatar.cc), então o perfil público mostra SÓ os anúncios dela.
 -- Fotos de produto vêm do loremflickr.com por palavra-chave da categoria
--- (?lock trava a mesma imagem em toda visita). Cobre as 7 categorias e as
+-- (?lock trava a mesma imagem em toda visita). Cobre as 10 categorias e as
 -- 4 tags da régua de conservação; 2 anúncios já nascem vendidos pra dar
 -- vida ao histórico do perfil.
--- Rodar DEPOIS da 010 (vendido_em) e da 011 (tags novas).
+-- Rodar DEPOIS da 010 (vendido_em), da 011_estados_coerentes (tags) e da
+-- 011_novas_categorias (Odonto, Saúde e Esportes no CHECK).
 -- Pode rodar de novo: limpa a rodada anterior e replanta.
 
 -- Limpa o seed antigo (pendurava tudo no primeiro usuário) e os demos.
@@ -28,7 +29,11 @@ with pessoas (email, nome, curso, semestre, foto, ultimo) as (values
   ('ana@desapega.demo',     'Ana Paula Neves', 'Enfermagem',        '4º', 'https://i.pravatar.cc/300?img=44', '5 hours'),
   ('joao@desapega.demo',    'João Vitor Ramos','Nutrição',          '2º', 'https://i.pravatar.cc/300?img=68', '25 hours'),
   ('leticia@desapega.demo', 'Letícia Barros',  'Arquitetura',       '9º', 'https://i.pravatar.cc/300?img=32', '11 hours'),
-  ('isabela@desapega.demo', 'Isabela Castro',  'Direito',           '7º', 'https://i.pravatar.cc/300?img=24', '22 hours')
+  ('isabela@desapega.demo', 'Isabela Castro',  'Direito',           '7º', 'https://i.pravatar.cc/300?img=24', '22 hours'),
+  ('vitoria@desapega.demo', 'Vitória Farias',  'Odontologia',       '6º', 'https://i.pravatar.cc/300?img=31', '3 hours'),
+  ('gustavo@desapega.demo', 'Gustavo Lopes',   'Odontologia',       '8º', 'https://i.pravatar.cc/300?img=64', '15 hours'),
+  ('helena@desapega.demo',  'Helena Dias',     'Fisioterapia',      '5º', 'https://i.pravatar.cc/300?img=35', '8 hours'),
+  ('thiago@desapega.demo',  'Thiago Prado',    'Educação Física',   '3º', 'https://i.pravatar.cc/300?img=60', '12 hours')
 ),
 criados as (
   insert into auth.users
@@ -121,6 +126,27 @@ from (values
   ('marina@desapega.demo', 'Garrafa térmica 1L inox',
    'Ganhei duas iguais, essa tá zerada na caixa. Segura o gelo o dia inteiro.',
    'Outros', null, true, 'Novo', 'Cantina central', '(85) 98811-2233', 'thermos,bottle', 260, '10 hours', null),
+  -- Odonto
+  ('vitoria@desapega.demo', 'Kit instrumental odonto (espelho, sonda e pinça)',
+   'Aço inox, esterilizado e guardado no estojo. Usei em 2 semestres de clínica.',
+   'Odonto', '75', false, 'Bem conservado', 'Bloco S', '(85) 98955-6677', 'dentist', 290, '3 hours', null),
+  ('gustavo@desapega.demo', 'Macromodelo de arcada dentária com escova',
+   'Padrão das aulas de anatomia dental. Sem peça faltando e articulação firme.',
+   'Odonto', '50', false, 'Como novo', 'Bloco S', '(85) 98966-7788', 'teeth,dentist', 300, '15 hours', null),
+  -- Saúde
+  ('helena@desapega.demo', 'Estetoscópio duplo adulto',
+   'Ausculta limpa, olivas novas. Vai com a bag e ficha de identificação.',
+   'Saúde', '110', false, 'Como novo', 'Bloco S', '(85) 98977-8899', 'stethoscope', 310, '8 hours', null),
+  ('beatriz@desapega.demo', 'Medidor de pressão aneroide completo',
+   'Calibrado, braçadeira sem desgaste. Perfeito pras práticas de semiologia.',
+   'Saúde', '85', false, 'Bem conservado', 'Biblioteca', '(85) 98822-3344', 'doctor,medical', 320, '21 hours', null),
+  -- Esportes
+  ('thiago@desapega.demo', 'Raquete de beach tennis com capa',
+   'Fibra de carbono, sem trinca. Saindo porque comprei o modelo novo.',
+   'Esportes', '140', false, 'Bem conservado', 'Ginásio', '(85) 98988-9900', 'tennis,racket', 330, '12 hours', null),
+  ('joao@desapega.demo', 'Bola de vôlei oficial',
+   'Pouco uso em quadra coberta, calibrada. Doando pro treino dos calouros.',
+   'Esportes', null, true, 'Com marcas de uso', 'Ginásio', '(85) 98922-3344', 'volleyball', 340, '23 hours', null),
   -- Já vendidos: alimentam o histórico e as estatísticas do perfil.
   ('rafael@desapega.demo', 'Mouse sem fio com receptor USB',
    'Funcionando perfeito, só troquei por um gamer. Pilha nova inclusa.',
