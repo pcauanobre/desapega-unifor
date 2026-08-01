@@ -212,6 +212,8 @@
 .check input{margin-top:2px;width:15px;height:15px;accent-color:var(--azul);cursor:pointer}
 .check.inline{align-items:center;font-size:13px;color:var(--txt)}
 .check.inline input{margin-top:0}
+.check a{font-weight:700}
+.check a:hover{text-decoration:underline}
 .login-row{display:flex;align-items:center;justify-content:space-between}
 .login-row a{font-size:13px}
 .login-alt{text-align:center;margin:2px 0 0;font-size:12.5px;color:#8A93A8}
@@ -330,11 +332,8 @@
 .login-topbrand{animation:fadeDown 500ms 150ms var(--ease) both}
 .login-social{animation:fadeUp 500ms 260ms var(--ease) both}
 .login-card{animation:popIn 420ms 120ms var(--ease) both}
-/* Troca entrar/cadastro DEPOIS da entrada: campos novos surgem juntos,
-   sem herdar a fila de delays (senão fica dessincronizado). */
-.is-register .only-register{animation:fadeUp 280ms var(--ease) both}
-/* A cascata de entrada só roda na chegada à página (.com-entrada some
-   depois de ~1,3s via React). */
+/* A cascata roda na chegada E na troca de modo: o React remonta o card
+   (key={modo}) e as animações reexecutam inteiras, em ordem. */
 .com-entrada .login-brand{animation:fadeDown 420ms 230ms var(--ease) both}
 .com-entrada .login-title{animation:fadeUp 420ms 290ms var(--ease) both}
 .com-entrada .login-sub{animation:fadeUp 420ms 340ms var(--ease) both}

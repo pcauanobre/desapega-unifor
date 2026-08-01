@@ -26,7 +26,7 @@ const TEXTOS = {
     submit: "Acessar", altHint: "Não tem conta?", altLink: "Criar uma conta",
   },
   register: {
-    title: "Crie sua conta Unifor",
+    title: "Crie sua conta Desapega Unifor",
     sub: "Cadastro para alunos com matrícula ativa",
     submit: "Criar conta", altHint: "Já tem conta?", altLink: "Entrar",
   },
@@ -44,7 +44,6 @@ const TEXTOS = {
 export default function Entrar() {
   const router = useRouter();
   const [modo, setModo] = useState<"login" | "register">("login");
-  const [entrada, setEntrada] = useState(true);
   const [nome, setNome] = useState("");
   const [matricula, setMatricula] = useState("");
   const [curso, setCurso] = useState("");
@@ -54,13 +53,6 @@ export default function Entrar() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const t = TEXTOS[modo];
-
-  // A cascata de entrada dos campos roda uma vez; depois dela, trocar de
-  // modo mostra os campos novos sem a fila de delays.
-  useEffect(() => {
-    const timer = setTimeout(() => setEntrada(false), 1300);
-    return () => clearTimeout(timer);
-  }, []);
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
@@ -138,10 +130,9 @@ export default function Entrar() {
         </div>
 
         <div className="login-cardwrap">
-          <form
-            className={"login-card" + (entrada ? " com-entrada" : "")}
-            onSubmit={enviar}
-          >
+          {/* key={modo}: trocar de modo remonta o card e a cascata de
+              entrada roda inteira de novo, idêntica à da chegada. */}
+          <form key={modo} className="login-card com-entrada" onSubmit={enviar}>
             <div className="login-brand">
               <Link href="/produtos" title="Ir pra vitrine">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -190,7 +181,17 @@ export default function Entrar() {
               <label className="check only-register">
                 <input type="checkbox" checked={aceite}
                   onChange={(e) => setAceite(e.target.checked)} />
-                <span>Aceito as regras do desapego e a política de privacidade.</span>
+                <span>
+                  Aceito as{" "}
+                  <a href="/regras" target="_blank" rel="noopener noreferrer">
+                    regras do desapego
+                  </a>{" "}
+                  e a{" "}
+                  <a href="/privacidade" target="_blank" rel="noopener noreferrer">
+                    política de privacidade
+                  </a>
+                  .
+                </span>
               </label>
 
               <div className="login-row only-login">
