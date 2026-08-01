@@ -42,9 +42,12 @@ export default function Conta() {
   const [erroApagar, setErroApagar] = useState<string | null>(null);
 
   useEffect(() => {
+    // getSession lê do armazenamento local: os dados chegam de uma vez,
+    // junto com o primeiro paint, sem meia-página esperando a rede.
     createClient()
-      .auth.getUser()
-      .then(({ data: { user } }) => {
+      .auth.getSession()
+      .then(({ data: { session } }) => {
+        const user = session?.user;
         if (!user) {
           router.replace("/entrar");
           return;
@@ -153,6 +156,15 @@ export default function Conta() {
       <TopBar />
       <HeaderNav />
       <main className="container info-wrap" style={{ maxWidth: 760 }}>
+        {!pronto && (
+          <div>
+            <div className="sk-bar pd-sk-l2" />
+            <div className="sk-bar pd-sk-l1" style={{ width: "55%" }} />
+            <div className="sk-bar pd-sk-l3" style={{ height: 320 }} />
+          </div>
+        )}
+        {pronto && (
+        <>
         <div className="ct-topo">
           <div>
             <span className="info-kicker">MINHA CONTA</span>
@@ -166,7 +178,7 @@ export default function Conta() {
 
         {pronto && (
           <form className="an-form" onSubmit={salvar}>
-            <div className="wiz-avatar-area">
+            <div className="ct-avatar-centro">
               <span className="wiz-avatar">
                 {foto ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
@@ -175,19 +187,16 @@ export default function Conta() {
                   <PersonIcon sx={{ fontSize: 40 }} />
                 )}
               </span>
-              <div className="wiz-foto-acoes">
-                <label className="btn btn-outline wiz-foto-btn">
-                  <AddAPhotoIcon sx={{ fontSize: 18 }} />
-                  Trocar foto
-                  <input type="file" accept="image/*" hidden
-                    onChange={(e) => {
-                      const arquivo = e.target.files?.[0];
-                      if (arquivo) receberFoto(arquivo);
-                      e.target.value = "";
-                    }} />
-                </label>
-                <p className="wiz-sub">Ou copia uma imagem e dá Ctrl+V aqui na tela.</p>
-              </div>
+              <label className="btn btn-outline wiz-foto-btn">
+                <AddAPhotoIcon sx={{ fontSize: 18 }} />
+                Trocar foto
+                <input type="file" accept="image/*" hidden
+                  onChange={(e) => {
+                    const arquivo = e.target.files?.[0];
+                    if (arquivo) receberFoto(arquivo);
+                    e.target.value = "";
+                  }} />
+              </label>
             </div>
 
             <label className="field">
@@ -250,6 +259,8 @@ export default function Conta() {
             Apagar tudo
           </button>
         </div>
+        </>
+        )}
       </main>
       <Rodape />
 

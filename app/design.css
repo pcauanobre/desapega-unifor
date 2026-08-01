@@ -365,8 +365,10 @@
 .pagina-1280 a.ma-ico:hover{color:#fff}
 .ct-perigo{margin-top:44px;border:1px solid #F1C7C7;background:#FFFAFA;border-radius:14px;padding:22px;
   display:flex;align-items:center;gap:20px;justify-content:space-between}
-.ct-apagar{background:#C23B3B;color:#fff;font-size:14px;padding:12px 20px}
+.ct-apagar{background:#C23B3B;color:#fff;font-size:14px;padding:12px 20px;white-space:nowrap;flex:none}
 .ct-apagar:hover{background:#A82F2F}
+.ct-avatar-centro{display:flex;flex-direction:column;align-items:center;gap:12px}
+.ct-avatar-centro .wiz-avatar{width:96px;height:96px}
 
 /* ---------- setup wizard (/bem-vindo) ---------- */
 .wiz-fundo{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 24px;
