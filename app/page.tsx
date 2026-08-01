@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import type { Anuncio } from "@/lib/tipos";
 import { TopBar } from "@/components/landing/TopBar";
-import { HeaderBusca } from "@/components/landing/HeaderBusca";
+import { HeaderNav } from "@/components/landing/HeaderNav";
 import { StatsBar } from "@/components/landing/StatsBar";
 import { CardAnuncio } from "@/components/CardAnuncio";
 import { ComoFunciona } from "@/components/landing/ComoFunciona";
@@ -22,10 +21,7 @@ import { Rodape } from "@/components/landing/Rodape";
  * QUEBRA SE: a API mudar o formato { anuncios: [...] }.
  */
 export default function Home() {
-  const router = useRouter();
   const [anuncios, setAnuncios] = useState<Anuncio[] | null>(null);
-  const [categoria, setCategoria] = useState("");
-  const [busca, setBusca] = useState("");
 
   useEffect(() => {
     fetch("/api/anuncios")
@@ -36,24 +32,10 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
-  function irPraBusca() {
-    const params = new URLSearchParams();
-    if (categoria) params.set("categoria", categoria);
-    if (busca.trim()) params.set("q", busca.trim());
-    const query = params.toString();
-    router.push(query ? `/produtos?${query}` : "/produtos");
-  }
-
   return (
     <div className="pagina-1280 flex-1">
       <TopBar />
-      <HeaderBusca
-        categoria={categoria}
-        busca={busca}
-        onCategoria={setCategoria}
-        onBusca={setBusca}
-        onBuscar={irPraBusca}
-      />
+      <HeaderNav />
 
       <section className="hero">
         <div className="container hero-inner">

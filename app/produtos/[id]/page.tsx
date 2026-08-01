@@ -11,7 +11,7 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import type { Anuncio } from "@/lib/tipos";
 import { tempoRelativo } from "@/lib/tempo";
 import { TopBar } from "@/components/landing/TopBar";
-import { Brand } from "@/components/Brand";
+import { HeaderNav } from "@/components/landing/HeaderNav";
 import { Rodape } from "@/components/landing/Rodape";
 import { Carrossel } from "@/components/produto/Carrossel";
 
@@ -47,16 +47,12 @@ export default function PaginaProduto() {
   return (
     <div className="pagina-1280 flex-1">
       <TopBar />
-      <header className="header">
-        <div className="container header-inner">
-          <Brand />
-          <div className="header-actions">
-            <Link className="btn btn-ghost" href="/produtos">
-              Voltar pra vitrine
-            </Link>
-          </div>
+      <HeaderNav />
+      {!erro && anuncio && (
+        <div className="container">
+          <Link className="pd-voltar" href="/produtos">← Voltar pra vitrine</Link>
         </div>
-      </header>
+      )}
 
       {erro && (
         <main className="container" style={{ padding: "56px 24px" }}>

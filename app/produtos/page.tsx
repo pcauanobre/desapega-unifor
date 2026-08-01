@@ -33,6 +33,7 @@ export default function Produtos() {
     const params = new URLSearchParams(window.location.search);
     const categoriaInicial = params.get("categoria") ?? "";
     const buscaInicial = params.get("q") ?? "";
+    const soDoacoes = params.get("doacoes") !== null;
 
     fetch("/api/anuncios")
       .then(async (r) => {
@@ -41,6 +42,7 @@ export default function Produtos() {
         setAnuncios(corpo.anuncios);
         if (categoriaInicial) setCategoria(categoriaInicial);
         if (buscaInicial) setBusca(buscaInicial);
+        if (soDoacoes) setOrdenar("doacoes");
       })
       .catch((e: Error) => setErro(e.message));
     return () => {

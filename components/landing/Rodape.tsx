@@ -1,11 +1,13 @@
+import Link from "next/link";
 import { Brand } from "@/components/Brand";
 
 /**
- * O QUE: o footer navy de 4 colunas do design: marca + descrição,
- *        categorias, plataforma e contato, com a linha de copyright.
- * POR QUE: markup idêntico ao código fonte.
- * CHAMA: landing (app/page.tsx).
- * QUEBRA SE: as classes .footer-* do design.css mudarem.
+ * O QUE: o footer navy de 4 colunas do design, com todos os links vivos:
+ *        categorias filtram a vitrine, plataforma leva às páginas
+ *        informativas, contato abre email e Instagram.
+ * POR QUE: markup do código fonte, agora com navegação real.
+ * CHAMA: todas as páginas desktop.
+ * QUEBRA SE: as rotas /regras, /seguranca, /doacoes ou /ajuda mudarem.
  */
 export function Rodape() {
   return (
@@ -20,23 +22,25 @@ export function Rodape() {
         </div>
         <div className="footer-col">
           <span className="footer-head mono">CATEGORIAS</span>
-          <a href="#">Livros</a>
-          <a href="#">Computação</a>
-          <a href="#">Engenharia</a>
-          <a href="#">Eletrônicos</a>
+          <Link href="/produtos?categoria=Livros">Livros</Link>
+          <Link href="/produtos?categoria=Computação">Computação</Link>
+          <Link href="/produtos?categoria=Engenharia">Engenharia</Link>
+          <Link href="/produtos?categoria=Eletrônicos">Eletrônicos</Link>
         </div>
         <div className="footer-col">
           <span className="footer-head mono">PLATAFORMA</span>
-          <a href="#">Como funciona</a>
-          <a href="#">Regras do desapego</a>
-          <a href="#">Segurança nas trocas</a>
-          <a href="#">Doações</a>
+          <Link href="/#como-funciona">Como funciona</Link>
+          <Link href="/regras">Regras do desapego</Link>
+          <Link href="/seguranca">Segurança nas trocas</Link>
+          <Link href="/doacoes">Doações</Link>
         </div>
         <div className="footer-col">
           <span className="footer-head mono">CONTATO</span>
-          <a href="#">desapega@unifor.br</a>
-          <a href="#">Instagram</a>
-          <a href="#">Central de ajuda</a>
+          <a href="mailto:desapega@unifor.br">desapega@unifor.br</a>
+          <a href="https://www.instagram.com/unifor" target="_blank" rel="noopener noreferrer">
+            Instagram
+          </a>
+          <Link href="/ajuda">Central de ajuda</Link>
         </div>
       </div>
       <div className="container footer-bottom">
