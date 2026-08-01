@@ -1,6 +1,5 @@
 import { CATEGORIAS, type Categoria } from "./categorias";
-
-const ESTADOS = ["Como novo", "Bom estado", "Usado", "Funcionando"] as const;
+import { ESTADOS } from "./tipos";
 
 export type DadosAnuncio = {
   titulo: string;

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORIAS } from "@/lib/categorias";
 import { LOCAIS } from "@/lib/locais";
-import type { Anuncio } from "@/lib/tipos";
+import { ESTADOS, type Anuncio } from "@/lib/tipos";
 import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
 import { Rodape } from "@/components/landing/Rodape";
@@ -14,8 +14,6 @@ import { Droplist } from "@/components/Droplist";
 import { FotosUpload } from "@/components/anunciar/FotosUpload";
 import { BloquearScroll } from "@/components/BloquearScroll";
 import { EditorFoto } from "@/components/EditorFoto";
-
-const ESTADOS = ["Como novo", "Bom estado", "Usado", "Funcionando"];
 
 /**
  * O QUE: o formulário de anúncio, nos dois modos: criar (POST) e editar

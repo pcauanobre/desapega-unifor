@@ -1,10 +1,19 @@
 import type { Categoria } from "./categorias";
 
 export type EstadoDoItem =
+  | "Novo"
   | "Como novo"
-  | "Bom estado"
-  | "Usado"
-  | "Funcionando";
+  | "Bem conservado"
+  | "Com marcas de uso";
+
+/* A régua de conservação, do melhor pro mais rodado. Fonte única: form,
+   filtro e validação importam daqui (o CHECK da migration 011 espelha). */
+export const ESTADOS: EstadoDoItem[] = [
+  "Novo",
+  "Como novo",
+  "Bem conservado",
+  "Com marcas de uso",
+];
 
 /**
  * O QUE: o formato de um anúncio, igual à tabela `anuncios` do banco.

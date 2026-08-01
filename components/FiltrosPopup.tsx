@@ -4,9 +4,8 @@ import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { BloquearScroll } from "@/components/BloquearScroll";
 import { useSaidaAnimada } from "@/components/useSaidaAnimada";
-import type { EstadoDoItem } from "@/lib/tipos";
+import { ESTADOS, type EstadoDoItem } from "@/lib/tipos";
 
-const ESTADOS: EstadoDoItem[] = ["Como novo", "Bom estado", "Usado", "Funcionando"];
 const PASSO = 5;
 
 export type Filtros = {
