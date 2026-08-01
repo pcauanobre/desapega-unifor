@@ -100,10 +100,7 @@ export default function PaginaProduto() {
             <div className="pd-infos">
               <span className="pd-info">
                 <PlaceIcon sx={{ fontSize: 20 }} />
-                Retirada: <b>{anuncio.bloco ?? "a combinar"}</b>
-                <span className="pd-info-extra">
-                  ou outro ponto do campus, combinado no WhatsApp
-                </span>
+                Retirada de preferência: <b>{anuncio.bloco ?? "a combinar"}</b>
               </span>
               <span className="pd-info">
                 <ScheduleIcon sx={{ fontSize: 20 }} />
@@ -130,7 +127,7 @@ export default function PaginaProduto() {
                   rel="noopener noreferrer"
                 >
                   <WhatsAppIcon sx={{ fontSize: 18 }} />
-                  {anuncio.contato}
+                  Mandar mensagem
                 </a>
               ) : (
                 <span className="pd-lock">contato não informado</span>
