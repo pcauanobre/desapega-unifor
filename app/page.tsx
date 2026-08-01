@@ -9,7 +9,6 @@ import { StatsBar } from "@/components/landing/StatsBar";
 import { CardAnuncio } from "@/components/CardAnuncio";
 import { ComoFunciona } from "@/components/landing/ComoFunciona";
 import { Rodape } from "@/components/landing/Rodape";
-import { AvisoLegal } from "@/components/AvisoLegal";
 import { Revelar } from "@/components/Revelar";
 import { FaqSecao } from "@/components/landing/FaqSecao";
 
@@ -37,7 +36,6 @@ export default function Home() {
 
   return (
     <div className="pagina-1280 flex-1">
-      <AvisoLegal />
       <TopBar />
       <HeaderNav />
 
