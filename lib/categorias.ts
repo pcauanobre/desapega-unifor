@@ -10,9 +10,12 @@ export const CATEGORIAS = [
   "Livros",
   "Computação",
   "Engenharia",
+  "Odonto",
+  "Saúde",
   "Eletrônicos",
   "Vestuário",
   "Móveis",
+  "Esportes",
   "Outros",
 ] as const;
 
