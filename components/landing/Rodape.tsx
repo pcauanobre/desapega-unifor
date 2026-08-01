@@ -45,6 +45,7 @@ export function Rodape() {
       </div>
       <div className="container footer-bottom">
         <span>© 2026 Desapega Unifor</span>
+        <span>Projeto acadêmico, sem vínculo oficial com a Unifor</span>
         <span className="mono">Fortaleza, CE</span>
       </div>
     </footer>

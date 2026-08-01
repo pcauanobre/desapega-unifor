@@ -233,6 +233,16 @@
 .pagina-1280 a.btn-outline,.pagina-1280 a.btn-outline:hover{color:var(--navy)}
 .pagina-1280 a.btn-zap,.pagina-1280 a.btn-zap:hover{color:#fff}
 
+/* popup de aviso legal */
+.aviso-overlay{position:fixed;inset:0;background:rgba(7,28,61,.55);backdrop-filter:blur(3px);z-index:80;
+  display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn 240ms ease both}
+.aviso-card{width:480px;max-width:100%;background:#fff;border-radius:var(--r-md);
+  box-shadow:0 24px 60px rgba(7,28,61,.3);padding:30px 32px;animation:popIn 320ms var(--ease) both}
+.aviso-card > img{display:block;margin:0 auto}
+.aviso-titulo{font-family:var(--sora);font-weight:700;font-size:20px;color:var(--navy);text-align:center;margin:12px 0 0}
+.aviso-p{font-size:13.5px;line-height:1.65;color:var(--txt-2);margin:12px 0 0}
+.aviso-mini{font-size:12px;color:var(--txt-3);margin:12px 0 0;text-align:center}
+
 /* modos do formulário: o componente troca a classe no wrapper */
 .only-register{display:none}
 .is-register .only-register{display:flex}
@@ -372,7 +382,8 @@
 .pd-avatar{width:46px;height:46px;border-radius:50%;background:#E9F0FF;color:var(--azul);
   font-family:var(--sora);font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;flex:none}
 .pd-vend-nome{font-weight:700;color:var(--navy);font-size:15px}
-.pd-vend-curso{font-size:12.5px;color:var(--txt-3)}
+.pd-vend-curso{font-size:12.5px;color:var(--txt-3);display:inline-flex;align-items:center;gap:5px}
+.pd-vend-curso svg{color:var(--azul)}
 .btn-zap{background:#0B7C57;color:#fff;font-size:14px;padding:11px 16px;margin-left:auto}
 .btn-zap:hover{background:#086445;transform:translateY(-1px)}
 .pd-lock{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--txt-2);

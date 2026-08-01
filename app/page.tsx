@@ -9,6 +9,7 @@ import { StatsBar } from "@/components/landing/StatsBar";
 import { CardAnuncio } from "@/components/CardAnuncio";
 import { ComoFunciona } from "@/components/landing/ComoFunciona";
 import { Rodape } from "@/components/landing/Rodape";
+import { AvisoLegal } from "@/components/AvisoLegal";
 
 /**
  * O QUE: a LP de apresentação (rota /): hero explicando a proposta,
@@ -34,6 +35,7 @@ export default function Home() {
 
   return (
     <div className="pagina-1280 flex-1">
+      <AvisoLegal />
       <TopBar />
       <HeaderNav />
 

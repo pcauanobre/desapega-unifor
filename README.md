@@ -36,6 +36,15 @@ Em construção durante os 15 dias do desafio. O material bruto do processo
 tá no [diario.md](diario.md), e a seção final entra aqui no README antes
 da entrega.
 
+## Aviso legal
+
+Projeto acadêmico, feito exclusivamente pro desafio técnico do processo
+seletivo do laboratório VORTEX. Não tem vínculo oficial com a Universidade
+de Fortaleza: o nome, as cores e as referências à universidade aparecem
+apenas como contexto do exercício, e todos os anúncios são fictícios.
+Logo, nome, domínio ou qualquer elemento associado à Unifor são removidos
+de imediato mediante solicitação: pedrocauaggn@gmail.com.
+
 ## Deploy
 
 Os links de produção entram aqui quando o deploy sair.

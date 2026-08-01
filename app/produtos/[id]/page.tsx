@@ -105,10 +105,6 @@ export default function PaginaProduto() {
                 Retirada: <b>{anuncio.bloco ?? "a combinar"}</b>
               </span>
               <span className="pd-info">
-                <SchoolIcon sx={{ fontSize: 20 }} />
-                Curso de quem anuncia: <b>{anuncio.autor_curso ?? "não informado"}</b>
-              </span>
-              <span className="pd-info">
                 <ScheduleIcon sx={{ fontSize: 20 }} />
                 Publicado <b>{tempoRelativo(anuncio.created_at)}</b>
               </span>
@@ -120,6 +116,7 @@ export default function PaginaProduto() {
                 <span className="pd-vend-nome">{anuncio.autor_nome}</span>
                 <br />
                 <span className="pd-vend-curso">
+                  <SchoolIcon sx={{ fontSize: 14 }} />
                   {anuncio.autor_curso ?? "Aluno da Unifor"}
                 </span>
               </span>
