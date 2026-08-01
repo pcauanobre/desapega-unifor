@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 import { Brand } from "@/components/Brand";
 import { CATEGORIAS } from "@/lib/categorias";
 import { Droplist } from "@/components/Droplist";
@@ -22,6 +24,14 @@ type Props = {
  * QUEBRA SE: as classes .header/.search do design.css mudarem.
  */
 export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }: Props) {
+  const [logado, setLogado] = useState(false);
+
+  useEffect(() => {
+    createClient()
+      .auth.getUser()
+      .then(({ data }) => setLogado(Boolean(data.user)));
+  }, []);
+
   return (
     <header className="header">
       <div className="container header-inner">
@@ -58,7 +68,7 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
 
         <div className="header-actions">
           <Link className="btn btn-white" href="/anunciar">
-            Quero anunciar
+            {logado ? "Anunciar" : "Quero anunciar"}
           </Link>
         </div>
       </div>

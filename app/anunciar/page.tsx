@@ -11,8 +11,17 @@ import { HeaderNav } from "@/components/landing/HeaderNav";
 import { Rodape } from "@/components/landing/Rodape";
 import { Droplist } from "@/components/Droplist";
 import { FotosUpload } from "@/components/anunciar/FotosUpload";
+import { BloquearScroll } from "@/components/BloquearScroll";
 
 const ESTADOS = ["Como novo", "Bom estado", "Usado", "Funcionando"];
+
+/* Pontos de retirada do campus (blocos + lugares de encontro comuns). */
+const LOCAIS = [
+  "Praça central", "Biblioteca central", "Cantina central", "Ginásio",
+  "Estacionamento norte", "Estacionamento sul",
+  ..."ABCDEFGHIJKLMNPQRS".split("").map((letra) => `Bloco ${letra}`),
+  "Outro ponto (a combinar)",
+];
 
 /**
  * O QUE: o formulário de anunciar: fotos com upload otimizado, título,
@@ -49,7 +58,6 @@ export default function Anunciar() {
         }
         usuario.current = user.id;
         const meta = user.user_metadata ?? {};
-        if (meta.bloco_padrao) setBloco(meta.bloco_padrao as string);
         if (meta.celular) setContato(meta.celular as string);
       });
   }, [router]);
@@ -170,11 +178,12 @@ export default function Anunciar() {
           </div>
 
           <div className="an-linha">
-            <label className="field">
+            <div className="wiz-dl">
               <span className="field-label">Local de retirada</span>
-              <input type="text" placeholder="Ex: Bloco J" maxLength={40}
-                value={bloco} onChange={(e) => setBloco(e.target.value)} />
-            </label>
+              <Droplist rotuloAria="Local de retirada" valor={bloco} onMudar={setBloco}
+                opcoes={[{ valor: "", rotulo: "Onde encontrar?" },
+                  ...LOCAIS.map((l) => ({ valor: l, rotulo: l }))]} />
+            </div>
             <label className="field">
               <span className="field-label">WhatsApp de contato</span>
               <input type="tel" placeholder="(85) 90000-0000" maxLength={20}
@@ -194,6 +203,7 @@ export default function Anunciar() {
 
       {publicadoId && (
         <div className="aviso-overlay" role="dialog" aria-modal="true">
+          <BloquearScroll />
           <div className="aviso-card" style={{ textAlign: "center" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/mark-blue.svg" alt="" style={{ height: 44 }} />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { BloquearScroll } from "@/components/BloquearScroll";
 
 /**
  * O QUE: popup de aviso legal da LP: projeto acadêmico do processo
@@ -36,6 +37,7 @@ export function AvisoLegal() {
       aria-modal="true"
       aria-label="Aviso legal"
     >
+      <BloquearScroll />
       <div className="aviso-card">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/mark-blue.svg" alt="" style={{ height: 40 }} />

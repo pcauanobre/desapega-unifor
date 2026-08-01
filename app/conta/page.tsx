@@ -11,10 +11,11 @@ import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
 import { Rodape } from "@/components/landing/Rodape";
 import { MeusAnuncios } from "@/components/conta/MeusAnuncios";
+import { BloquearScroll } from "@/components/BloquearScroll";
 
 type Perfil = {
   nome: string; email: string; foto: string;
-  celular: string; curso: string; semestre: string; bloco: string;
+  celular: string; curso: string; semestre: string;
 };
 
 /**
@@ -49,7 +50,6 @@ export default function Conta() {
           celular: (m.celular as string) ?? "",
           curso: (m.curso as string) ?? "",
           semestre: (m.semestre as string) ?? "",
-          bloco: (m.bloco_padrao as string) ?? "",
         });
       });
   }, [router]);
@@ -113,7 +113,7 @@ export default function Conta() {
               <h1 className="ct-nome">{perfil.nome}</h1>
               <p className="ct-linha">{perfil.email}</p>
               <p className="ct-linha">
-                {[perfil.curso, perfil.semestre && `${perfil.semestre} semestre`, perfil.bloco]
+                {[perfil.curso, perfil.semestre && `${perfil.semestre} semestre`]
                   .filter(Boolean)
                   .join(" · ") || "Perfil ainda sem curso e semestre"}
               </p>
@@ -152,6 +152,7 @@ export default function Conta() {
 
       {confirmando && (
         <div className="aviso-overlay" role="dialog" aria-modal="true">
+          <BloquearScroll />
           <div className="aviso-card">
             <h2 className="aviso-titulo">Apagar tudo mesmo?</h2>
             <p className="aviso-p" style={{ textAlign: "center" }}>
