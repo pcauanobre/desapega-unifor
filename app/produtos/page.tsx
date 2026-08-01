@@ -4,12 +4,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Anuncio } from "@/lib/tipos";
 import { TopBar } from "@/components/landing/TopBar";
 import { HeaderBusca } from "@/components/landing/HeaderBusca";
-import { StatsBar } from "@/components/landing/StatsBar";
 import { Vitrine } from "@/components/landing/Vitrine";
 import { Rodape } from "@/components/landing/Rodape";
 
-/* Tempos de skeleton do código fonte do design (sensação de app real). */
+/* Skeletons do design + paginação da vitrine (8 de cara, +4 por clique). */
 const DELAY = { filtro: 700, mais: 900 };
+const PAGINA = { inicial: 8, mais: 4 };
 
 /**
  * O QUE: a página de produtos (vitrine completa). Regras de interação:
@@ -125,7 +125,6 @@ export default function Produtos() {
         }}
         onBuscar={aplicarBusca}
       />
-      <StatsBar />
       <Vitrine
         anuncios={anuncios}
         filtrados={filtrados}

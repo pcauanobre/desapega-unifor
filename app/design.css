@@ -103,7 +103,7 @@
 
 /* ---------- faixa de números ---------- */
 .statsbar{background:#fff;border-bottom:1px solid var(--borda)}
-.statsbar-inner{display:flex;align-items:center;gap:34px;padding-top:14px;padding-bottom:14px;font-size:13.5px;color:var(--txt-2)}
+.statsbar-inner{display:flex;align-items:center;justify-content:center;gap:34px;padding-top:14px;padding-bottom:14px;font-size:13.5px;color:var(--txt-2)}
 .statsbar strong{font-family:var(--sora);font-weight:700;color:var(--navy)}
 .statsbar-sep{width:1px;height:16px;background:var(--borda)}
 
