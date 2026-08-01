@@ -83,18 +83,6 @@ export default function Produtos() {
     document.getElementById("vitrine")?.scrollIntoView({ behavior: "smooth" });
   }
 
-  /* Carregar mais: abre o espaço de skeleton (a Vitrine desce até ele) e
-     depois revela a próxima página dos filtrados. */
-  function carregarMais() {
-    if (carregandoMais || visiveis >= filtrados.length) return;
-    setCarregandoMais(true);
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => {
-      setVisiveis((v) => v + PAGINA.mais);
-      setCarregandoMais(false);
-    }, DELAY.mais);
-  }
-
   const filtrados = useMemo(() => {
     let lista = anuncios ?? [];
     if (categoria) lista = lista.filter((a) => a.categoria === categoria);
@@ -111,6 +99,18 @@ export default function Produtos() {
     }
     return lista;
   }, [anuncios, categoria, busca, ordenar]);
+
+  /* Carregar mais: abre o espaço de skeleton (a Vitrine desce até ele) e
+     depois revela a próxima página dos filtrados. */
+  function carregarMais() {
+    if (carregandoMais || visiveis >= filtrados.length) return;
+    setCarregandoMais(true);
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      setVisiveis((v) => v + PAGINA.mais);
+      setCarregandoMais(false);
+    }, DELAY.mais);
+  }
 
   return (
     <div className="pagina-1280 flex-1">
