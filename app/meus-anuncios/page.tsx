@@ -7,12 +7,15 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
+import CheckIcon from "@mui/icons-material/Check";
 import type { Anuncio } from "@/lib/tipos";
 import { createClient } from "@/lib/supabase/client";
 import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
 import { Rodape } from "@/components/landing/Rodape";
 import { CardAnuncio } from "@/components/CardAnuncio";
+import { BloquearScroll } from "@/components/BloquearScroll";
+import { useSaidaAnimada } from "@/components/useSaidaAnimada";
 
 /**
  * O QUE: a rota dos teus anúncios: cada um com cliques recebidos, tempo
@@ -27,6 +30,10 @@ export default function MeusAnuncios() {
   const [anuncios, setAnuncios] = useState<Anuncio[] | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [apagando, setApagando] = useState<string | null>(null);
+  const [vendendo, setVendendo] = useState<Anuncio | null>(null);
+  const [vendidoOk, setVendidoOk] = useState(false);
+  const [finalizando, setFinalizando] = useState(false);
+  const { saindo, fecharCom } = useSaidaAnimada();
 
   useEffect(() => {
     createClient()
@@ -52,6 +59,26 @@ export default function MeusAnuncios() {
     const r = await fetch(`/api/anuncios/${id}`, { method: "DELETE" });
     setApagando(null);
     if (r.ok) setAnuncios((atuais) => (atuais ?? []).filter((a) => a.id !== id));
+  }
+
+  /* Vendido = missão cumprida: tira da vitrine e comemora no popup. */
+  async function confirmarVendido() {
+    if (!vendendo || finalizando) return;
+    setFinalizando(true);
+    const r = await fetch(`/api/anuncios/${vendendo.id}`, { method: "DELETE" });
+    setFinalizando(false);
+    if (r.ok) {
+      const id = vendendo.id;
+      setAnuncios((atuais) => (atuais ?? []).filter((a) => a.id !== id));
+      setVendidoOk(true);
+    }
+  }
+
+  function fecharVendido() {
+    fecharCom(() => {
+      setVendendo(null);
+      setVendidoOk(false);
+    });
   }
 
   return (
@@ -108,6 +135,14 @@ export default function MeusAnuncios() {
             {anuncios.map((a) => (
               <div className="ct-item" key={a.id}>
                 <div className="ma-icones">
+                  <button
+                    className="ma-ico ma-ico-verde"
+                    onClick={() => setVendendo(a)}
+                    title={a.is_doacao ? "Marcar como doado" : "Marcar como vendido"}
+                    aria-label={a.is_doacao ? "Marcar como doado" : "Marcar como vendido"}
+                  >
+                    <CheckIcon sx={{ fontSize: 18 }} />
+                  </button>
                   <Link
                     className="ma-ico"
                     href={`/anunciar/novo?editar=${a.id}`}
@@ -139,6 +174,60 @@ export default function MeusAnuncios() {
         )}
       </main>
       <Rodape />
+
+      {vendendo && (
+        <div
+          className={"aviso-overlay" + (saindo ? " is-saindo" : "")}
+          role="dialog"
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !finalizando) fecharVendido();
+          }}
+        >
+          <BloquearScroll />
+          <div className="aviso-card" style={{ textAlign: "center" }}>
+            {!vendidoOk ? (
+              <>
+                <h2 className="aviso-titulo">
+                  {vendendo.is_doacao ? "Já foi doado?" : "Já encontrou dono novo?"}
+                </h2>
+                <p className="aviso-p" style={{ textAlign: "center" }}>
+                  Marcar &ldquo;{vendendo.titulo}&rdquo; como{" "}
+                  {vendendo.is_doacao ? "doado" : "vendido"} encerra o anúncio
+                  e tira ele da vitrine na hora.
+                </p>
+                <div className="wiz-acoes">
+                  <button className="btn wiz-voltar" onClick={fecharVendido}>
+                    Ainda não
+                  </button>
+                  <button className="btn wiz-continuar" onClick={confirmarVendido}>
+                    {finalizando && <span className="spinner" />}
+                    {finalizando
+                      ? "Encerrando…"
+                      : vendendo.is_doacao
+                        ? "Sim, foi doado"
+                        : "Sim, foi vendido"}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <span className="ma-vendido-ico">
+                  <CheckIcon sx={{ fontSize: 30 }} />
+                </span>
+                <h2 className="aviso-titulo">Desapego concluído!</h2>
+                <p className="aviso-p" style={{ textAlign: "center" }}>
+                  O anúncio saiu da vitrine e o item segue vida nova por aí.
+                  Bora anunciar o próximo?
+                </p>
+                <button className="btn btn-primary btn-block" onClick={fecharVendido}>
+                  Fechar
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

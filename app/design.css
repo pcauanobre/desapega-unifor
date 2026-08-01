@@ -421,6 +421,10 @@
 .ma-ico:hover{background:var(--azul);color:#fff;transform:translateY(-2px)}
 .ma-ico:disabled{opacity:.55;cursor:default;transform:none}
 .ma-ico-vermelho:hover{background:#C23B3B}
+.ma-ico-verde{color:var(--verde)}
+.ma-ico-verde:hover{background:var(--verde);color:#fff}
+.ma-vendido-ico{width:58px;height:58px;border-radius:50%;background:#E8F7EE;color:var(--verde);
+  display:inline-flex;align-items:center;justify-content:center;margin-bottom:4px}
 .pagina-1280 a.ma-ico{color:var(--navy)}
 .pagina-1280 a.ma-ico:hover{color:#fff}
 .ct-perigo{margin-top:44px;border:1px solid #F1C7C7;background:#FFFAFA;border-radius:14px;padding:22px;
@@ -687,7 +691,10 @@
 .faq-q::-webkit-details-marker{display:none}
 .faq-q::after{content:"+";font-family:var(--mono);font-size:16px;color:var(--azul);transition:transform 200ms var(--ease)}
 .faq-item[open] .faq-q::after{transform:rotate(45deg)}
-.faq-a{padding:0 20px 17px;font-size:14.5px;line-height:1.65;color:var(--txt-2);animation:fadeUp 260ms var(--ease) both}
+.faq-a{padding:0 20px 17px;font-size:14.5px;line-height:1.65;color:var(--txt-2);
+  overflow:hidden;animation:faqDesce 320ms var(--ease) both}
+@keyframes faqDesce{from{opacity:0;transform:translateY(-10px);max-height:0;padding-bottom:0}
+  to{opacity:1;transform:none;max-height:240px;padding-bottom:17px}}
 
 .regra{display:flex;gap:16px;border:1px solid var(--borda);border-radius:12px;background:#fff;
   padding:18px 20px;margin-top:12px;transition:transform 200ms var(--ease),box-shadow 200ms ease}
