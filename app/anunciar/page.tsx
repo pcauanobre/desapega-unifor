@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
-import { Rodape } from "@/components/landing/Rodape";
 
 const OPCOES = [
   {
@@ -79,7 +78,6 @@ export default function CentralAnunciar() {
           ))}
         </div>
       </main>
-      <Rodape />
     </div>
   );
 }
