@@ -340,11 +340,12 @@
   box-shadow:0 1px 3px rgba(7,28,61,.3);transition:background 160ms ease}
 .mini-ponto.ativo{background:#fff}
 .card-local{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--txt-2);
-  flex:1;min-width:0;flex-wrap:wrap;row-gap:2px}
+  flex:1;min-width:0;flex-wrap:nowrap}
 .card-local svg{color:var(--txt-3);flex:none}
-/* NADA corta: bloco e horário são unidades inteiras; se a linha apertar,
-   o horário desce completo pra linha de baixo (o | fica com o bloco) */
-.card-local .card-bloco{white-space:nowrap;flex:none;display:inline-flex;align-items:center}
+/* Tudo numa linha só: nome de local comprido corta com reticências;
+   horário e preço ficam inteiros (o | acompanha o nome) */
+.card-local .card-bloco{display:inline-flex;align-items:center;flex:0 1 auto;min-width:0}
+.card-bloco-nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .card-local .quando{white-space:nowrap;flex:none}
 .card-local .sep{margin:0 1px 0 6px;color:#D3DAE8;flex:none}
 .card-foot .card-price,.card-foot .card-doacao-txt{white-space:nowrap;flex:none}

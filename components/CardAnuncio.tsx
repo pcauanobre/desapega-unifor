@@ -96,7 +96,7 @@ export function CardAnuncio({
           <span className="card-local">
             <PlaceIcon sx={{ fontSize: 16 }} />
             <span className="card-bloco">
-              {encurtarLocal(anuncio.bloco)}
+              <span className="card-bloco-nome">{encurtarLocal(anuncio.bloco)}</span>
               <span className="sep">|</span>
             </span>
             <span className="quando">{quandoPublicado(anuncio.created_at)}</span>
