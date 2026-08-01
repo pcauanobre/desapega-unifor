@@ -254,9 +254,14 @@
 .dl-gatilho-busca:hover{background:#F2F6FF}
 .dl-chevron{color:var(--txt-3);transition:transform 200ms var(--ease)}
 .dl.aberto .dl-chevron{transform:rotate(180deg)}
-.dl-menu{position:absolute;top:calc(100% + 8px);left:0;min-width:210px;background:#fff;
+/* fica montado sempre: a transição faz entrar desdobrando de cima pra baixo
+   e sair recolhendo de baixo pra cima (scaleY com origem no topo) */
+.dl-menu{position:absolute;top:calc(100% + 4px);left:0;min-width:210px;background:#fff;
   border:1px solid var(--borda);border-radius:12px;box-shadow:0 16px 40px rgba(7,28,61,.16);
-  padding:6px;z-index:40;animation:popIn 200ms var(--ease) both}
+  padding:6px;z-index:40;transform-origin:top;opacity:0;transform:scaleY(.7);
+  visibility:hidden;pointer-events:none;
+  transition:opacity 160ms ease,transform 220ms var(--ease),visibility 0s linear 220ms}
+.dl.aberto .dl-menu{opacity:1;transform:scaleY(1);visibility:visible;pointer-events:auto;transition-delay:0s}
 .dl-op{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
   padding:10px 12px;border:none;background:transparent;border-radius:8px;font-size:13.5px;
   font-weight:600;color:var(--txt);cursor:pointer;text-align:left;transition:background 140ms ease}
@@ -590,6 +595,13 @@
 .btn-hero{background:var(--azul);color:#fff;font-size:15.5px;font-weight:700;padding:15px 28px;
   box-shadow:0 10px 26px rgba(10,92,255,.4)}
 .btn-hero:hover{background:var(--azul-hover);transform:translateY(-2px);color:#fff}
+/* brilho que atravessa o botão principal do hero de tempos em tempos */
+.hero .btn-hero{position:relative;overflow:hidden}
+.hero .btn-hero::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
+  animation:shine 3s ease-in-out infinite}
+@keyframes shine{to{left:200%}}
+@media (prefers-reduced-motion:reduce){.hero .btn-hero::after{animation:none}}
 .btn-hero-ghost{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.65);
   font-size:15.5px;font-weight:700;padding:15px 24px;backdrop-filter:blur(3px)}
 .btn-hero-ghost:hover{background:rgba(255,255,255,.18);border-color:#fff;color:#fff}
@@ -709,3 +721,32 @@
   font-family:var(--sora);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;flex:none}
 .regra b{display:block;font-family:var(--sora);font-weight:600;font-size:15px;color:var(--navy)}
 .regra p{margin:6px 0 0;font-size:14px;line-height:1.6;color:var(--txt-2)}
+
+/* Localização no footer: hover → linha branca varre o endereço e um mini
+   Google Maps abre ABSOLUTO abaixo (cobre os links, o footer não estica).
+   Abrir/fechar via .is-open no JS, ver LocalizacaoMapa.tsx. SEM transform/
+   filter em ancestral do iframe: quebra o arrasto/zoom no Chrome. */
+.loc{display:flex;flex-direction:column;gap:11px}
+.loc-head{position:relative;width:fit-content}
+.loc-link{display:inline-flex;align-items:center;gap:6px}
+.loc-link svg{color:var(--navy-txt-fraco);flex:none}
+.loc-texto{position:relative}
+.loc-texto::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:1.5px;background:#fff;
+  transform:scaleX(0);transform-origin:center;opacity:0}
+.loc-head:hover .loc-texto::after{animation:locVarre 1.6s var(--ease) forwards}
+@keyframes locVarre{0%{transform:scaleX(0);opacity:1}60%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+/* mínimo 200×200: abaixo disso o Google serve mapa estático, sem arrastar */
+.loc-mapa{position:absolute;top:calc(100% + 8px);left:0;width:260px;height:0;opacity:0;overflow:hidden;
+  border-radius:12px;border:1px solid rgba(255,255,255,.14);background:var(--navy-2);z-index:5;
+  transition:height 720ms var(--ease),opacity 550ms var(--ease)}
+.loc.is-open .loc-mapa{height:220px;opacity:1}
+.loc-mapa iframe{display:block;width:100%;height:220px;border:0}
+.loc-resto{display:flex;flex-direction:column;gap:11px}
+@media (prefers-reduced-motion: reduce){
+  .loc-head:hover .loc-texto::after{animation:none}
+  .loc-mapa{transition:none}
+}
+@media (hover: none){
+  .loc-mapa{display:none}
+  .loc-texto::after{animation:none;opacity:0}
+}

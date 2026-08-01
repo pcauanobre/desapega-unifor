@@ -55,26 +55,27 @@ export function Droplist({ opcoes, valor, onMudar, rotuloAria, variante = "norma
         {atual.rotulo}
         <KeyboardArrowDownIcon className="dl-chevron" sx={{ fontSize: 18 }} />
       </button>
-      {aberto && (
-        <div className="dl-menu" role="listbox">
-          {opcoes.map((o) => (
-            <button
-              type="button"
-              key={o.valor || "todos"}
-              role="option"
-              aria-selected={o.valor === valor}
-              className={"dl-op" + (o.valor === valor ? " marcada" : "")}
-              onClick={() => {
-                onMudar(o.valor);
-                setAberto(false);
-              }}
-            >
-              {o.rotulo}
-              {o.valor === valor && <CheckIcon sx={{ fontSize: 16 }} />}
-            </button>
-          ))}
-        </div>
-      )}
+      {/* montado sempre: se desmontasse ao fechar, a transição de saída
+          do CSS não rodava; visibility:hidden tira do tab e do leitor de tela */}
+      <div className="dl-menu" role="listbox" aria-hidden={!aberto}>
+        {opcoes.map((o) => (
+          <button
+            type="button"
+            key={o.valor || "todos"}
+            role="option"
+            aria-selected={o.valor === valor}
+            tabIndex={aberto ? 0 : -1}
+            className={"dl-op" + (o.valor === valor ? " marcada" : "")}
+            onClick={() => {
+              onMudar(o.valor);
+              setAberto(false);
+            }}
+          >
+            {o.rotulo}
+            {o.valor === valor && <CheckIcon sx={{ fontSize: 16 }} />}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
