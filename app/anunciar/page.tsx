@@ -27,7 +27,7 @@ const OPCOES = [
 ];
 
 /**
- * O QUE: a central do desapego: dois retângulos grandes com foto, um pra
+ * O QUE: a central de anúncios: dois retângulos grandes com foto, um pra
  *        anunciar e outro pros seus anúncios. Hover acende um lado e
  *        apaga o outro; a entrada desliza das laterais.
  * POR QUE: quem clica em "Anunciar" quer uma das duas coisas; a escolha
@@ -57,7 +57,7 @@ export default function CentralAnunciar() {
             ← Voltar
           </Link>
         </div>
-        <span className="info-kicker">CENTRAL DO DESAPEGO</span>
+        <span className="info-kicker">CENTRAL DE ANÚNCIOS</span>
         <h1 className="info-title">O que vamos fazer hoje?</h1>
         <div className="esc-grid">
           {OPCOES.map((o) => (

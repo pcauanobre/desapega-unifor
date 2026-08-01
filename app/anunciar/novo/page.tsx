@@ -21,7 +21,7 @@ const ESTADOS = ["Como novo", "Bom estado", "Usado", "Funcionando"];
  * O QUE: o formulário de anúncio, nos dois modos: criar (POST) e editar
  *        (?editar=id, PUT, tudo pré-preenchido, fotos antigas incluídas).
  * POR QUE: um formulário só pros dois fluxos, sem duplicar tela.
- * CHAMA: central do desapego (novo) e meus anúncios (editar).
+ * CHAMA: central de anúncios (novo) e meus anúncios (editar).
  * QUEBRA SE: o bucket "fotos" não existir no Storage (migration 006).
  */
 export default function NovoAnuncio() {

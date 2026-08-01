@@ -22,7 +22,7 @@ import { useSaidaAnimada } from "@/components/useSaidaAnimada";
  *        no ar, botão de editar e de excluir.
  * POR QUE: separada da conta (que virou só perfil); é o painel de quem
  *          anuncia.
- * CHAMA: central do desapego e link da conta. Sem login volta pro /entrar.
+ * CHAMA: central de anúncios e link da conta. Sem login volta pro /entrar.
  * QUEBRA SE: a API mudar GET ?autor=me, PUT ou DELETE.
  */
 export default function MeusAnuncios() {

@@ -344,7 +344,7 @@
 .card-doacao-txt{font-family:var(--sora);font-weight:700;font-size:14px;color:var(--verde);
   letter-spacing:-.01em;display:inline-flex;align-items:center;gap:5px}
 
-/* ---------- central do desapego (escolha anunciar x meus anuncios) ---------- */
+/* ---------- central de anuncios (escolha anunciar x meus anuncios) ---------- */
 .esc-wrap{height:calc(100vh - 128px);min-height:560px;display:flex;flex-direction:column;
   padding-top:26px;padding-bottom:26px}
 .esc-wrap .pd-voltar{margin:0 0 14px;display:inline-block}
@@ -361,7 +361,7 @@
 .esc-veu{position:absolute;inset:0;z-index:1;
   background:linear-gradient(to top,rgba(7,28,61,.84) 0%,rgba(7,28,61,.28) 46%,rgba(7,28,61,.06) 72%)}
 .esc-card.is-on{transform:translateY(-8px) scale(1.015);box-shadow:0 26px 60px rgba(7,28,61,.3)}
-.esc-card.is-on .esc-img{transform:scale(1.05)}
+.esc-card.is-on .esc-img{transform:scale(1.07) translateY(2.5%)}
 .esc-card.is-off{filter:brightness(.5) saturate(.7)}
 .esc-texto{position:absolute;left:28px;right:28px;bottom:26px;z-index:2;display:flex;flex-direction:column;gap:7px}
 .esc-kicker{font-size:11.5px;letter-spacing:.18em;color:#9DC0FF;font-weight:700}
