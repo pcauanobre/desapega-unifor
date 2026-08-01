@@ -105,11 +105,11 @@ export default function Entrar() {
             <div className="login-overlay" />
             <div className="login-topbrand">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/mark-white.svg" alt="Desapega Unifor" className="brand-mark" />
-              <span className="brand-name">
-                <span className="brand-name-1">Desapega</span>
-                <span className="brand-name-2">Unifor</span>
-              </span>
+              <img
+                src="/unifor-h-negativa.svg"
+                alt="Universidade de Fortaleza"
+                style={{ height: 56, width: "auto", display: "block" }}
+              />
             </div>
             <div className="login-social">
               <span className="icones">
