@@ -29,14 +29,14 @@ export function Logo({ fundo, simboloAltura = 46 }: Props) {
           noAzul ? "w-px self-stretch bg-white/30" : "w-px self-stretch bg-[#071C3D]/15"
         }
       />
-      <span className="font-[family-name:var(--font-sora)] leading-tight tracking-[-0.01em]">
+      <span className="font-[family-name:var(--font-sora)] tracking-[-0.01em]">
         <span
-          className={`block text-lg font-bold ${noAzul ? "text-white" : "text-[#0A5CFF]"}`}
+          className={`block text-lg font-bold leading-none ${noAzul ? "text-white" : "text-[#0A5CFF]"}`}
         >
           Desapega
         </span>
         <span
-          className={`block text-sm font-medium ${noAzul ? "text-[#BFD5FF]" : "text-[#5A6480]"}`}
+          className={`mt-[2px] block text-sm font-medium leading-none ${noAzul ? "text-[#BFD5FF]" : "text-[#5A6480]"}`}
         >
           Unifor
         </span>
