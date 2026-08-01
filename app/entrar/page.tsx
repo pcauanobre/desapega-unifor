@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import XIcon from "@mui/icons-material/X";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { createClient } from "@/lib/supabase/client";
 import { matriculaParaEmail, matriculaValida } from "@/lib/matricula";
 
@@ -95,9 +102,24 @@ export default function Entrar() {
       <div className="login">
         <div className="login-bg">
           <div className="login-photo">
-            <div className="login-photo-caption">
-              <span className="login-shapes"><i className="sq" /><i className="ci" /><i className="sq" /></span>
-              <span>Projeto Desapega · Universidade de Fortaleza</span>
+            <div className="login-overlay" />
+            <div className="login-topbrand">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/mark-white.svg" alt="Desapega Unifor" className="brand-mark" />
+              <span className="brand-name">
+                <span className="brand-name-1">Desapega</span>
+                <span className="brand-name-2">Unifor</span>
+              </span>
+            </div>
+            <div className="login-social">
+              <span className="icones">
+                <FacebookIcon sx={{ fontSize: 19 }} />
+                <InstagramIcon sx={{ fontSize: 19 }} />
+                <YouTubeIcon sx={{ fontSize: 21 }} />
+                <XIcon sx={{ fontSize: 16 }} />
+                <LinkedInIcon sx={{ fontSize: 19 }} />
+              </span>
+              <span>Projeto Desapega | Universidade de Fortaleza</span>
             </div>
           </div>
           <div className="login-side" />
@@ -107,8 +129,7 @@ export default function Entrar() {
           <form className="login-card" onSubmit={enviar}>
             <div className="login-brand">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/mark-blue.svg" alt="" className="login-mark" />
-              <span className="login-lockup"><b>Desapega</b> <span>Unifor</span></span>
+              <img src="/mark-blue.svg" alt="Desapega Unifor" className="login-mark" />
             </div>
 
             <h1 className="login-title">{t.title}</h1>
@@ -141,7 +162,11 @@ export default function Entrar() {
                   <input type={verSenha ? "text" : "password"} placeholder="Senha"
                     value={senha} onChange={(e) => setSenha(e.target.value)} />
                   <button type="button" className="pwd-toggle" title="Mostrar senha"
-                    onClick={() => setVerSenha(!verSenha)}>◉</button>
+                    onClick={() => setVerSenha(!verSenha)}>
+                    {verSenha
+                      ? <VisibilityOffIcon sx={{ fontSize: 19 }} />
+                      : <VisibilityIcon sx={{ fontSize: 19 }} />}
+                  </button>
                 </span>
               </label>
 

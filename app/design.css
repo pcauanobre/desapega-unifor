@@ -174,22 +174,20 @@
 .login{position:relative;width:100%;min-height:100vh;display:grid;grid-template-columns:1fr;overflow:hidden}
 .login-bg{grid-area:1/1;display:flex;min-height:100vh}
 .login-photo{flex:0 0 60%;position:relative;background:url("/campus.png") center/cover no-repeat}
+.login-overlay{position:absolute;inset:0;background:rgba(21,62,201,.5)}
 .login-side{flex:1;background:#DCEAFB url("/bg-shapes.png") right center/cover no-repeat}
-.login-photo-caption{position:absolute;left:56px;bottom:44px;display:flex;align-items:center;gap:18px;color:#fff;
-  font-size:14px;font-weight:600}
-.login-shapes{display:flex;align-items:center;gap:12px}
-.login-shapes i{width:18px;height:18px;background:rgba(255,255,255,.9);display:block;border-radius:5px}
-.login-shapes .ci{border-radius:50%}
+.login-topbrand{position:absolute;left:56px;top:44px;z-index:1;display:flex;align-items:center;gap:14px}
+.login-social{position:absolute;left:56px;bottom:40px;z-index:1;display:flex;align-items:center;gap:22px;
+  color:#fff;font-size:13.5px;font-weight:600}
+.login-social .icones{display:flex;align-items:center;gap:18px}
+.login-social .icones svg{display:block}
 
 .login-cardwrap{grid-area:1/1;display:flex;align-items:center;justify-content:flex-start;padding:48px 0 48px 51%}
-.login-card{width:440px;background:#fff;border-radius:var(--r-md);box-shadow:0 18px 44px rgba(7,28,61,.14);
-  padding:32px 36px;animation:popIn 300ms var(--ease) both}
+.login-card{width:470px;background:#fff;border-radius:var(--r-md);box-shadow:0 18px 44px rgba(7,28,61,.14);
+  padding:36px 40px;animation:popIn 300ms var(--ease) both}
 .login-brand{display:flex;flex-direction:column;align-items:center;gap:8px}
-.login-mark{height:38px;width:auto;display:block}
-.login-lockup{font-family:var(--sora);font-size:13px;letter-spacing:-.01em;color:var(--txt-2)}
-.login-lockup b{font-weight:700;color:var(--azul)}
-.login-lockup span{font-weight:500}
-.login-title{font-family:var(--sora);font-weight:700;font-size:19px;letter-spacing:-.015em;text-align:center;margin:14px 0 0}
+.login-mark{height:44px;width:auto;display:block}
+.login-title{font-family:var(--sora);font-weight:700;font-size:22px;letter-spacing:-.015em;text-align:center;margin:16px 0 0}
 .login-sub{font-size:13px;color:var(--txt-2);text-align:center;margin:6px 0 0}
 .login-fields{display:flex;flex-direction:column;gap:13px;margin-top:22px}
 
@@ -202,9 +200,10 @@
 .field input:focus,.field select:focus{border-color:var(--azul);box-shadow:0 0 0 3px rgba(10,92,255,.14)}
 .field-pwd{position:relative;display:flex;align-items:center}
 .field-pwd input{padding-right:42px}
-.pwd-toggle{position:absolute;right:6px;width:30px;height:30px;border:none;background:transparent;color:var(--azul);
-  font-size:15px;cursor:pointer;border-radius:6px;transition:background 160ms ease}
+.pwd-toggle{position:absolute;right:6px;width:32px;height:32px;border:none;background:transparent;color:var(--azul);
+  cursor:pointer;border-radius:6px;transition:background 160ms ease;display:flex;align-items:center;justify-content:center}
 .pwd-toggle:hover{background:#EEF4FF}
+.pwd-toggle svg{display:block}
 
 .check{display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:12.5px;color:var(--txt-2);line-height:1.5}
 .check input{margin-top:2px;width:15px;height:15px;accent-color:var(--azul);cursor:pointer}
