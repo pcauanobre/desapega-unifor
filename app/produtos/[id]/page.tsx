@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 import PlaceIcon from "@mui/icons-material/Place";
 import SchoolIcon from "@mui/icons-material/School";
 import ScheduleIcon from "@mui/icons-material/Schedule";
-import LockIcon from "@mui/icons-material/Lock";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import type { Anuncio } from "@/lib/tipos";
 import { tempoRelativo } from "@/lib/tempo";
@@ -42,7 +41,6 @@ export default function PaginaProduto() {
   const fotos = anuncio
     ? (anuncio.fotos?.length ? anuncio.fotos : [anuncio.imagem_url].filter(Boolean) as string[])
     : [];
-  const contatoVisivel = anuncio !== null && "contato" in anuncio;
 
   return (
     <div className="pagina-1280 flex-1">
@@ -103,6 +101,9 @@ export default function PaginaProduto() {
               <span className="pd-info">
                 <PlaceIcon sx={{ fontSize: 20 }} />
                 Retirada: <b>{anuncio.bloco ?? "a combinar"}</b>
+                <span className="pd-info-extra">
+                  ou outro ponto do campus, combinado no WhatsApp
+                </span>
               </span>
               <span className="pd-info">
                 <ScheduleIcon sx={{ fontSize: 20 }} />
@@ -121,25 +122,18 @@ export default function PaginaProduto() {
                 </span>
               </span>
 
-              {contatoVisivel ? (
-                anuncio.contato ? (
-                  <a
-                    className="btn btn-zap"
-                    href={linkWhatsApp(anuncio.contato)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <WhatsAppIcon sx={{ fontSize: 18 }} />
-                    {anuncio.contato}
-                  </a>
-                ) : (
-                  <span className="pd-lock">contato não informado</span>
-                )
+              {anuncio.contato ? (
+                <a
+                  className="btn btn-zap"
+                  href={linkWhatsApp(anuncio.contato)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <WhatsAppIcon sx={{ fontSize: 18 }} />
+                  {anuncio.contato}
+                </a>
               ) : (
-                <span className="pd-lock">
-                  <LockIcon sx={{ fontSize: 16 }} />
-                  <Link href="/entrar">Entre</Link>&nbsp;pra ver o contato
-                </span>
+                <span className="pd-lock">contato não informado</span>
               )}
             </div>
           </div>

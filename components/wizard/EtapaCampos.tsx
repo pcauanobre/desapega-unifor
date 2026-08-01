@@ -84,8 +84,8 @@ export function EtapaCampos({ etapa, perfil, onMudar }: Props) {
           />
         </label>
         <p className="wiz-sub">
-          É por ele que os interessados vão combinar a entrega contigo. Só
-          aparece pra quem tá logado.
+          É por ele que os interessados vão combinar a entrega contigo. Ele
+          aparece na página dos teus anúncios.
         </p>
       </div>
     );

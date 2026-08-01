@@ -56,15 +56,15 @@ from (values
   ('Sobotta — Atlas de Anatomia Humana Vol. 2',
    'Edição conservada, sem páginas soltas. Ótimo pro ciclo básico da saúde.',
    'Livros', 120.00, false, 'https://picsum.photos/seed/sobotta/900/675', 'Bom estado',
-   'Pedro L.', 'Medicina', 'Bloco S', '(85) 98900-1122', 'sobotta', '1 day'),
+   'Pedro L.', 'Medicina', 'Biblioteca central', '(85) 98900-1122', 'sobotta', '1 day'),
   ('Cadeira giratória com apoio de braço',
    'Regulagem de altura funcionando. Saindo por mudança, retirada à noite de preferência.',
    'Móveis', 220.00, false, 'https://picsum.photos/seed/cadeira/900/675', 'Usado',
-   'Isabela C.', 'Direito', 'Bloco C', '(85) 98911-2233', 'cadeira', '25 hours'),
+   'Isabela C.', 'Direito', 'Estacionamento sul', '(85) 98911-2233', 'cadeira', '25 hours'),
   ('Camiseta da atlética tam. G',
    'Usada em 2 jogos, sem furo. Doando pra quem chegou agora e quer entrar no clima.',
    'Vestuário', null, true, 'https://picsum.photos/seed/camiseta/900/675', 'Usado',
-   'João V.', 'Nutrição', 'Bloco B', '(85) 98922-3344', 'camiseta', '26 hours')
+   'João V.', 'Nutrição', 'Praça central', '(85) 98922-3344', 'camiseta', '26 hours')
 ) as t (titulo, descricao, categoria, preco, is_doacao, imagem_url, estado,
         autor_nome, autor_curso, bloco, contato, foto_seed, faz)
 cross join (select id from auth.users order by created_at limit 1) as u;

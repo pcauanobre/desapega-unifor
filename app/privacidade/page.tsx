@@ -38,8 +38,8 @@ export default function Privacidade() {
           <h2 className="info-h">Pra que serve</h2>
           <p className="info-p">
             Mostrar teus anúncios na vitrine e permitir que outros alunos
-            falem contigo. Teu contato só aparece pra quem tá logado na
-            plataforma, visitante anônimo não tem acesso.
+            falem contigo. O contato que tu informar aparece na página do
+            anúncio pra facilitar a troca, e informar é opcional.
           </p>
         </div>
 

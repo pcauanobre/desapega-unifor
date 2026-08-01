@@ -14,7 +14,7 @@ const PERGUNTAS = [
   },
   {
     q: "Como falo com quem anunciou?",
-    a: "Na página do produto, entrando com tua conta, aparece o botão de WhatsApp de quem anunciou. Sem login o contato fica protegido.",
+    a: "Na página do produto tem o botão de WhatsApp de quem anunciou. É clicar e combinar a entrega.",
   },
   {
     q: "Onde a entrega acontece?",

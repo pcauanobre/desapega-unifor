@@ -28,12 +28,9 @@ export async function GET(
   }
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  const colunas = user ? `${COLUNAS_PUBLICAS},contato` : COLUNAS_PUBLICAS;
-
   const { data, error } = await supabase
     .from("anuncios")
-    .select(colunas)
+    .select(COLUNAS_PUBLICAS)
     .eq("id", id)
     .maybeSingle();
 
