@@ -7,6 +7,9 @@ export type DadosAnuncio = {
   preco: number | null;
   is_doacao: boolean;
   imagem_url: string | null;
+  bloco: string | null;
+  contato: string | null;
+  fotos: string[] | null;
 };
 
 /**
@@ -50,17 +53,50 @@ export function validarAnuncio(body: unknown): {
 
   let imagem_url: string | null = null;
   if (typeof b.imagem_url === "string" && b.imagem_url.trim() !== "") {
-    try {
-      const u = new URL(b.imagem_url.trim());
-      if (u.protocol !== "http:" && u.protocol !== "https:") throw new Error();
-      imagem_url = u.toString();
-    } catch {
-      erros.push("imagem_url: precisa ser uma URL http(s) válida");
-    }
+    const limpa = urlValida(b.imagem_url);
+    if (limpa) imagem_url = limpa;
+    else erros.push("imagem_url: precisa ser uma URL http(s) válida");
+  }
+
+  const bloco =
+    typeof b.bloco === "string" && b.bloco.trim() !== ""
+      ? b.bloco.trim().slice(0, 40)
+      : null;
+
+  const contato =
+    typeof b.contato === "string" && b.contato.trim() !== ""
+      ? b.contato.trim().slice(0, 60)
+      : null;
+
+  let fotos: string[] | null = null;
+  if (Array.isArray(b.fotos) && b.fotos.length > 0) {
+    const limpas = b.fotos
+      .filter((f): f is string => typeof f === "string")
+      .map(urlValida)
+      .filter((f): f is string => f !== null)
+      .slice(0, 5);
+    if (limpas.length !== b.fotos.length)
+      erros.push("fotos: no máximo 5 URLs http(s) válidas");
+    else fotos = limpas;
   }
 
   if (erros.length > 0) return { erros };
   return {
-    dados: { titulo, descricao, categoria, preco, is_doacao, imagem_url },
+    dados: {
+      titulo, descricao, categoria, preco, is_doacao,
+      imagem_url: imagem_url ?? fotos?.[0] ?? null,
+      bloco, contato, fotos,
+    },
   };
+}
+
+/* URL http(s) normalizada, ou null se inválida. */
+function urlValida(bruta: string): string | null {
+  try {
+    const u = new URL(bruta.trim());
+    if (u.protocol !== "http:" && u.protocol !== "https:") return null;
+    return u.toString();
+  } catch {
+    return null;
+  }
 }

@@ -12,7 +12,7 @@ import { tempoRelativo } from "@/lib/tempo";
  */
 export function CardAnuncio({ anuncio }: { anuncio: Anuncio }) {
   return (
-    <Link className="card" href="/entrar">
+    <Link className="card" href={`/produtos/${anuncio.id}`}>
       <div className="card-photo">
         {anuncio.imagem_url ? (
           /* eslint-disable-next-line @next/next/no-img-element */
@@ -29,7 +29,10 @@ export function CardAnuncio({ anuncio }: { anuncio: Anuncio }) {
         <h3 className="card-title">{anuncio.titulo}</h3>
         <div className="card-foot">
           <span className="card-seller">
-            <b>{anuncio.autor_nome}</b>
+            <b>
+              {anuncio.autor_nome}
+              {anuncio.autor_curso ? ` · ${anuncio.autor_curso}` : ""}
+            </b>
             <span>{tempoRelativo(anuncio.created_at)}</span>
           </span>
           {anuncio.is_doacao ? (

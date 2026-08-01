@@ -5,6 +5,7 @@ const SEM_BANCO = {
   erro: "banco ainda não configurado: copie o .env.example pra .env.local",
 };
 import { CATEGORIAS, type Categoria } from "@/lib/categorias";
+import { COLUNAS_PUBLICAS } from "@/lib/tipos";
 import { validarAnuncio } from "@/lib/validar-anuncio";
 
 /**
@@ -25,7 +26,7 @@ export async function GET(req: NextRequest) {
 
   let query = supabase
     .from("anuncios")
-    .select("*")
+    .select(COLUNAS_PUBLICAS)
     .order("created_at", { ascending: false })
     .limit(30);
 
@@ -92,16 +93,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Nome público do card: "Nome · Curso", como no design da vitrine.
+  // Identidade pública do anúncio vem da conta, nunca do corpo da request.
   const meta = user.user_metadata ?? {};
-  const nome = (meta.nome as string | undefined) ?? "Aluno";
-  const curso = meta.curso as string | undefined;
-  const autor_nome = curso ? `${nome} · ${curso}` : nome;
+  const autor_nome = (meta.nome as string | undefined) ?? "Aluno";
+  const autor_curso = (meta.curso as string | undefined) ?? null;
 
   const { data, error } = await supabase
     .from("anuncios")
-    .insert({ ...dados, autor_id: user.id, autor_nome })
-    .select()
+    .insert({ ...dados, autor_id: user.id, autor_nome, autor_curso })
+    .select(COLUNAS_PUBLICAS)
     .single();
 
   if (error) {

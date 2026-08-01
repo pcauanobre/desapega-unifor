@@ -21,7 +21,24 @@ export type Anuncio = {
   is_doacao: boolean;
   imagem_url: string | null;
   estado: EstadoDoItem | null;
-  autor_id: string;
   autor_nome: string;
+  autor_curso: string | null;
+  bloco: string | null;
+  fotos: string[] | null;
   created_at: string;
+  /* Só chegam pra usuário logado (privilégio por coluna no banco): */
+  autor_id?: string;
+  contato?: string | null;
 };
+
+/**
+ * O QUE: a lista de colunas públicas de anúncio, usada nos selects.
+ * POR QUE: contato e autor_id são restritos a usuário logado; pedir "*"
+ *          como anônimo falharia no privilégio de coluna. A lista é a
+ *          fonte única do que é público.
+ * CHAMA: rotas GET de /api/anuncios.
+ * QUEBRA SE: divergir dos GRANTs da migration 004.
+ */
+export const COLUNAS_PUBLICAS =
+  "id,titulo,descricao,categoria,preco,is_doacao,imagem_url,estado," +
+  "autor_nome,autor_curso,created_at,bloco,fotos";
