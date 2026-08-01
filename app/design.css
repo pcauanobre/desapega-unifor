@@ -792,4 +792,149 @@
 @media (hover: none){
   .loc-mapa{display:none}
   .loc-texto::after{animation:none;opacity:0}
+  .mini-seta{opacity:.9}
 }
+
+/* =========================================================================
+   MOBILE (protótipo do design portado pras classes reais). Um breakpoint
+   só: até 760px o site vira o app de bolso, com bottom nav fixa, grid de
+   2 colunas, chips roláveis e popup subindo como sheet.
+   ========================================================================= */
+.bnav,.bnav-espaco{display:none}
+
+@media (max-width:760px){
+  /* base */
+  .pagina-1280{min-width:0}
+  .container{padding-left:16px;padding-right:16px}
+  .utilbar{display:none}
+
+  /* header: marca menor e busca descendo pra linha de baixo, inteira */
+  .header-inner{flex-wrap:wrap;gap:12px;padding-top:12px;padding-bottom:14px}
+  .brand{gap:10px}
+  .brand-mark{height:32px}
+  .brand-divider{height:26px}
+  .brand-name-1,.brand-name-2{font-size:15px}
+  .header-actions .btn-white{font-size:12.5px;padding:10px 14px}
+  .search{flex:1 1 100%;order:3;max-width:none}
+  .search .dl{display:none}
+  .search-input{border-top-left-radius:var(--r-sm);border-bottom-left-radius:var(--r-sm)}
+
+  /* faixa de números */
+  .statsbar-inner{flex-wrap:wrap;gap:8px 18px;font-size:12px;padding-top:11px;padding-bottom:11px}
+  .statsbar-sep{display:none}
+
+  /* hero da LP */
+  .hero{height:auto;min-height:0;padding:52px 0 56px}
+  .hero-title{font-size:30px}
+  .hero-sub{font-size:14.5px;margin-top:14px}
+  .hero-ctas{flex-wrap:wrap;margin-top:24px}
+  .preview-head{flex-wrap:wrap;gap:10px;padding-top:32px}
+  .como-grid{grid-template-columns:1fr;gap:14px;margin-top:20px}
+  .como-inner{padding-top:38px;padding-bottom:44px}
+  .faqsec{padding:40px 0 48px}
+
+  /* vitrine: título menor, filtros na linha de baixo, chips rolando */
+  .shelf-head{padding-top:22px}
+  .shelf-head-row{flex-wrap:wrap;gap:12px}
+  .shelf-title{font-size:22px}
+  .shelf-sub{font-size:13px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;margin:16px -16px 4px;padding:0 16px 6px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{padding:9px 14px;font-size:13px;border-radius:99px;white-space:nowrap;flex:none}
+  .shelf-body{padding-bottom:40px}
+  .shelf-more{margin-top:26px}
+
+  /* cards em 2 colunas, compactos como no protótipo */
+  .grid,.ct-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .card{padding:8px}
+  .card-photo,.ct-grid .card-photo,.sk-photo{height:118px}
+  .card-body{padding:10px 3px 3px}
+  .card-cat{font-size:9.5px}
+  .card-title{font-size:13.5px;min-height:36px}
+  .card-foot{margin-top:9px;padding-top:9px;gap:8px;flex-wrap:wrap}
+  .card-price{font-size:15px}
+  .card-doacao-txt{font-size:12.5px}
+  .card-local{font-size:11.5px}
+  .card-cond{font-size:10px;padding:4px 7px;top:7px;left:7px}
+  .ma-icones{top:14px;right:14px}
+  .ma-ico{width:32px;height:32px}
+  .ma-selo{top:14px;left:14px;font-size:11px;padding:6px 11px}
+  .pf-selo{top:14px;left:14px}
+
+  /* página do produto: coluna única, foto grande, zap embaixo */
+  .pd,.pd-sk{grid-template-columns:1fr;gap:20px;padding-top:14px;padding-bottom:32px}
+  .pd-foto,.pd-sk-foto{height:300px;border-radius:14px}
+  .pd-titulo{font-size:22px}
+  .pd-preco{font-size:24px}
+  .pd-desc{font-size:14px}
+  .pd-thumbs{gap:8px}
+  .pd-thumb{width:62px;height:48px}
+  .pd-vendedor{flex-wrap:wrap;padding:14px}
+  .pd-vendedor .btn-zap,.pd-lock{flex:1 1 100%;margin-left:0;justify-content:center}
+
+  /* perfil público */
+  .pf-stats{grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}
+  .pf-avatar{width:68px;height:68px}
+  .pf-cabeca{gap:14px}
+  .pf-secao{font-size:17px;margin:28px 0 12px}
+
+  /* páginas informativas e formulários */
+  .info-wrap{padding-top:24px;padding-bottom:44px}
+  .info-title{font-size:24px}
+  .info-sub{font-size:14px}
+  .info-cta{flex-wrap:wrap}
+  .an-form{margin-top:18px}
+  .an-linha{grid-template-columns:1fr;gap:14px;align-items:stretch}
+  .an-switch{padding-bottom:0}
+  .ct-perigo{flex-direction:column;align-items:stretch;text-align:left;margin-top:30px}
+  .ct-perigo .ct-apagar{width:100%}
+
+  /* central de anúncios: um retângulo por linha */
+  .esc-wrap{height:auto;min-height:0;padding-top:18px;padding-bottom:26px}
+  .esc-grid{grid-template-columns:1fr;gap:14px}
+  .esc-card{height:190px}
+  .esc-titulo{font-size:20px}
+  .esc-texto{left:18px;right:18px;bottom:18px}
+
+  /* entrar e wizard: só o card, ocupando a tela */
+  .login-photo,.login-side{display:none}
+  .login{min-height:100vh}
+  .login-cardwrap{padding:36px 16px;justify-content:center}
+  .login-card,.login-body .login-card{width:100%;padding:26px 20px}
+  .wiz-fundo{padding:24px 14px}
+  .wiz-card{padding:24px 20px}
+
+  /* footer empilhado */
+  .footer-inner{grid-template-columns:1fr 1fr;gap:24px;padding-top:32px}
+  .footer-inner > div:first-child{grid-column:1/-1}
+  .footer-bottom{flex-direction:column;align-items:flex-start;gap:6px;padding-bottom:26px}
+
+  /* popups viram sheet: sobem do rodapé e descem inteiros ao fechar */
+  .aviso-overlay{align-items:flex-end;padding:0}
+  .aviso-card,.fx-card,.ef-card{width:100%;max-width:none;border-radius:20px 20px 0 0;
+    padding:24px 20px calc(24px + env(safe-area-inset-bottom));
+    animation:sheetIn 300ms var(--ease) both;max-height:88vh;overflow-y:auto}
+  .aviso-overlay.is-saindo .aviso-card{animation:sheetOut 260ms var(--ease) both}
+  .ef-area{height:260px}
+
+  /* bottom nav do protótipo: 5 casas com o Anunciar saltado no meio */
+  .bnav{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;
+    grid-template-columns:repeat(5,1fr);align-items:center;
+    padding-bottom:env(safe-area-inset-bottom);background:rgba(255,255,255,.96);
+    backdrop-filter:blur(10px);border-top:1px solid var(--borda);
+    animation:fadeUp 320ms var(--ease) both}
+  .bnav a{text-decoration:none}
+  .bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;
+    color:var(--txt-3);font-size:10.5px;font-weight:600;padding:9px 0 8px;
+    border:none;background:transparent;cursor:pointer;transition:color 160ms ease}
+  .bnav-item.is-on{color:var(--azul)}
+  .bnav-fab{position:relative;display:flex;flex-direction:column;align-items:center}
+  .bnav-btn{width:56px;height:56px;border-radius:50%;background:var(--azul);color:#fff;
+    display:flex;align-items:center;justify-content:center;margin-top:-26px;
+    box-shadow:0 10px 24px rgba(10,92,255,.42);transition:transform 180ms var(--ease)}
+  .bnav-btn:active{transform:scale(.94)}
+  .bnav-fab i{font-style:normal;font-size:10.5px;font-weight:700;color:var(--txt-3);padding:3px 0 8px}
+  .bnav-espaco{display:block;height:calc(78px + env(safe-area-inset-bottom))}
+}
+@keyframes sheetIn{from{transform:translateY(100%)}to{transform:none}}
+@keyframes sheetOut{to{transform:translateY(100%)}}

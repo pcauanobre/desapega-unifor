@@ -3,6 +3,7 @@ import { Sora, Plus_Jakarta_Sans, JetBrains_Mono, Open_Sans } from "next/font/go
 import "./globals.css";
 import "./design.css";
 import { AvisoLegal } from "@/components/AvisoLegal";
+import { BottomNav } from "@/components/BottomNav";
 
 // As três fontes do código fonte do design: Sora (títulos, preços, marca),
 // Plus Jakarta Sans (corpo) e JetBrains Mono (microlabels).
@@ -51,6 +52,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <AvisoLegal />
         {children}
+        <BottomNav />
       </body>
     </html>
   );
