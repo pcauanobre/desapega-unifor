@@ -1,0 +1,129 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import ScheduleIcon from "@mui/icons-material/Schedule";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
+import type { Anuncio } from "@/lib/tipos";
+import { createClient } from "@/lib/supabase/client";
+import { TopBar } from "@/components/landing/TopBar";
+import { HeaderNav } from "@/components/landing/HeaderNav";
+import { Rodape } from "@/components/landing/Rodape";
+import { CardAnuncio } from "@/components/CardAnuncio";
+
+/* "hoje" no primeiro dia, depois "há X dias no ar". */
+function diasNoAr(iso: string): string {
+  const dias = Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
+  if (dias <= 0) return "no ar hoje";
+  return `há ${dias} dia${dias > 1 ? "s" : ""} no ar`;
+}
+
+/**
+ * O QUE: a rota dos teus anúncios: cada um com cliques recebidos, tempo
+ *        no ar, botão de editar e de excluir.
+ * POR QUE: separada da conta (que virou só perfil); é o painel de quem
+ *          anuncia.
+ * CHAMA: central do desapego e link da conta. Sem login volta pro /entrar.
+ * QUEBRA SE: a API mudar GET ?autor=me, PUT ou DELETE.
+ */
+export default function MeusAnuncios() {
+  const router = useRouter();
+  const [anuncios, setAnuncios] = useState<Anuncio[] | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+  const [apagando, setApagando] = useState<string | null>(null);
+
+  useEffect(() => {
+    createClient()
+      .auth.getUser()
+      .then(({ data: { user } }) => {
+        if (!user) {
+          router.replace("/entrar");
+          return;
+        }
+        fetch("/api/anuncios?autor=me")
+          .then(async (r) => {
+            const corpo = await r.json();
+            if (!r.ok) throw new Error(corpo.erro ?? "erro ao listar");
+            setAnuncios(corpo.anuncios);
+          })
+          .catch((e: Error) => setErro(e.message));
+      });
+  }, [router]);
+
+  async function excluir(id: string) {
+    if (apagando) return;
+    setApagando(id);
+    const r = await fetch(`/api/anuncios/${id}`, { method: "DELETE" });
+    setApagando(null);
+    if (r.ok) setAnuncios((atuais) => (atuais ?? []).filter((a) => a.id !== id));
+  }
+
+  return (
+    <div className="pagina-1280 flex-1">
+      <TopBar />
+      <HeaderNav />
+      <main className="container info-wrap" style={{ maxWidth: 1240 }}>
+        <div>
+          <Link className="pd-voltar" style={{ marginTop: 0 }} href="/anunciar">
+            ← Voltar
+          </Link>
+        </div>
+        <span className="info-kicker">MEUS ANÚNCIOS</span>
+        <h1 className="info-title">Seus desapegos no ar</h1>
+        <p className="info-sub">
+          Acompanha os cliques, edita o que mudou e tira do ar o que já foi.
+        </p>
+
+        {erro && <p className="shelf-sub" style={{ marginTop: 24 }}>{erro}</p>}
+        {!erro && anuncios === null && (
+          <p className="shelf-sub" style={{ marginTop: 24 }}>Carregando teus anúncios…</p>
+        )}
+        {!erro && anuncios !== null && anuncios.length === 0 && (
+          <div className="info-bloco">
+            <p className="info-p">Tu ainda não anunciou nada. Bora desapegar?</p>
+            <div className="info-cta">
+              <Link className="btn btn-hero" href="/anunciar/novo">Anunciar um item</Link>
+            </div>
+          </div>
+        )}
+
+        {!erro && anuncios !== null && anuncios.length > 0 && (
+          <div className="grid ct-grid">
+            {anuncios.map((a) => (
+              <div className="ct-item" key={a.id}>
+                <CardAnuncio anuncio={a} />
+                <div className="ma-stats">
+                  <span>
+                    <VisibilityOutlinedIcon sx={{ fontSize: 16 }} />
+                    {a.cliques} clique{a.cliques === 1 ? "" : "s"}
+                  </span>
+                  <span>
+                    <ScheduleIcon sx={{ fontSize: 15 }} />
+                    {diasNoAr(a.created_at)}
+                  </span>
+                </div>
+                <div className="ma-acoes">
+                  <Link className="btn ma-editar" href={`/anunciar/novo?editar=${a.id}`}>
+                    <EditIcon sx={{ fontSize: 15 }} /> Editar
+                  </Link>
+                  <button
+                    className="btn ct-excluir"
+                    onClick={() => excluir(a.id)}
+                    disabled={apagando === a.id}
+                  >
+                    <DeleteOutlineIcon sx={{ fontSize: 16 }} />
+                    {apagando === a.id ? "Excluindo…" : "Excluir"}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+      <Rodape />
+    </div>
+  );
+}

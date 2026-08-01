@@ -26,6 +26,7 @@ export type Anuncio = {
   bloco: string | null;
   fotos: string[] | null;
   contato: string | null;
+  cliques: number;
   created_at: string;
   /* Só chega pra usuário logado (privilégio por coluna no banco): */
   autor_id?: string;
@@ -41,4 +42,4 @@ export type Anuncio = {
  */
 export const COLUNAS_PUBLICAS =
   "id,titulo,descricao,categoria,preco,is_doacao,imagem_url,estado," +
-  "autor_nome,autor_curso,created_at,bloco,fotos,contato";
+  "autor_nome,autor_curso,created_at,bloco,fotos,contato,cliques";

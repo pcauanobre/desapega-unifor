@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { otimizarFoto } from "@/lib/otimizar-foto";
 import { CATEGORIAS } from "@/lib/categorias";
+import type { Anuncio } from "@/lib/tipos";
 import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
 import { Rodape } from "@/components/landing/Rodape";
@@ -24,15 +25,16 @@ const LOCAIS = [
 ];
 
 /**
- * O QUE: o formulário de anunciar: fotos com upload otimizado, título,
- *        descrição, categoria, preço ou doação, estado, local e contato.
- * POR QUE: é o outro lado do marketplace; sem login redireciona pro
- *          /entrar, e o perfil do wizard preenche local e contato.
- * CHAMA: botões "Quero anunciar" do site inteiro.
+ * O QUE: o formulário de anúncio, nos dois modos: criar (POST) e editar
+ *        (?editar=id, PUT, tudo pré-preenchido, fotos antigas incluídas).
+ * POR QUE: um formulário só pros dois fluxos, sem duplicar tela.
+ * CHAMA: central do desapego (novo) e meus anúncios (editar).
  * QUEBRA SE: o bucket "fotos" não existir no Storage (migration 006).
  */
-export default function Anunciar() {
+export default function NovoAnuncio() {
   const router = useRouter();
+  const [editandoId, setEditandoId] = useState<string | null>(null);
+  const [fotosExistentes, setFotosExistentes] = useState<string[]>([]);
   const [arquivos, setArquivos] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [titulo, setTitulo] = useState("");
@@ -59,18 +61,49 @@ export default function Anunciar() {
         usuario.current = user.id;
         const meta = user.user_metadata ?? {};
         if (meta.celular) setContato(meta.celular as string);
+
+        // Modo edição: carrega o anúncio e pré-preenche tudo.
+        const idEditar = new URLSearchParams(window.location.search).get("editar");
+        if (!idEditar) return;
+        fetch(`/api/anuncios/${idEditar}`)
+          .then(async (r) => {
+            const corpo = await r.json();
+            if (!r.ok) throw new Error(corpo.erro);
+            const a = corpo.anuncio as Anuncio;
+            setEditandoId(a.id);
+            setTitulo(a.titulo);
+            setDescricao(a.descricao);
+            setCategoria(a.categoria);
+            setDoacao(a.is_doacao);
+            setPreco(a.preco === null ? "" : String(a.preco));
+            setEstado(a.estado ?? "");
+            setBloco(a.bloco ?? "");
+            setContato(a.contato ?? "");
+            setFotosExistentes(
+              a.fotos?.length ? a.fotos : a.imagem_url ? [a.imagem_url] : [],
+            );
+          })
+          .catch(() => setErro("Não deu pra carregar o anúncio pra edição."));
       });
   }, [router]);
 
+  const previewsTotais = [...fotosExistentes, ...previews];
+
   function escolherFotos(lista: FileList | null) {
     if (!lista) return;
-    const novos = [...arquivos, ...Array.from(lista)].slice(0, 5);
+    const espaco = 5 - fotosExistentes.length;
+    const novos = [...arquivos, ...Array.from(lista)].slice(0, Math.max(0, espaco));
     setArquivos(novos);
     setPreviews(novos.map((f) => URL.createObjectURL(f)));
   }
 
   function removerFoto(i: number) {
-    const novos = arquivos.filter((_, j) => j !== i);
+    if (i < fotosExistentes.length) {
+      setFotosExistentes(fotosExistentes.filter((_, j) => j !== i));
+      return;
+    }
+    const idx = i - fotosExistentes.length;
+    const novos = arquivos.filter((_, j) => j !== idx);
     setArquivos(novos);
     setPreviews(novos.map((f) => URL.createObjectURL(f)));
   }
@@ -84,12 +117,12 @@ export default function Anunciar() {
     if (descricao.trim().length < 10) return setErro("Descreve um pouco mais o item.");
     if (!categoria) return setErro("Escolhe a categoria.");
     if (!doacao && (!preco || Number(preco) <= 0)) return setErro("Diz o preço, ou marca como doação.");
-    if (arquivos.length === 0) return setErro("Coloca pelo menos uma foto.");
+    if (previewsTotais.length === 0) return setErro("Coloca pelo menos uma foto.");
 
     setEnviando(true);
     try {
       const supabase = createClient();
-      const urls: string[] = [];
+      const novasUrls: string[] = [];
       for (const [i, arquivo] of arquivos.entries()) {
         const blob = await otimizarFoto(arquivo);
         const caminho = `${usuario.current}/${Date.now()}-${i}.webp`;
@@ -97,24 +130,28 @@ export default function Anunciar() {
           .from("fotos")
           .upload(caminho, blob, { contentType: "image/webp" });
         if (error) throw new Error("upload falhou: " + error.message);
-        urls.push(supabase.storage.from("fotos").getPublicUrl(caminho).data.publicUrl);
+        novasUrls.push(supabase.storage.from("fotos").getPublicUrl(caminho).data.publicUrl);
       }
+      const fotos = [...fotosExistentes, ...novasUrls];
 
-      const resposta = await fetch("/api/anuncios", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          titulo, descricao, categoria,
-          preco: doacao ? null : Number(preco),
-          is_doacao: doacao,
-          estado: estado || null,
-          bloco: bloco || null,
-          contato: contato || null,
-          fotos: urls,
-        }),
-      });
+      const resposta = await fetch(
+        editandoId ? `/api/anuncios/${editandoId}` : "/api/anuncios",
+        {
+          method: editandoId ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            titulo, descricao, categoria,
+            preco: doacao ? null : Number(preco),
+            is_doacao: doacao,
+            estado: estado || null,
+            bloco: bloco || null,
+            contato: contato || null,
+            fotos,
+          }),
+        },
+      );
       const corpo = await resposta.json();
-      if (!resposta.ok) throw new Error(corpo.erro ?? "não deu pra publicar");
+      if (!resposta.ok) throw new Error(corpo.erro ?? "não deu pra salvar");
       setPublicadoId(corpo.anuncio.id);
     } catch (excecao) {
       setErro((excecao as Error).message);
@@ -128,18 +165,25 @@ export default function Anunciar() {
       <HeaderNav />
       <main className="container info-wrap">
         <div>
-          <Link className="pd-voltar" style={{ marginTop: 0 }} href="/anunciar">
+          <Link className="pd-voltar" style={{ marginTop: 0 }}
+            href={editandoId ? "/meus-anuncios" : "/anunciar"}>
             ← Voltar
           </Link>
         </div>
-        <span className="info-kicker">NOVO ANÚNCIO</span>
-        <h1 className="info-title">Bora desapegar</h1>
+        <span className="info-kicker">
+          {editandoId ? "EDITAR ANÚNCIO" : "NOVO ANÚNCIO"}
+        </span>
+        <h1 className="info-title">
+          {editandoId ? "Ajusta e salva" : "Bora desapegar"}
+        </h1>
         <p className="info-sub">
-          Preenche com carinho: anúncio completo acha dono novo muito mais rápido.
+          {editandoId
+            ? "Muda o que precisar; a vitrine atualiza na hora."
+            : "Preenche com carinho: anúncio completo acha dono novo muito mais rápido."}
         </p>
 
         <form className="an-form" onSubmit={publicar}>
-          <FotosUpload previews={previews} onEscolher={escolherFotos} onRemover={removerFoto} />
+          <FotosUpload previews={previewsTotais} onEscolher={escolherFotos} onRemover={removerFoto} />
 
           <label className="field">
             <span className="field-label">Título</span>
@@ -200,7 +244,9 @@ export default function Anunciar() {
 
           <button className="btn btn-primary btn-block" type="submit">
             {enviando && <span className="spinner" />}
-            {enviando ? "Publicando…" : "Publicar anúncio"}
+            {enviando
+              ? "Salvando…"
+              : editandoId ? "Salvar alterações" : "Publicar anúncio"}
           </button>
         </form>
       </main>
@@ -212,9 +258,13 @@ export default function Anunciar() {
           <div className="aviso-card" style={{ textAlign: "center" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/mark-blue.svg" alt="" style={{ height: 44 }} />
-            <h2 className="aviso-titulo">Anúncio publicado!</h2>
+            <h2 className="aviso-titulo">
+              {editandoId ? "Anúncio atualizado!" : "Anúncio publicado!"}
+            </h2>
             <p className="aviso-p">
-              Teu item já tá na vitrine pra todo mundo ver. Boa sorte no desapego!
+              {editandoId
+                ? "As mudanças já estão na vitrine."
+                : "Teu item já tá na vitrine pra todo mundo ver. Boa sorte no desapego!"}
             </p>
             <Link className="btn btn-primary btn-block" href={`/produtos/${publicadoId}`}>
               Ver meu anúncio

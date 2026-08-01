@@ -10,7 +10,6 @@ import { createClient } from "@/lib/supabase/client";
 import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
 import { Rodape } from "@/components/landing/Rodape";
-import { MeusAnuncios } from "@/components/conta/MeusAnuncios";
 import { BloquearScroll } from "@/components/BloquearScroll";
 
 type Perfil = {
@@ -120,7 +119,7 @@ export default function Conta() {
               {perfil.celular && <p className="ct-linha">{perfil.celular}</p>}
             </div>
             <div className="ct-acoes">
-              <Link className="btn btn-hero-ghost" href="/bem-vindo">
+              <Link className="btn btn-hero-ghost" href="/conta/editar">
                 <EditIcon sx={{ fontSize: 16 }} /> Editar perfil
               </Link>
               <button className="btn wiz-voltar" onClick={sair}>
@@ -132,7 +131,15 @@ export default function Conta() {
 
         <div className="info-bloco">
           <h2 className="info-h">Meus anúncios</h2>
-          <MeusAnuncios />
+          <p className="info-p">
+            Cliques recebidos, tempo no ar, edição e exclusão moram na página
+            dos teus anúncios.
+          </p>
+          <div className="info-cta" style={{ marginTop: 16 }}>
+            <Link className="btn btn-hero" href="/meus-anuncios">
+              Abrir meus anúncios
+            </Link>
+          </div>
         </div>
 
         <div className="ct-perigo">

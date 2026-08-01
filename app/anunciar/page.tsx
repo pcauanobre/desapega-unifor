@@ -17,11 +17,11 @@ const OPCOES = [
     lado: "esq",
   },
   {
-    href: "/conta",
+    href: "/meus-anuncios",
     img: "/escolha-meus.png",
     kicker: "ACOMPANHAR",
     titulo: "Meus anúncios",
-    sub: "Acompanha o que você publicou e conclui seus desapegos.",
+    sub: "Cliques, tempo no ar, edição e tudo que você publicou.",
     lado: "dir",
   },
 ];
