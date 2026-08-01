@@ -77,9 +77,9 @@ export function CardAnuncio({ anuncio }: { anuncio: Anuncio }) {
         <div className="card-foot">
           <span className="card-local">
             <PlaceIcon sx={{ fontSize: 16 }} />
-            {anuncio.bloco ?? "Campus"}
+            <span className="trunca">{anuncio.bloco ?? "Campus"}</span>
             <span className="sep">|</span>
-            {quandoPublicado(anuncio.created_at)}
+            <span className="quando">{quandoPublicado(anuncio.created_at)}</span>
           </span>
           {anuncio.is_doacao ? (
             <span className="card-doacao-txt">

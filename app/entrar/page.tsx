@@ -44,12 +44,14 @@ export default function Entrar() {
   const [aceite, setAceite] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const [sucesso, setSucesso] = useState<string | null>(null);
   const t = TEXTOS[modo];
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
     if (enviando) return;
     setErro(null);
+    setSucesso(null);
 
     if (!/.+@.+\..+/.test(email.trim())) {
       setErro("Escreve um email válido.");
@@ -74,7 +76,11 @@ export default function Entrar() {
       });
       if (error) {
         setEnviando(false);
-        setErro("Email ou senha incorretos.");
+        setErro(
+          error.message.includes("not confirmed")
+            ? "Essa conta ainda não foi ativada. Tenta de novo em instantes."
+            : "Email ou senha incorretos.",
+        );
         return;
       }
       router.push("/produtos");
@@ -99,7 +105,7 @@ export default function Entrar() {
     } else {
       setEnviando(false);
       setModo("login");
-      setErro("Conta criada! Agora entra com teu email e senha.");
+      setSucesso("Conta criada! Agora entra com teu email e senha.");
     }
   }
 
@@ -147,6 +153,7 @@ export default function Entrar() {
 
             <h1 className="login-title">{t.title}</h1>
             <p className="login-sub">{t.sub}</p>
+            {sucesso && <p className="login-ok">{sucesso}</p>}
 
             <div className="login-fields">
               <label className="field only-register">
