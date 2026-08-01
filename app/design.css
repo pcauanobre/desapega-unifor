@@ -227,7 +227,7 @@
   display:inline-block;animation:spin 700ms linear infinite}
 .spinner[hidden]{display:none}
 .spinner.azul{border-color:rgba(10,92,255,.25);border-top-color:var(--azul)}
-.btn-outline:disabled{opacity:.75;cursor:default;transform:none}
+.btn-outline:disabled{background:#EEF1F6;color:#9AA3B8;border-color:#E2E7F0;cursor:default;transform:none}
 
 /* A regra geral de link (.pagina-1280 a) vence a cor dos botões por
    especificidade; estas linhas devolvem a cor certa a cada variante. */
