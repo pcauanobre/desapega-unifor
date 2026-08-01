@@ -5,12 +5,12 @@ import { Rodape } from "@/components/landing/Rodape";
 
 const DICAS = [
   {
-    t: "Combina em lugar movimentado",
+    t: "Combine em lugar movimentado",
     d: "Praça central, entrada dos blocos, biblioteca. Horário de aula é o melhor: campus cheio, troca rápida.",
   },
   {
-    t: "Confere o item antes de pagar",
-    d: "Liga o eletrônico, folheia o livro, testa a calculadora. Pagamento só depois de ver que tá tudo certo.",
+    t: "Confira o item antes de pagar",
+    d: "Ligue o eletrônico, folheie o livro, teste a calculadora. Pagamento só depois de ver que tá tudo certo.",
   },
   {
     t: "Nada de pagamento antecipado",
@@ -21,12 +21,12 @@ const DICAS = [
     d: "O contato do anúncio é o canal oficial. Combinados por lá ficam registrados se precisar comprovar algo.",
   },
   {
-    t: "Desconfiou? Recua",
-    d: "Preço bom demais, pressa excessiva ou mudança de local na última hora são sinais. Cancela sem culpa.",
+    t: "Desconfiou? Recue",
+    d: "Preço bom demais, pressa excessiva ou mudança de local na última hora são sinais. Cancele sem culpa.",
   },
   {
-    t: "Viu abuso? Avisa a gente",
-    d: "Anúncio fora das regras ou comportamento estranho: manda pro email da central que a gente olha.",
+    t: "Viu abuso? Avise a gente",
+    d: "Anúncio fora das regras ou comportamento estranho: mande pro email da central que a gente olha.",
   },
 ];
 

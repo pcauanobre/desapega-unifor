@@ -126,11 +126,11 @@ export default function NovoAnuncio() {
     if (enviando) return;
     setErro(null);
 
-    if (titulo.trim().length < 3) return setErro("Capricha no título (mínimo 3 letras).");
-    if (descricao.trim().length < 10) return setErro("Descreve um pouco mais o item.");
-    if (!categoria) return setErro("Escolhe a categoria.");
-    if (!doacao && (!preco || Number(preco) <= 0)) return setErro("Diz o preço, ou marca como doação.");
-    if (previewsTotais.length === 0) return setErro("Coloca pelo menos uma foto.");
+    if (titulo.trim().length < 3) return setErro("Capriche no título (mínimo 3 letras).");
+    if (descricao.trim().length < 10) return setErro("Descreva um pouco mais o item.");
+    if (!categoria) return setErro("Escolha a categoria.");
+    if (!doacao && (!preco || Number(preco) <= 0)) return setErro("Informe o preço ou marque como doação.");
+    if (previewsTotais.length === 0) return setErro("Coloque pelo menos uma foto.");
 
     setEnviando(true);
     try {
@@ -196,12 +196,12 @@ export default function NovoAnuncio() {
           {editandoId ? "EDITAR ANÚNCIO" : "NOVO ANÚNCIO"}
         </span>
         <h1 className="info-title">
-          {editandoId ? "Ajusta e salva" : "Bora desapegar"}
+          {editandoId ? "Ajuste e salve" : "Bora desapegar"}
         </h1>
         <p className="info-sub">
           {editandoId
-            ? "Muda o que precisar; a vitrine atualiza na hora."
-            : "Preenche com carinho: anúncio completo acha dono novo muito mais rápido."}
+            ? "Mude o que precisar; a vitrine atualiza na hora."
+            : "Anúncio completo acha dono novo muito mais rápido."}
         </p>
 
         <form className="an-form" onSubmit={publicar}>
@@ -224,13 +224,13 @@ export default function NovoAnuncio() {
             <div className="wiz-dl">
               <span className="field-label">Categoria</span>
               <Droplist rotuloAria="Categoria" valor={categoria} onMudar={setCategoria}
-                opcoes={[{ valor: "", rotulo: "Escolhe a categoria" },
+                opcoes={[{ valor: "", rotulo: "Escolha a categoria" },
                   ...CATEGORIAS.map((c) => ({ valor: c, rotulo: c }))]} />
             </div>
             <div className="wiz-dl">
               <span className="field-label">Estado do item</span>
               <Droplist rotuloAria="Estado do item" valor={estado} onMudar={setEstado}
-                opcoes={[{ valor: "", rotulo: "Como ele tá?" },
+                opcoes={[{ valor: "", rotulo: "Como ele está?" },
                   ...ESTADOS.map((s) => ({ valor: s, rotulo: s }))]} />
             </div>
           </div>
