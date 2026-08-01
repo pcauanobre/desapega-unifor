@@ -92,10 +92,11 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const autor_nome =
-    (user.user_metadata?.nome as string | undefined) ??
-    user.email?.split("@")[0] ??
-    "Aluno";
+  // Nome público do card: "Nome · Curso", como no design da vitrine.
+  const meta = user.user_metadata ?? {};
+  const nome = (meta.nome as string | undefined) ?? "Aluno";
+  const curso = meta.curso as string | undefined;
+  const autor_nome = curso ? `${nome} · ${curso}` : nome;
 
   const { data, error } = await supabase
     .from("anuncios")
