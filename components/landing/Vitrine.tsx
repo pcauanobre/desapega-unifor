@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import type { Anuncio } from "@/lib/tipos";
 import { CATEGORIAS } from "@/lib/categorias";
 import { CardAnuncio } from "@/components/CardAnuncio";
@@ -7,7 +8,9 @@ import { CardAnuncio } from "@/components/CardAnuncio";
 type Props = {
   anuncios: Anuncio[] | null;
   filtrados: Anuncio[];
+  extras: Anuncio[];
   mostrandoSkeleton: boolean;
+  carregandoMais: boolean;
   erro: string | null;
   categoria: string;
   onCategoria: (v: string) => void;
@@ -26,13 +29,23 @@ type Props = {
  */
 export function Vitrine(props: Props) {
   const {
-    anuncios, filtrados, mostrandoSkeleton, erro,
+    anuncios, filtrados, extras, mostrandoSkeleton, carregandoMais, erro,
     categoria, onCategoria, ordenar, onOrdenar, onCarregarMais,
   } = props;
 
   const contar = (c: string) =>
     (anuncios ?? []).filter((a) => (c === "" ? true : a.categoria === c)).length;
   const carregando = mostrandoSkeleton || (anuncios === null && !erro);
+  const lista = [...filtrados, ...extras];
+
+  // Abriu o espaço de skeleton do "carregar mais": desce a página até ele.
+  useEffect(() => {
+    if (carregandoMais) {
+      document
+        .getElementById("skeleton-mais")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [carregandoMais]);
 
   return (
     <main className="shelf" id="vitrine">
@@ -89,14 +102,29 @@ export function Vitrine(props: Props) {
               </div>
             ))}
           </div>
-        ) : filtrados.length === 0 ? (
+        ) : lista.length === 0 ? (
           <p className="shelf-sub">
             Nenhum anúncio nessa busca ainda. Seja a primeira pessoa a desapegar!
           </p>
         ) : (
           <div className="grid">
-            {filtrados.map((a) => (
-              <CardAnuncio key={a.id} anuncio={a} />
+            {lista.map((a, i) => (
+              <CardAnuncio key={`${i}-${a.id}`} anuncio={a} />
+            ))}
+          </div>
+        )}
+        {carregandoMais && (
+          <div className="grid" id="skeleton-mais" style={{ marginTop: 22 }}>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div className="sk" key={i}>
+                <div className="sk-bar sk-photo" />
+                <div className="sk-bar sk-line-1" />
+                <div className="sk-bar sk-line-2" />
+                <div className="sk-foot">
+                  <i />
+                  <i />
+                </div>
+              </div>
             ))}
           </div>
         )}
@@ -104,10 +132,10 @@ export function Vitrine(props: Props) {
           <button
             className="btn btn-outline"
             onClick={onCarregarMais}
-            disabled={mostrandoSkeleton}
+            disabled={carregandoMais || carregando}
           >
-            {mostrandoSkeleton && <span className="spinner azul" />}
-            {mostrandoSkeleton ? "Carregando itens…" : "Carregar mais itens"}
+            {carregandoMais && <span className="spinner azul" />}
+            {carregandoMais ? "Carregando itens…" : "Carregar mais itens"}
           </button>
         </div>
       </div>

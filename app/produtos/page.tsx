@@ -12,8 +12,10 @@ import { Rodape } from "@/components/landing/Rodape";
 const DELAY = { filtro: 700, mais: 900 };
 
 /**
- * O QUE: a página de produtos (vitrine completa): busca, chips, ordenação,
- *        grid com skeletons. Aceita ?categoria= e ?q= vindos da LP.
+ * O QUE: a página de produtos (vitrine completa). Regras de interação:
+ *        o dropdown do header só vale ao clicar em Buscar; os chips
+ *        filtram na hora; "carregar mais" abre um espaço de skeleton
+ *        embaixo, desce até ele e aí os itens aparecem.
  * POR QUE: a rota / virou LP de apresentação; a vitrine cheia mora aqui.
  * CHAMA: CTAs da LP, logo do login e redirect pós-login apontam pra cá.
  * QUEBRA SE: a API mudar o formato { anuncios: [...] }.
@@ -22,13 +24,16 @@ export default function Produtos() {
   const [anuncios, setAnuncios] = useState<Anuncio[] | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [categoria, setCategoria] = useState("");
+  const [categoriaHeader, setCategoriaHeader] = useState("");
   const [busca, setBusca] = useState("");
   const [ordenar, setOrdenar] = useState("recentes");
   const [mostrandoSkeleton, setMostrandoSkeleton] = useState(false);
+  const [extras, setExtras] = useState<Anuncio[]>([]);
+  const [carregandoMais, setCarregandoMais] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // Filtros iniciais vindos da busca da LP (?categoria=&q=), aplicados
+    // Filtros iniciais vindos da URL (?categoria=&q=&doacoes=), aplicados
     // junto com a chegada dos dados pra não disparar render em cascata.
     const params = new URLSearchParams(window.location.search);
     const categoriaInicial = params.get("categoria") ?? "";
@@ -40,7 +45,10 @@ export default function Produtos() {
         const corpo = await r.json();
         if (!r.ok) throw new Error(corpo.erro ?? "erro ao listar");
         setAnuncios(corpo.anuncios);
-        if (categoriaInicial) setCategoria(categoriaInicial);
+        if (categoriaInicial) {
+          setCategoria(categoriaInicial);
+          setCategoriaHeader(categoriaInicial);
+        }
         if (buscaInicial) setBusca(buscaInicial);
         if (soDoacoes) setOrdenar("doacoes");
       })
@@ -50,14 +58,41 @@ export default function Produtos() {
     };
   }, []);
 
-  /* Mostra o skeleton por um tempo curto e aplica a mudança, como no design. */
+  /* Mostra o skeleton por um tempo curto e aplica a mudança, como no design.
+     Qualquer filtro novo zera as páginas extras do "carregar mais". */
   function comSkeleton(ms: number, aplicar: () => void) {
     setMostrandoSkeleton(true);
+    setCarregandoMais(false);
+    setExtras([]);
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => {
       aplicar();
       setMostrandoSkeleton(false);
     }, ms);
+  }
+
+  /* Chip: filtra na hora (comportamento do design) e sincroniza o dropdown. */
+  function filtrarPorChip(c: string) {
+    setCategoriaHeader(c);
+    comSkeleton(DELAY.filtro, () => setCategoria(c));
+  }
+
+  /* Botão Buscar: só aqui a seleção pendente do dropdown passa a valer. */
+  function aplicarBusca() {
+    comSkeleton(DELAY.filtro, () => setCategoria(categoriaHeader));
+    document.getElementById("vitrine")?.scrollIntoView({ behavior: "smooth" });
+  }
+
+  /* Carregar mais: abre o espaço de skeleton (a Vitrine desce até ele) e
+     depois anexa os itens embaixo dos atuais. */
+  function carregarMais() {
+    if (carregandoMais || !anuncios) return;
+    setCarregandoMais(true);
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      setExtras((atuais) => [...atuais, ...anuncios]);
+      setCarregandoMais(false);
+    }, DELAY.mais);
   }
 
   const filtrados = useMemo(() => {
@@ -81,25 +116,31 @@ export default function Produtos() {
     <div className="pagina-1280 flex-1">
       <TopBar />
       <HeaderBusca
-        categoria={categoria}
+        categoria={categoriaHeader}
         busca={busca}
-        onCategoria={(c) => comSkeleton(DELAY.filtro, () => setCategoria(c))}
-        onBusca={setBusca}
-        onBuscar={() =>
-          document.getElementById("vitrine")?.scrollIntoView({ behavior: "smooth" })
-        }
+        onCategoria={setCategoriaHeader}
+        onBusca={(v) => {
+          setBusca(v);
+          setExtras([]);
+        }}
+        onBuscar={aplicarBusca}
       />
       <StatsBar />
       <Vitrine
         anuncios={anuncios}
         filtrados={filtrados}
+        extras={extras}
         mostrandoSkeleton={mostrandoSkeleton}
+        carregandoMais={carregandoMais}
         erro={erro}
         categoria={categoria}
-        onCategoria={(c) => comSkeleton(DELAY.filtro, () => setCategoria(c))}
+        onCategoria={filtrarPorChip}
         ordenar={ordenar}
-        onOrdenar={setOrdenar}
-        onCarregarMais={() => comSkeleton(DELAY.mais, () => undefined)}
+        onOrdenar={(v) => {
+          setOrdenar(v);
+          setExtras([]);
+        }}
+        onCarregarMais={carregarMais}
       />
       <Rodape />
     </div>

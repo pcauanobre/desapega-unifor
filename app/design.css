@@ -223,6 +223,16 @@
 .spinner.azul{border-color:rgba(10,92,255,.25);border-top-color:var(--azul)}
 .btn-outline:disabled{opacity:.75;cursor:default;transform:none}
 
+/* A regra geral de link (.pagina-1280 a) vence a cor dos botões por
+   especificidade; estas linhas devolvem a cor certa a cada variante. */
+.pagina-1280 a.btn-white,.pagina-1280 a.btn-white:hover{color:var(--azul-hover)}
+.pagina-1280 a.btn-ghost,.pagina-1280 a.btn-ghost:hover{color:#fff}
+.pagina-1280 a.btn-hero,.pagina-1280 a.btn-hero:hover{color:#fff}
+.pagina-1280 a.btn-hero-ghost{color:var(--navy)}
+.pagina-1280 a.btn-hero-ghost:hover{color:var(--azul)}
+.pagina-1280 a.btn-outline,.pagina-1280 a.btn-outline:hover{color:var(--navy)}
+.pagina-1280 a.btn-zap,.pagina-1280 a.btn-zap:hover{color:#fff}
+
 /* modos do formulário: o componente troca a classe no wrapper */
 .only-register{display:none}
 .is-register .only-register{display:flex}
