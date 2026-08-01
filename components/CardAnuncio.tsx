@@ -5,6 +5,7 @@ import Link from "next/link";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import PlaceIcon from "@mui/icons-material/Place";
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import type { Anuncio } from "@/lib/tipos";
 import { quandoPublicado } from "@/lib/tempo";
 
@@ -74,20 +75,17 @@ export function CardAnuncio({ anuncio }: { anuncio: Anuncio }) {
         <div className="card-cat">{anuncio.categoria.toUpperCase()}</div>
         <h3 className="card-title">{anuncio.titulo}</h3>
         <div className="card-foot">
-          <span className="card-seller">
-            <b>
-              {anuncio.autor_nome}
-              {anuncio.autor_curso ? ` · ${anuncio.autor_curso}` : ""}
-            </b>
-            <span className="card-local">
-              <PlaceIcon sx={{ fontSize: 13 }} />
-              {anuncio.bloco ?? "Campus"}
-              <span className="sep">|</span>
-              {quandoPublicado(anuncio.created_at)}
-            </span>
+          <span className="card-local">
+            <PlaceIcon sx={{ fontSize: 16 }} />
+            {anuncio.bloco ?? "Campus"}
+            <span className="sep">|</span>
+            {quandoPublicado(anuncio.created_at)}
           </span>
           {anuncio.is_doacao ? (
-            <span className="card-donation">DOAÇÃO</span>
+            <span className="card-doacao-txt">
+              <VolunteerActivismIcon sx={{ fontSize: 17 }} />
+              Doação
+            </span>
           ) : (
             <span className="card-price">{brl(anuncio.preco)}</span>
           )}
