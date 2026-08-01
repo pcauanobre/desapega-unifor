@@ -3,6 +3,7 @@
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { BloquearScroll } from "@/components/BloquearScroll";
+import { useSaidaAnimada } from "@/components/useSaidaAnimada";
 import type { EstadoDoItem } from "@/lib/tipos";
 
 const ESTADOS: EstadoDoItem[] = ["Como novo", "Bom estado", "Usado", "Funcionando"];
@@ -34,6 +35,7 @@ export function FiltrosPopup({ teto, atual, onFechar, onAplicar }: Props) {
   const [max, setMax] = useState(atual?.max ?? teto);
   const [estados, setEstados] = useState<EstadoDoItem[]>(atual?.estados ?? []);
   const [doacoes, setDoacoes] = useState(atual?.doacoes ?? true);
+  const { saindo, fecharCom } = useSaidaAnimada();
 
   const pct = (v: number) => `${(v / teto) * 100}%`;
   const padrao = min === 0 && max === teto && estados.length === 0 && doacoes;
@@ -46,18 +48,22 @@ export function FiltrosPopup({ teto, atual, onFechar, onAplicar }: Props) {
 
   return (
     <div
-      className="aviso-overlay"
+      className={"aviso-overlay" + (saindo ? " is-saindo" : "")}
       role="dialog"
       aria-modal="true"
       onClick={(e) => {
-        if (e.target === e.currentTarget) onFechar();
+        if (e.target === e.currentTarget) fecharCom(onFechar);
       }}
     >
       <BloquearScroll />
       <div className="aviso-card fx-card">
         <div className="fx-cabeca">
           <h2 className="aviso-titulo" style={{ margin: 0 }}>Filtros</h2>
-          <button className="fx-fechar" onClick={onFechar} aria-label="Fechar">
+          <button
+            className="fx-fechar"
+            onClick={() => fecharCom(onFechar)}
+            aria-label="Fechar"
+          >
             <CloseIcon sx={{ fontSize: 20 }} />
           </button>
         </div>
@@ -127,12 +133,19 @@ export function FiltrosPopup({ teto, atual, onFechar, onAplicar }: Props) {
         </label>
 
         <div className="wiz-acoes">
-          <button className="btn wiz-voltar" onClick={() => onAplicar(null)}>
+          <button
+            className="btn wiz-voltar"
+            onClick={() => fecharCom(() => onAplicar(null))}
+          >
             Limpar
           </button>
           <button
             className="btn wiz-continuar"
-            onClick={() => onAplicar(padrao ? null : { min, max, estados, doacoes })}
+            onClick={() =>
+              fecharCom(() =>
+                onAplicar(padrao ? null : { min, max, estados, doacoes }),
+              )
+            }
           >
             Aplicar filtros
           </button>

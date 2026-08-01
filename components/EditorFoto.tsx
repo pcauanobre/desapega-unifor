@@ -4,6 +4,7 @@ import { useState } from "react";
 import Cropper from "react-easy-crop";
 import { recortarFoto, type AreaCorte } from "@/lib/otimizar-foto";
 import { BloquearScroll } from "@/components/BloquearScroll";
+import { useSaidaAnimada } from "@/components/useSaidaAnimada";
 
 type Props = {
   arquivo: File;
@@ -27,21 +28,30 @@ export function EditorFoto({ arquivo, aspecto, circular = false, onCancelar, onC
   const [zoom, setZoom] = useState(1);
   const [area, setArea] = useState<AreaCorte | null>(null);
   const [cortando, setCortando] = useState(false);
+  const { saindo, fecharCom } = useSaidaAnimada();
 
   async function confirmar() {
     if (!area || cortando) return;
     setCortando(true);
     try {
       const blob = await recortarFoto(arquivo, area);
-      URL.revokeObjectURL(url);
-      onCortar(blob);
+      /* revoga a URL só no fim, senão a prévia apaga durante a saída */
+      fecharCom(() => {
+        URL.revokeObjectURL(url);
+        onCortar(blob);
+      });
     } catch {
       setCortando(false);
     }
   }
 
   return (
-    <div className="aviso-overlay" role="dialog" aria-modal="true" aria-label="Ajustar foto">
+    <div
+      className={"aviso-overlay" + (saindo ? " is-saindo" : "")}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Ajustar foto"
+    >
       <BloquearScroll />
       <div className="aviso-card ef-card">
         <h2 className="aviso-titulo">Ajusta a foto</h2>
@@ -75,7 +85,7 @@ export function EditorFoto({ arquivo, aspecto, circular = false, onCancelar, onC
         />
 
         <div className="wiz-acoes" style={{ marginTop: 14 }}>
-          <button className="btn wiz-voltar" onClick={onCancelar}>
+          <button className="btn wiz-voltar" onClick={() => fecharCom(onCancelar)}>
             Cancelar
           </button>
           <button className="btn btn-primary" style={{ flex: 1 }} onClick={confirmar}>

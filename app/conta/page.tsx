@@ -13,6 +13,7 @@ import { Droplist } from "@/components/Droplist";
 import { CURSOS, SEMESTRES, formatarCelular } from "@/components/wizard/EtapaCampos";
 import { BloquearScroll } from "@/components/BloquearScroll";
 import { EditorFoto } from "@/components/EditorFoto";
+import { useSaidaAnimada } from "@/components/useSaidaAnimada";
 
 /**
  * O QUE: a conta como formulário vivo: clicou em Minha conta, os dados já
@@ -40,6 +41,7 @@ export default function Conta() {
   const [senhaConfirma, setSenhaConfirma] = useState("");
   const [erroApagar, setErroApagar] = useState<string | null>(null);
   const [paraCortar, setParaCortar] = useState<File | null>(null);
+  const { saindo, fecharCom } = useSaidaAnimada();
 
   useEffect(() => {
     // getSession lê do armazenamento local: os dados chegam de uma vez,
@@ -267,7 +269,11 @@ export default function Conta() {
       )}
 
       {confirmando && (
-        <div className="aviso-overlay" role="dialog" aria-modal="true">
+        <div
+          className={"aviso-overlay" + (saindo ? " is-saindo" : "")}
+          role="dialog"
+          aria-modal="true"
+        >
           <BloquearScroll />
           <div className="aviso-card">
             <h2 className="aviso-titulo">Apagar tudo mesmo?</h2>
@@ -288,11 +294,13 @@ export default function Conta() {
             <div className="wiz-acoes">
               <button
                 className="btn wiz-voltar"
-                onClick={() => {
-                  setConfirmando(false);
-                  setSenhaConfirma("");
-                  setErroApagar(null);
-                }}
+                onClick={() =>
+                  fecharCom(() => {
+                    setConfirmando(false);
+                    setSenhaConfirma("");
+                    setErroApagar(null);
+                  })
+                }
               >
                 Cancelar
               </button>

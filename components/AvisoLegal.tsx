@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { BloquearScroll } from "@/components/BloquearScroll";
+import { useSaidaAnimada } from "@/components/useSaidaAnimada";
 
 /**
  * O QUE: popup de aviso legal da LP: projeto acadêmico do processo
@@ -14,7 +15,7 @@ import { BloquearScroll } from "@/components/BloquearScroll";
  */
 export function AvisoLegal() {
   const [aberto, setAberto] = useState(false);
-  const [saindo, setSaindo] = useState(false);
+  const { saindo, fecharCom } = useSaidaAnimada();
 
   useEffect(() => {
     if (localStorage.getItem("desapega-aviso-visto")) return;
@@ -24,8 +25,7 @@ export function AvisoLegal() {
 
   function fechar() {
     localStorage.setItem("desapega-aviso-visto", "1");
-    setSaindo(true);
-    setTimeout(() => setAberto(false), 240);
+    fecharCom(() => setAberto(false));
   }
 
   if (!aberto) return null;
