@@ -10,6 +10,7 @@ type Props = {
   anuncios: Anuncio[] | null;
   filtrados: Anuncio[];
   extras: Anuncio[];
+  temMais: boolean;
   mostrandoSkeleton: boolean;
   carregandoMais: boolean;
   erro: string | null;
@@ -21,17 +22,18 @@ type Props = {
 };
 
 /**
- * O QUE: a seção "Últimos desapegos" no markup do design: título, ordenar
- *        (com "Só doações"), chips com contador, grid, skeletons com
- *        shimmer e o botão "Carregar mais itens".
+ * O QUE: a seção "Últimos desapegos" do design: título, ordenar (com "Só
+ *        doações"), chips com contador, grid, skeletons com shimmer e o
+ *        botão "Carregar mais itens", desabilitado quando tudo que casa
+ *        com o filtro já está em vista (temMais=false).
  * POR QUE: idêntica ao código fonte, mas com dados reais da API.
- * CHAMA: landing (app/page.tsx), que é dona do estado.
+ * CHAMA: /produtos (app/produtos/page.tsx), que é dona do estado.
  * QUEBRA SE: as classes .shelf/.chips/.grid/.sk do design.css mudarem.
  */
 export function Vitrine(props: Props) {
   const {
-    anuncios, filtrados, extras, mostrandoSkeleton, carregandoMais, erro,
-    categoria, onCategoria, ordenar, onOrdenar, onCarregarMais,
+    anuncios, filtrados, extras, temMais, mostrandoSkeleton, carregandoMais,
+    erro, categoria, onCategoria, ordenar, onOrdenar, onCarregarMais,
   } = props;
 
   const contar = (c: string) =>
@@ -92,17 +94,7 @@ export function Vitrine(props: Props) {
           <p className="shelf-sub">{erro}</p>
         ) : carregando ? (
           <div className="grid">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div className="sk" key={i}>
-                <div className="sk-bar sk-photo" />
-                <div className="sk-bar sk-line-1" />
-                <div className="sk-bar sk-line-2" />
-                <div className="sk-foot">
-                  <i />
-                  <i />
-                </div>
-              </div>
-            ))}
+            <Skeletons quantos={8} />
           </div>
         ) : lista.length === 0 ? (
           <p className="shelf-sub">
@@ -122,24 +114,14 @@ export function Vitrine(props: Props) {
         )}
         {carregandoMais && (
           <div className="grid" id="skeleton-mais" style={{ marginTop: 22 }}>
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div className="sk" key={i}>
-                <div className="sk-bar sk-photo" />
-                <div className="sk-bar sk-line-1" />
-                <div className="sk-bar sk-line-2" />
-                <div className="sk-foot">
-                  <i />
-                  <i />
-                </div>
-              </div>
-            ))}
+            <Skeletons quantos={4} />
           </div>
         )}
         <div className="shelf-more">
           <button
             className="btn btn-outline"
             onClick={onCarregarMais}
-            disabled={carregandoMais || carregando}
+            disabled={carregandoMais || carregando || !temMais}
           >
             {carregandoMais && <span className="spinner azul" />}
             {carregandoMais ? "Carregando itens…" : "Carregar mais itens"}
@@ -147,5 +129,24 @@ export function Vitrine(props: Props) {
         </div>
       </div>
     </main>
+  );
+}
+
+/* Cards de skeleton com shimmer (8 na carga inicial, 4 no "carregar mais"). */
+function Skeletons({ quantos }: { quantos: number }) {
+  return (
+    <>
+      {Array.from({ length: quantos }).map((_, i) => (
+        <div className="sk" key={i}>
+          <div className="sk-bar sk-photo" />
+          <div className="sk-bar sk-line-1" />
+          <div className="sk-bar sk-line-2" />
+          <div className="sk-foot">
+            <i />
+            <i />
+          </div>
+        </div>
+      ))}
+    </>
   );
 }

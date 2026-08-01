@@ -14,8 +14,8 @@ const PAGINA = { inicial: 8, mais: 4 };
 /**
  * O QUE: a página de produtos (vitrine completa). Regras de interação:
  *        o dropdown do header só vale ao clicar em Buscar; os chips
- *        filtram na hora; "carregar mais" abre um espaço de skeleton
- *        embaixo, desce até ele e aí os itens aparecem.
+ *        filtram na hora; "carregar mais" revela a próxima página com
+ *        skeleton e desabilita quando tudo do filtro já está em vista.
  * POR QUE: a rota / virou LP de apresentação; a vitrine cheia mora aqui.
  * CHAMA: CTAs da LP, logo do login e redirect pós-login apontam pra cá.
  * QUEBRA SE: a API mudar o formato { anuncios: [...] }.
@@ -28,7 +28,7 @@ export default function Produtos() {
   const [busca, setBusca] = useState("");
   const [ordenar, setOrdenar] = useState("recentes");
   const [mostrandoSkeleton, setMostrandoSkeleton] = useState(false);
-  const [extras, setExtras] = useState<Anuncio[]>([]);
+  const [visiveis, setVisiveis] = useState(PAGINA.inicial);
   const [carregandoMais, setCarregandoMais] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -59,11 +59,11 @@ export default function Produtos() {
   }, []);
 
   /* Mostra o skeleton por um tempo curto e aplica a mudança, como no design.
-     Qualquer filtro novo zera as páginas extras do "carregar mais". */
+     Qualquer filtro novo volta a vitrine pra primeira página. */
   function comSkeleton(ms: number, aplicar: () => void) {
     setMostrandoSkeleton(true);
     setCarregandoMais(false);
-    setExtras([]);
+    setVisiveis(PAGINA.inicial);
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => {
       aplicar();
@@ -84,13 +84,13 @@ export default function Produtos() {
   }
 
   /* Carregar mais: abre o espaço de skeleton (a Vitrine desce até ele) e
-     depois anexa os itens embaixo dos atuais. */
+     depois revela a próxima página dos filtrados. */
   function carregarMais() {
-    if (carregandoMais || !anuncios) return;
+    if (carregandoMais || visiveis >= filtrados.length) return;
     setCarregandoMais(true);
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => {
-      setExtras((atuais) => [...atuais, ...anuncios]);
+      setVisiveis((v) => v + PAGINA.mais);
       setCarregandoMais(false);
     }, DELAY.mais);
   }
@@ -121,14 +121,15 @@ export default function Produtos() {
         onCategoria={setCategoriaHeader}
         onBusca={(v) => {
           setBusca(v);
-          setExtras([]);
+          setVisiveis(PAGINA.inicial);
         }}
         onBuscar={aplicarBusca}
       />
       <Vitrine
         anuncios={anuncios}
-        filtrados={filtrados}
-        extras={extras}
+        filtrados={filtrados.slice(0, PAGINA.inicial)}
+        extras={filtrados.slice(PAGINA.inicial, visiveis)}
+        temMais={visiveis < filtrados.length}
         mostrandoSkeleton={mostrandoSkeleton}
         carregandoMais={carregandoMais}
         erro={erro}
@@ -137,7 +138,7 @@ export default function Produtos() {
         ordenar={ordenar}
         onOrdenar={(v) => {
           setOrdenar(v);
-          setExtras([]);
+          setVisiveis(PAGINA.inicial);
         }}
         onCarregarMais={carregarMais}
       />
