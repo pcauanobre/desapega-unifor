@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import ScheduleIcon from "@mui/icons-material/Schedule";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
 import type { Anuncio } from "@/lib/tipos";
@@ -13,13 +12,6 @@ import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
 import { Rodape } from "@/components/landing/Rodape";
 import { CardAnuncio } from "@/components/CardAnuncio";
-
-/* "hoje" no primeiro dia, depois "há X dias no ar". */
-function diasNoAr(iso: string): string {
-  const dias = Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
-  if (dias <= 0) return "no ar hoje";
-  return `há ${dias} dia${dias > 1 ? "s" : ""} no ar`;
-}
 
 /**
  * O QUE: a rota dos teus anúncios: cada um com cliques recebidos, tempo
@@ -79,7 +71,19 @@ export default function MeusAnuncios() {
 
         {erro && <p className="shelf-sub" style={{ marginTop: 24 }}>{erro}</p>}
         {!erro && anuncios === null && (
-          <p className="shelf-sub" style={{ marginTop: 24 }}>Carregando teus anúncios…</p>
+          <div className="grid ct-grid" style={{ marginTop: 24 }}>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div className="sk" key={i}>
+                <div className="sk-bar sk-photo" />
+                <div className="sk-bar sk-line-1" />
+                <div className="sk-bar sk-line-2" />
+                <div className="sk-foot">
+                  <i />
+                  <i />
+                </div>
+              </div>
+            ))}
+          </div>
         )}
         {!erro && anuncios !== null && anuncios.length === 0 && (
           <div className="info-bloco">
@@ -97,12 +101,8 @@ export default function MeusAnuncios() {
                 <CardAnuncio anuncio={a} />
                 <div className="ma-stats">
                   <span>
-                    <VisibilityOutlinedIcon sx={{ fontSize: 16 }} />
+                    <VisibilityOutlinedIcon sx={{ fontSize: 17 }} />
                     {a.cliques} clique{a.cliques === 1 ? "" : "s"}
-                  </span>
-                  <span>
-                    <ScheduleIcon sx={{ fontSize: 15 }} />
-                    {diasNoAr(a.created_at)}
                   </span>
                 </div>
                 <div className="ma-acoes">

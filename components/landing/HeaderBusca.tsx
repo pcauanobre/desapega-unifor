@@ -24,7 +24,9 @@ type Props = {
  * QUEBRA SE: as classes .header/.search do design.css mudarem.
  */
 export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }: Props) {
-  const [logado, setLogado] = useState(false);
+  // null = ainda conferindo a sessão; o botão só aparece com resposta,
+  // pra não piscar "Quero anunciar" antes de virar "Central de Anúncios".
+  const [logado, setLogado] = useState<boolean | null>(null);
 
   useEffect(() => {
     createClient()
@@ -67,9 +69,11 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
         </form>
 
         <div className="header-actions">
-          <Link className="btn btn-white" href="/anunciar">
-            {logado ? "Anunciar" : "Quero anunciar"}
-          </Link>
+          {logado !== null && (
+            <Link className="btn btn-white" href="/anunciar">
+              {logado ? "Central de Anúncios" : "Quero anunciar"}
+            </Link>
+          )}
         </div>
       </div>
     </header>
