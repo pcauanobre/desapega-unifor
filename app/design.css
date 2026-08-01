@@ -296,7 +296,7 @@
 .esc-dir{animation:escInDir .7s 90ms var(--ease) both}
 @keyframes escInEsq{from{opacity:0;transform:translateX(-46px)}to{opacity:1;transform:none}}
 @keyframes escInDir{from{opacity:0;transform:translateX(46px)}to{opacity:1;transform:none}}
-.esc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%;
+.esc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;
   transition:transform .6s var(--ease)}
 .esc-veu{position:absolute;inset:0;z-index:1;
   background:linear-gradient(to top,rgba(7,28,61,.84) 0%,rgba(7,28,61,.28) 46%,rgba(7,28,61,.06) 72%)}
@@ -510,20 +510,31 @@
 .grid > *:nth-child(11){animation-delay:500ms}
 .grid > *:nth-child(12){animation-delay:550ms}
 
-/* LP de apresentação (rota /): hero + prévia da vitrine + como funciona. */
-.hero{background:#fff;border-bottom:1px solid var(--borda);overflow:hidden}
-.hero-inner{padding-top:64px;padding-bottom:64px;display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
-.hero-title{font-family:var(--sora);font-weight:800;font-size:44px;line-height:1.08;letter-spacing:-.03em;color:var(--navy);margin:0}
-.hero-title em{color:var(--azul);font-style:normal}
-.hero-sub{font-size:16.5px;line-height:1.65;color:var(--txt-2);margin:18px 0 0;max-width:520px}
-.hero-ctas{display:flex;gap:12px;margin-top:28px}
-.btn-hero{background:var(--azul);color:#fff;font-size:15.5px;font-weight:700;padding:15px 28px}
+/* LP de apresentação (rota /): hero cinematográfico de foto cheia 16:9,
+   levemente escurecido, + prévia da vitrine + como funciona. */
+.hero{position:relative;overflow:hidden;display:flex;align-items:center;
+  background:linear-gradient(180deg,rgba(6,18,42,.42) 0%,rgba(6,18,42,.58) 55%,rgba(6,18,42,.78) 100%),
+    url("/hero-campus.jpg") center 78%/cover no-repeat;
+  aspect-ratio:16/9;max-height:72vh;min-height:460px;border-bottom:1px solid var(--borda)}
+.hero-inner{width:100%;animation:fadeUp 600ms 120ms var(--ease) both}
+.hero-title{font-family:var(--sora);font-weight:800;font-size:50px;line-height:1.08;letter-spacing:-.03em;
+  color:#fff;margin:0;max-width:680px;text-shadow:0 2px 24px rgba(3,10,26,.5)}
+.hero-title em{color:#7FB0FF;font-style:normal}
+.hero-sub{font-size:17px;line-height:1.68;color:#DCE7FA;margin:18px 0 0;max-width:560px;
+  text-shadow:0 1px 14px rgba(3,10,26,.55)}
+.hero-ctas{display:flex;gap:12px;margin-top:30px}
+.btn-hero{background:var(--azul);color:#fff;font-size:15.5px;font-weight:700;padding:15px 28px;
+  box-shadow:0 10px 26px rgba(10,92,255,.4)}
 .btn-hero:hover{background:var(--azul-hover);transform:translateY(-2px);color:#fff}
-.btn-hero-ghost{background:#fff;color:var(--navy);border:1.5px solid #D3DAE8;font-size:15.5px;font-weight:700;padding:15px 24px}
-.btn-hero-ghost:hover{border-color:var(--azul);color:var(--azul)}
-.hero-art{background:linear-gradient(rgba(21,62,201,.38),rgba(21,62,201,.38)),url("/campus.png") center/cover no-repeat;
-  border-radius:18px;min-height:340px;animation:fadeIn 700ms 150ms ease both}
-.hero-inner > div:first-child{animation:fadeUp 500ms 80ms var(--ease) both}
+.btn-hero-ghost{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.65);
+  font-size:15.5px;font-weight:700;padding:15px 24px;backdrop-filter:blur(3px)}
+.btn-hero-ghost:hover{background:rgba(255,255,255,.18);border-color:#fff;color:#fff}
+/* fora do hero (páginas info), o ghost volta a ser claro sobre branco */
+.info-cta .btn-hero-ghost{background:#fff;color:var(--navy);border-color:#D3DAE8;backdrop-filter:none}
+.info-cta .btn-hero-ghost:hover{border-color:var(--azul);color:var(--azul);background:#fff}
+.pagina-1280 .hero a.btn-hero-ghost,.pagina-1280 .hero a.btn-hero-ghost:hover{color:#fff}
+.pagina-1280 .info-cta a.btn-hero-ghost{color:var(--navy)}
+.pagina-1280 .info-cta a.btn-hero-ghost:hover{color:var(--azul)}
 
 .preview{padding-top:8px;padding-bottom:56px}
 .preview-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding-top:44px;padding-bottom:20px}

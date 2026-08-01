@@ -41,26 +41,23 @@ export default function Home() {
 
       <section className="hero">
         <div className="container hero-inner">
-          <div>
-            <h1 className="hero-title">
-              O que sobra pra um, <em>serve pro outro</em>.
-            </h1>
-            <p className="hero-sub">
-              O Desapega Unifor é o marketplace de economia circular do campus:
-              alunos anunciam livros, calculadoras, jalecos e móveis que não
-              usam mais, e quem tá chegando encontra tudo mais barato, ou de
-              graça.
-            </p>
-            <div className="hero-ctas">
-              <Link className="btn btn-hero" href="/produtos">
-                Ver os desapegos
-              </Link>
-              <Link className="btn btn-hero-ghost" href="/anunciar">
-                Quero anunciar
-              </Link>
-            </div>
+          <h1 className="hero-title">
+            O que sobra pra um, <em>serve pro outro</em>.
+          </h1>
+          <p className="hero-sub">
+            O Desapega Unifor é o marketplace de economia circular do campus:
+            alunos anunciam livros, calculadoras, jalecos e móveis que não
+            usam mais, e quem tá chegando encontra tudo mais barato, ou de
+            graça.
+          </p>
+          <div className="hero-ctas">
+            <Link className="btn btn-hero" href="/produtos">
+              Ver os desapegos
+            </Link>
+            <Link className="btn btn-hero-ghost" href="/anunciar">
+              Quero anunciar
+            </Link>
           </div>
-          <div className="hero-art" />
         </div>
       </section>
 
