@@ -101,8 +101,13 @@ export function Vitrine(props: Props) {
           </div>
         )}
         <div className="shelf-more">
-          <button className="btn btn-outline" onClick={onCarregarMais}>
-            Carregar mais itens
+          <button
+            className="btn btn-outline"
+            onClick={onCarregarMais}
+            disabled={mostrandoSkeleton}
+          >
+            {mostrandoSkeleton && <span className="spinner azul" />}
+            {mostrandoSkeleton ? "Carregando itens…" : "Carregar mais itens"}
           </button>
         </div>
       </div>

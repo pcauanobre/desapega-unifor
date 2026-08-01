@@ -62,16 +62,6 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
           <Link className="btn btn-white" href="/entrar">
             Quero anunciar
           </Link>
-          <a
-            className="btn btn-ghost"
-            href="#vitrine"
-            onClick={(e) => {
-              e.preventDefault();
-              onBuscar();
-            }}
-          >
-            Quero buscar
-          </a>
         </div>
       </div>
     </header>
