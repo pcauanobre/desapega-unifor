@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { Brand } from "@/components/Brand";
+import { LocalizacaoMapa } from "@/components/landing/LocalizacaoMapa";
 
 /**
  * O QUE: o footer navy de 4 colunas do design, com todos os links vivos:
  *        categorias filtram a vitrine, plataforma leva às páginas
- *        informativas, contato abre email e Instagram.
+ *        informativas, contato tem o endereço da Unifor (hover abre um
+ *        mini mapa), telefone, email e Instagram.
  * POR QUE: markup do código fonte, agora com navegação real.
  * CHAMA: todas as páginas desktop.
  * QUEBRA SE: as rotas /regras, /seguranca, /doacoes ou /ajuda mudarem.
@@ -36,11 +38,14 @@ export function Rodape() {
         </div>
         <div className="footer-col">
           <span className="footer-head mono">CONTATO</span>
-          <a href="mailto:desapega@unifor.br">desapega@unifor.br</a>
-          <a href="https://www.instagram.com/unifor" target="_blank" rel="noopener noreferrer">
-            Instagram
-          </a>
-          <Link href="/ajuda">Central de ajuda</Link>
+          <LocalizacaoMapa>
+            <a href="mailto:desapega@unifor.br">desapega@unifor.br</a>
+            <a href="tel:+558534773000">(85) 3477-3000</a>
+            <a href="https://www.instagram.com/unifor" target="_blank" rel="noopener noreferrer">
+              Instagram
+            </a>
+            <Link href="/ajuda">Central de ajuda</Link>
+          </LocalizacaoMapa>
         </div>
       </div>
       <div className="container footer-bottom">
