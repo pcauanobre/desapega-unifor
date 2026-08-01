@@ -12,7 +12,7 @@ insert into public.anuncios
 select t.titulo, t.descricao, t.categoria, t.preco, t.is_doacao, t.imagem_url, t.estado,
        t.autor_nome, now() - t.faz::interval, u.id
 from (values
-  ('Cálculo Vol. 1 (Guidorizzi, 6ª ed.)',
+  ('Cálculo Vol. 1 — Guidorizzi (6ª ed.)',
    'Usado um semestre, sem rabisco. Capa com marca de uso leve.',
    'Livros', 45.00, false, 'https://picsum.photos/seed/calculo/640/480', 'Bom estado',
    'Marina R. · Eng. Civil', '2 hours'),
@@ -43,6 +43,22 @@ from (values
   ('Notebook stand + mochila 15"',
    'Suporte de alumínio e mochila reforçada com forro.',
    'Computação', 40.00, false, 'https://picsum.photos/seed/mochila/640/480', 'Como novo',
-   'Julia S. · Design', '32 hours')
+   'Julia S. · Design', '32 hours'),
+  ('Mouse e teclado gamer (combo)',
+   'Combo usado em bom estado, RGB funcionando. Troco por nada, é venda.',
+   'Computação', 70.00, false, 'https://picsum.photos/seed/teclado/640/480', 'Bom estado',
+   'Rafael N. · Ciência da Computação', '26 hours'),
+  ('Multímetro digital com pontas novas',
+   'Medindo certinho, pontas novas na caixa. Ideal pros laboratórios.',
+   'Eletrônicos', 35.00, false, 'https://picsum.photos/seed/multimetro/640/480', 'Funcionando',
+   'Sofia L. · Eng. Elétrica', '18 hours'),
+  ('Tênis branco pouco usado (42)',
+   'Comprei errado e usei duas vezes. Doando pra quem servir.',
+   'Vestuário', null, true, 'https://picsum.photos/seed/tenis/640/480', 'Como novo',
+   'Gabriel V. · Ed. Física', '22 hours'),
+  ('Escrivaninha compacta com gaveta',
+   'Perfeita pra quarto de república. Desmonto e ajudo a levar.',
+   'Móveis', 90.00, false, 'https://picsum.photos/seed/escrivaninha/640/480', 'Bom estado',
+   'Camila O. · Psicologia', '40 hours')
 ) as t (titulo, descricao, categoria, preco, is_doacao, imagem_url, estado, autor_nome, faz)
 cross join (select id from auth.users order by created_at limit 1) as u;
