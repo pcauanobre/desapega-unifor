@@ -1,6 +1,7 @@
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import ForumIcon from "@mui/icons-material/Forum";
 import RecyclingIcon from "@mui/icons-material/Recycling";
+import { Revelar } from "@/components/Revelar";
 
 const PASSOS = [
   {
@@ -35,17 +36,21 @@ export function ComoFunciona() {
   return (
     <section id="como-funciona" className="como">
       <div className="container como-inner">
-        <h2 className="shelf-title">Como funciona</h2>
-        <p className="shelf-sub">Economia circular no campus, sem burocracia.</p>
+        <Revelar>
+          <h2 className="shelf-title">Como funciona</h2>
+          <p className="shelf-sub">Economia circular no campus, sem burocracia.</p>
+        </Revelar>
         <div className="como-grid">
-          {PASSOS.map(({ Icone, titulo, texto }) => (
-            <div key={titulo} className="como-card">
-              <span className="como-ico">
-                <Icone />
-              </span>
-              <h3 className="como-t">{titulo}</h3>
-              <p className="como-p">{texto}</p>
-            </div>
+          {PASSOS.map(({ Icone, titulo, texto }, i) => (
+            <Revelar key={titulo} atraso={i * 120}>
+              <div className="como-card">
+                <span className="como-ico">
+                  <Icone />
+                </span>
+                <h3 className="como-t">{titulo}</h3>
+                <p className="como-p">{texto}</p>
+              </div>
+            </Revelar>
           ))}
         </div>
       </div>

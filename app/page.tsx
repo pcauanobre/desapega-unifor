@@ -88,9 +88,7 @@ export default function Home() {
         </div>
       </section>
 
-      <Revelar>
-        <ComoFunciona />
-      </Revelar>
+      <ComoFunciona />
       <Rodape />
     </div>
   );
