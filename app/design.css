@@ -279,8 +279,8 @@
 .card-local .quando{white-space:nowrap;flex:none}
 .card-local .sep{margin:0 4px;color:#D3DAE8;flex:none}
 .card-foot .card-price,.card-foot .card-doacao-txt{white-space:nowrap;flex:none}
-.card-doacao-txt{font-family:var(--sora);font-weight:700;font-size:17px;color:var(--verde);
-  letter-spacing:-.01em;display:inline-flex;align-items:center;gap:6px}
+.card-doacao-txt{font-family:var(--sora);font-weight:700;font-size:14px;color:var(--verde);
+  letter-spacing:-.01em;display:inline-flex;align-items:center;gap:5px}
 
 /* ---------- anunciar ---------- */
 .an-form{margin-top:26px;display:flex;flex-direction:column;gap:16px;max-width:640px}

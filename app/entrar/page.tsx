@@ -20,16 +20,20 @@ const TEXTOS = {
   },
   register: {
     title: "Crie sua conta Desapega Unifor",
-    sub: "Cadastro rápido para alunos da Unifor",
+    sub: "Só para alunos da Unifor, com o email institucional (@edu.unifor.br)",
     submit: "Criar conta", altHint: "Já tem conta?", altLink: "Entrar",
   },
 };
 
+/* Só aluno da Unifor cria conta: o cadastro exige o email institucional. */
+const DOMINIO_UNIFOR = "@edu.unifor.br";
+
 /**
  * O QUE: a tela de acesso no layout do design (foto do campus + card),
- *        com login e cadastro REAIS no Supabase Auth por matrícula.
- * POR QUE: o design simulava a validação; aqui o mesmo visual autentica
- *          de verdade (matrícula vira email sintético por baixo).
+ *        com login e cadastro REAIS no Supabase Auth por email. O cadastro
+ *        só aceita email institucional da Unifor (@edu.unifor.br).
+ * POR QUE: a vitrine promete itens anunciados por alunos da Unifor, então
+ *          quem cria conta precisa provar o vínculo pelo email institucional.
  * CHAMA: "Entrar", "Quero anunciar" e clique nos cards levam pra cá.
  * QUEBRA SE: confirmação de email estiver LIGADA no painel do Supabase
  *            (o cadastro passa a exigir email real confirmado).
@@ -63,6 +67,11 @@ export default function Entrar() {
     }
     if (modo === "register") {
       if (nome.trim().length < 2) return setErro("Escreve teu nome completo.");
+      if (!email.trim().toLowerCase().endsWith(DOMINIO_UNIFOR)) {
+        return setErro(
+          `Só dá pra criar conta com o email institucional da Unifor (nome${DOMINIO_UNIFOR}).`,
+        );
+      }
       if (!aceite) return setErro("Precisa aceitar as regras do desapego.");
     }
 
@@ -165,8 +174,11 @@ export default function Entrar() {
               </label>
 
               <label className="field">
-                <span className="field-label">Email</span>
-                <input type="email" placeholder="Email" value={email}
+                <span className="field-label">
+                  {modo === "register" ? "Email institucional" : "Email"}
+                </span>
+                <input type="email" value={email}
+                  placeholder={modo === "register" ? `nome${DOMINIO_UNIFOR}` : "Email"}
                   onChange={(e) => setEmail(e.target.value)} />
               </label>
 

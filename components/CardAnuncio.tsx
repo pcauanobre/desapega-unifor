@@ -100,7 +100,7 @@ export function CardAnuncio({
           </span>
           {anuncio.is_doacao ? (
             <span className="card-doacao-txt">
-              <VolunteerActivismIcon sx={{ fontSize: 17 }} />
+              <VolunteerActivismIcon sx={{ fontSize: 15 }} />
               Doação
             </span>
           ) : (
