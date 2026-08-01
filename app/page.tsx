@@ -42,13 +42,12 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-inner">
           <h1 className="hero-title">
-            O que sobra pra um, <em>serve pro outro</em>.
+            Compra, vende e doa <em>sem sair do campus</em>.
           </h1>
           <p className="hero-sub">
-            O Desapega Unifor é o marketplace de economia circular do campus:
-            alunos anunciam livros, calculadoras, jalecos e móveis que não
-            usam mais, e quem tá chegando encontra tudo mais barato, ou de
-            graça.
+            Aquele livro, a calculadora ou o jaleco parado no armário de
+            alguém pode ser exatamente o que você precisa. Anuncia em um
+            minuto e combina tudo direto no WhatsApp, de aluno pra aluno.
           </p>
           <div className="hero-ctas">
             <Link className="btn btn-hero" href="/produtos">

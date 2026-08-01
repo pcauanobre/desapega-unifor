@@ -513,9 +513,9 @@
 /* LP de apresentação (rota /): hero cinematográfico de foto cheia 16:9,
    levemente escurecido, + prévia da vitrine + como funciona. */
 .hero{position:relative;overflow:hidden;display:flex;align-items:center;
-  background:linear-gradient(180deg,rgba(6,18,42,.42) 0%,rgba(6,18,42,.58) 55%,rgba(6,18,42,.78) 100%),
+  background:linear-gradient(180deg,rgba(5,15,36,.55) 0%,rgba(5,15,36,.68) 55%,rgba(5,15,36,.86) 100%),
     url("/hero-campus.jpg") center 78%/cover no-repeat;
-  aspect-ratio:16/9;max-height:72vh;min-height:460px;border-bottom:1px solid var(--borda)}
+  height:min(56.25vw,72vh);min-height:480px;border-bottom:1px solid var(--borda)}
 .hero-inner{width:100%;animation:fadeUp 600ms 120ms var(--ease) both}
 .hero-title{font-family:var(--sora);font-weight:800;font-size:50px;line-height:1.08;letter-spacing:-.03em;
   color:#fff;margin:0;max-width:680px;text-shadow:0 2px 24px rgba(3,10,26,.5)}
