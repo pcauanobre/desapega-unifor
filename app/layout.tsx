@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Sora, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Sora, Plus_Jakarta_Sans, JetBrains_Mono, Open_Sans } from "next/font/google";
 import "./globals.css";
 import "./design.css";
 
@@ -23,6 +23,14 @@ const jetbrains = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
+// Open Sans é a fonte do portal oficial; usada só na tela de acesso,
+// medida com DevTools na página real de login da universidade.
+const openSans = Open_Sans({
+  variable: "--font-opensans",
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Desapega Unifor",
   description:
@@ -37,7 +45,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${sora.variable} ${jakarta.variable} ${jetbrains.variable} h-full antialiased`}
+      className={`${sora.variable} ${jakarta.variable} ${jetbrains.variable} ${openSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

@@ -227,3 +227,24 @@
 /* erro real de autenticação, que o protótipo não tinha */
 .login-erro{margin:10px 0 0;padding:10px 12px;border-radius:var(--r-sm);background:#FDECEC;
   border:1px solid #F5C8C8;color:#8C2B2B;font-size:12.5px;text-align:center}
+
+/* Calibragem com as medidas reais do portal da universidade (DevTools na
+   página oficial de login, viewport 1440x925):
+   fonte Open Sans; azul institucional #004AF7 em botão/links/foco; logo do
+   topo 50px em (65,40); inputs 40px de altura com raio 8; botão Acessar
+   46px, peso 400; ícones sociais em círculos de 40px a 100px do rodapé. */
+.login-body{--azul:#004AF7;--azul-hover:#0038C4}
+.login-body .login-card{width:538px;padding:32px;font-family:var(--font-opensans),var(--sans)}
+.login-body .login-title{font-family:var(--font-opensans),var(--sora);font-size:22px;font-weight:700}
+.login-body .field input,.login-body .field select{height:40px;padding:6px 12px;font-size:15px}
+.login-body .field-pwd input{padding-right:40px}
+.login-body .btn-primary{height:46px;font-size:15px;font-weight:400;padding:9px 40px}
+.login-body .btn-block{margin-top:24px}
+.login-body .login-row a{font-size:14px}
+.login-topbrand{left:65px;top:40px}
+.login-topbrand img{height:50px!important}
+.login-social{left:65px;bottom:60px;gap:14px}
+.login-social .icones{gap:9px}
+.login-social .icones .ico{width:40px;height:40px;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;transition:background 160ms ease}
+.login-social .icones .ico:hover{background:rgba(255,255,255,.16)}

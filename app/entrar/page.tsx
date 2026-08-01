@@ -113,11 +113,11 @@ export default function Entrar() {
             </div>
             <div className="login-social">
               <span className="icones">
-                <FacebookIcon sx={{ fontSize: 19 }} />
-                <InstagramIcon sx={{ fontSize: 19 }} />
-                <YouTubeIcon sx={{ fontSize: 21 }} />
-                <XIcon sx={{ fontSize: 16 }} />
-                <LinkedInIcon sx={{ fontSize: 19 }} />
+                <span className="ico"><FacebookIcon sx={{ fontSize: 20 }} /></span>
+                <span className="ico"><InstagramIcon sx={{ fontSize: 20 }} /></span>
+                <span className="ico"><YouTubeIcon sx={{ fontSize: 22 }} /></span>
+                <span className="ico"><XIcon sx={{ fontSize: 17 }} /></span>
+                <span className="ico"><LinkedInIcon sx={{ fontSize: 20 }} /></span>
               </span>
               <span>Projeto Desapega | Universidade de Fortaleza</span>
             </div>
