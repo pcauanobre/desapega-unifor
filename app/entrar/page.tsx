@@ -13,12 +13,6 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { createClient } from "@/lib/supabase/client";
 import { matriculaParaEmail, matriculaValida } from "@/lib/matricula";
 
-const CURSOS = [
-  "Engenharia Civil", "Engenharia Elétrica", "Engenharia Mecânica",
-  "Ciência da Computação", "Sistemas de Informação", "Direito",
-  "Medicina", "Enfermagem", "Arquitetura", "Administração",
-];
-
 const TEXTOS = {
   login: {
     title: "Acesse sua conta Unifor",
@@ -46,7 +40,7 @@ export default function Entrar() {
   const [modo, setModo] = useState<"login" | "register">("login");
   const [nome, setNome] = useState("");
   const [matricula, setMatricula] = useState("");
-  const [curso, setCurso] = useState("");
+  const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [verSenha, setVerSenha] = useState(false);
   const [aceite, setAceite] = useState(false);
@@ -69,33 +63,51 @@ export default function Entrar() {
     }
     if (modo === "register") {
       if (nome.trim().length < 2) return setErro("Escreve teu nome completo.");
-      if (!curso) return setErro("Seleciona teu curso.");
+      if (!/.+@.+\..+/.test(email.trim()))
+        return setErro("Escreve um email válido.");
       if (!aceite) return setErro("Precisa aceitar as regras do desapego.");
     }
 
     setEnviando(true);
     const supabase = createClient();
-    const email = matriculaParaEmail(matricula);
-    const { error } =
-      modo === "login"
-        ? await supabase.auth.signInWithPassword({ email, password: senha })
-        : await supabase.auth.signUp({
-            email,
-            password: senha,
-            options: { data: { nome: nome.trim(), curso, matricula } },
-          });
+    const emailAuth = matriculaParaEmail(matricula);
 
-    if (error) {
-      setEnviando(false);
-      setErro(
-        modo === "login"
-          ? "Matrícula ou senha incorretas."
-          : "Não deu pra criar a conta: " + traduzir(error.message),
-      );
+    if (modo === "login") {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: emailAuth,
+        password: senha,
+      });
+      if (error) {
+        setEnviando(false);
+        setErro("Matrícula ou senha incorretas.");
+        return;
+      }
+      router.push("/produtos");
+      router.refresh();
       return;
     }
-    router.push("/produtos");
-    router.refresh();
+
+    const { data, error } = await supabase.auth.signUp({
+      email: emailAuth,
+      password: senha,
+      options: {
+        data: { nome: nome.trim(), matricula, email_contato: email.trim() },
+      },
+    });
+    if (error) {
+      setEnviando(false);
+      setErro("Não deu pra criar a conta: " + traduzir(error.message));
+      return;
+    }
+    if (data.session) {
+      // Conta criada e logada: segue pro setup do perfil.
+      router.push("/bem-vindo");
+      router.refresh();
+    } else {
+      setEnviando(false);
+      setModo("login");
+      setErro("Conta criada! Agora entra com tua matrícula e senha.");
+    }
   }
 
   return (
@@ -157,11 +169,9 @@ export default function Entrar() {
               </label>
 
               <label className="field only-register">
-                <span className="field-label">Curso</span>
-                <select value={curso} onChange={(e) => setCurso(e.target.value)}>
-                  <option value="">Selecione o curso</option>
-                  {CURSOS.map((c) => (<option key={c}>{c}</option>))}
-                </select>
+                <span className="field-label">Email</span>
+                <input type="email" placeholder="Email" value={email}
+                  onChange={(e) => setEmail(e.target.value)} />
               </label>
 
               <label className="field">
