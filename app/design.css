@@ -276,6 +276,52 @@
 .card-doacao-txt{font-family:var(--sora);font-weight:700;font-size:17px;color:var(--verde);
   letter-spacing:-.01em;display:inline-flex;align-items:center;gap:6px}
 
+/* ---------- anunciar ---------- */
+.an-form{margin-top:26px;display:flex;flex-direction:column;gap:16px;max-width:640px}
+.an-textarea{border:1px solid var(--borda-input);border-radius:var(--r-sm);padding:11px 13px;font-size:14px;
+  color:var(--txt);outline:none;background:#fff;width:100%;resize:vertical;font-family:inherit;
+  transition:border-color 160ms ease,box-shadow 160ms ease}
+.an-textarea:focus{border-color:var(--azul);box-shadow:0 0 0 3px rgba(10,92,255,.14)}
+.an-linha{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:end}
+.an-fotos{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.an-foto{position:relative;width:104px;height:84px;border-radius:10px;overflow:hidden;border:1px solid var(--borda)}
+.an-foto img{width:100%;height:100%;object-fit:cover}
+.an-foto-x{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;border:none;
+  background:rgba(7,28,61,.72);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.an-foto-x:hover{background:var(--navy)}
+.an-foto-capa{position:absolute;left:5px;bottom:5px;background:rgba(255,255,255,.92);color:var(--navy);
+  font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;letter-spacing:.08em}
+.an-foto-add{width:104px;height:84px;border-radius:10px;border:1.5px dashed var(--borda-input);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--txt-3);
+  font-size:12px;font-weight:600;cursor:pointer;transition:all 160ms ease;background:#FAFBFE}
+.an-foto-add:hover{border-color:var(--azul);color:var(--azul);background:#F4F8FF}
+.an-switch{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--txt);
+  cursor:pointer;padding-bottom:12px}
+.an-switch input{display:none}
+.an-switch-pista{width:44px;height:24px;border-radius:99px;background:#D7DDE8;position:relative;
+  transition:background 200ms ease;flex:none}
+.an-switch-bola{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;
+  transition:left 200ms var(--ease);box-shadow:0 1px 4px rgba(7,28,61,.25)}
+.an-switch input:checked + .an-switch-pista{background:var(--verde)}
+.an-switch input:checked + .an-switch-pista .an-switch-bola{left:23px}
+
+/* ---------- conta ---------- */
+.ct-perfil{margin-top:18px;display:flex;align-items:center;gap:20px;border:1px solid var(--borda);
+  border-radius:16px;background:#fff;padding:24px}
+.ct-dados{min-width:0}
+.ct-nome{font-family:var(--sora);font-weight:700;font-size:24px;letter-spacing:-.02em;color:var(--navy);margin:0}
+.ct-linha{font-size:13.5px;color:var(--txt-2);margin:4px 0 0}
+.ct-acoes{margin-left:auto;display:flex;gap:10px;flex:none}
+.ct-acoes .btn{gap:7px}
+.ct-grid{margin-top:16px}
+.ct-item{display:flex;flex-direction:column;gap:8px}
+.ct-excluir{background:#fff;border:1.5px solid #F1C7C7;color:#A33B3B;font-size:13px;padding:10px;gap:6px}
+.ct-excluir:hover{background:#FDF1F1;border-color:#E19A9A}
+.ct-perigo{margin-top:44px;border:1px solid #F1C7C7;background:#FFFAFA;border-radius:14px;padding:22px;
+  display:flex;align-items:center;gap:20px;justify-content:space-between}
+.ct-apagar{background:#C23B3B;color:#fff;font-size:14px;padding:12px 20px}
+.ct-apagar:hover{background:#A82F2F}
+
 /* ---------- setup wizard (/bem-vindo) ---------- */
 .wiz-fundo{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 24px;
   background:#EAF3FE url("/bg-shapes.png") right center/cover no-repeat}

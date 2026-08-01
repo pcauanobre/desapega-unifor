@@ -55,7 +55,7 @@ export default function Home() {
               <Link className="btn btn-hero" href="/produtos">
                 Ver os desapegos
               </Link>
-              <Link className="btn btn-hero-ghost" href="/entrar">
+              <Link className="btn btn-hero-ghost" href="/anunciar">
                 Quero anunciar
               </Link>
             </div>

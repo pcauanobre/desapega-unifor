@@ -1,5 +1,7 @@
 import { CATEGORIAS, type Categoria } from "./categorias";
 
+const ESTADOS = ["Como novo", "Bom estado", "Usado", "Funcionando"] as const;
+
 export type DadosAnuncio = {
   titulo: string;
   descricao: string;
@@ -7,6 +9,7 @@ export type DadosAnuncio = {
   preco: number | null;
   is_doacao: boolean;
   imagem_url: string | null;
+  estado: string | null;
   bloco: string | null;
   contato: string | null;
   fotos: string[] | null;
@@ -58,6 +61,12 @@ export function validarAnuncio(body: unknown): {
     else erros.push("imagem_url: precisa ser uma URL http(s) válida");
   }
 
+  let estado: string | null = null;
+  if (typeof b.estado === "string" && b.estado !== "") {
+    if (ESTADOS.includes(b.estado as (typeof ESTADOS)[number])) estado = b.estado;
+    else erros.push("estado: use uma das opções da lista");
+  }
+
   const bloco =
     typeof b.bloco === "string" && b.bloco.trim() !== ""
       ? b.bloco.trim().slice(0, 40)
@@ -85,7 +94,7 @@ export function validarAnuncio(body: unknown): {
     dados: {
       titulo, descricao, categoria, preco, is_doacao,
       imagem_url: imagem_url ?? fotos?.[0] ?? null,
-      bloco, contato, fotos,
+      estado, bloco, contato, fotos,
     },
   };
 }

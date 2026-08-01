@@ -11,7 +11,6 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import XIcon from "@mui/icons-material/X";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { createClient } from "@/lib/supabase/client";
-import { matriculaParaEmail, matriculaValida } from "@/lib/matricula";
 
 const TEXTOS = {
   login: {
@@ -21,7 +20,7 @@ const TEXTOS = {
   },
   register: {
     title: "Crie sua conta Desapega Unifor",
-    sub: "Cadastro para alunos com matrícula ativa",
+    sub: "Cadastro rápido para alunos da Unifor",
     submit: "Criar conta", altHint: "Já tem conta?", altLink: "Entrar",
   },
 };
@@ -39,7 +38,6 @@ export default function Entrar() {
   const router = useRouter();
   const [modo, setModo] = useState<"login" | "register">("login");
   const [nome, setNome] = useState("");
-  const [matricula, setMatricula] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [verSenha, setVerSenha] = useState(false);
@@ -53,8 +51,8 @@ export default function Entrar() {
     if (enviando) return;
     setErro(null);
 
-    if (!matriculaValida(matricula)) {
-      setErro("Matrícula inválida: use só os números, sem o dígito.");
+    if (!/.+@.+\..+/.test(email.trim())) {
+      setErro("Escreve um email válido.");
       return;
     }
     if (senha.length < 6) {
@@ -63,23 +61,20 @@ export default function Entrar() {
     }
     if (modo === "register") {
       if (nome.trim().length < 2) return setErro("Escreve teu nome completo.");
-      if (!/.+@.+\..+/.test(email.trim()))
-        return setErro("Escreve um email válido.");
       if (!aceite) return setErro("Precisa aceitar as regras do desapego.");
     }
 
     setEnviando(true);
     const supabase = createClient();
-    const emailAuth = matriculaParaEmail(matricula);
 
     if (modo === "login") {
       const { error } = await supabase.auth.signInWithPassword({
-        email: emailAuth,
+        email: email.trim(),
         password: senha,
       });
       if (error) {
         setEnviando(false);
-        setErro("Matrícula ou senha incorretas.");
+        setErro("Email ou senha incorretos.");
         return;
       }
       router.push("/produtos");
@@ -88,11 +83,9 @@ export default function Entrar() {
     }
 
     const { data, error } = await supabase.auth.signUp({
-      email: emailAuth,
+      email: email.trim(),
       password: senha,
-      options: {
-        data: { nome: nome.trim(), matricula, email_contato: email.trim() },
-      },
+      options: { data: { nome: nome.trim() } },
     });
     if (error) {
       setEnviando(false);
@@ -106,7 +99,7 @@ export default function Entrar() {
     } else {
       setEnviando(false);
       setModo("login");
-      setErro("Conta criada! Agora entra com tua matrícula e senha.");
+      setErro("Conta criada! Agora entra com teu email e senha.");
     }
   }
 
@@ -163,12 +156,6 @@ export default function Entrar() {
               </label>
 
               <label className="field">
-                <span className="field-label">Matrícula</span>
-                <input type="text" placeholder="Matrícula" value={matricula}
-                  onChange={(e) => setMatricula(e.target.value.replace(/\D/g, ""))} />
-              </label>
-
-              <label className="field only-register">
                 <span className="field-label">Email</span>
                 <input type="email" placeholder="Email" value={email}
                   onChange={(e) => setEmail(e.target.value)} />

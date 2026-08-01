@@ -57,7 +57,7 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
         </form>
 
         <div className="header-actions">
-          <Link className="btn btn-white" href="/entrar">
+          <Link className="btn btn-white" href="/anunciar">
             Quero anunciar
           </Link>
         </div>

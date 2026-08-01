@@ -49,7 +49,7 @@ export default function Doacoes() {
           <Link className="btn btn-hero" href="/produtos?doacoes=1">
             Ver só as doações
           </Link>
-          <Link className="btn btn-hero-ghost" href="/entrar">
+          <Link className="btn btn-hero-ghost" href="/anunciar">
             Quero doar um item
           </Link>
         </div>

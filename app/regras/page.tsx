@@ -60,7 +60,7 @@ export default function Regras() {
           ))}
         </div>
         <div className="info-cta">
-          <Link className="btn btn-hero" href="/entrar">Quero anunciar</Link>
+          <Link className="btn btn-hero" href="/anunciar">Quero anunciar</Link>
           <Link className="btn btn-hero-ghost" href="/seguranca">Segurança nas trocas</Link>
         </div>
       </main>
