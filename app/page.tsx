@@ -42,12 +42,12 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-inner">
           <h1 className="hero-title">
-            Compra, vende e doa <em>sem sair do campus</em>.
+            De aluno pra aluno, <em>o comércio circular do campus</em>.
           </h1>
           <p className="hero-sub">
-            Aquele livro, a calculadora ou o jaleco parado no armário de
-            alguém pode ser exatamente o que você precisa. Anuncia em um
-            minuto e combina tudo direto no WhatsApp, de aluno pra aluno.
+            O marketplace dos alunos da Unifor pra quem quer vender o que
+            não usa mais ou até mesmo doar. Anuncia em um minuto e combina
+            tudo direto no WhatsApp.
           </p>
           <div className="hero-ctas">
             <Link className="btn btn-hero" href="/produtos">
