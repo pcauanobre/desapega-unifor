@@ -10,6 +10,7 @@ import { CardAnuncio } from "@/components/CardAnuncio";
 import { ComoFunciona } from "@/components/landing/ComoFunciona";
 import { Rodape } from "@/components/landing/Rodape";
 import { AvisoLegal } from "@/components/AvisoLegal";
+import { Revelar } from "@/components/Revelar";
 
 /**
  * O QUE: a LP de apresentação (rota /): hero explicando a proposta,
@@ -60,28 +61,36 @@ export default function Home() {
         </div>
       </section>
 
-      <StatsBar />
+      <Revelar>
+        <StatsBar />
+      </Revelar>
 
       <section className="preview">
-        <div className="container preview-head">
-          <div>
-            <h2 className="shelf-title">Últimos desapegos</h2>
-            <p className="shelf-sub">O que acabou de chegar na vitrine.</p>
+        <Revelar>
+          <div className="container preview-head">
+            <div>
+              <h2 className="shelf-title">Últimos desapegos</h2>
+              <p className="shelf-sub">O que acabou de chegar na vitrine.</p>
+            </div>
+            <Link className="preview-link" href="/produtos">
+              Ver todos os itens →
+            </Link>
           </div>
-          <Link className="preview-link" href="/produtos">
-            Ver todos os itens →
-          </Link>
-        </div>
+        </Revelar>
         <div className="container">
           <div className="grid">
-            {(anuncios ?? []).slice(0, 4).map((a) => (
-              <CardAnuncio key={a.id} anuncio={a} />
+            {(anuncios ?? []).slice(0, 4).map((a, i) => (
+              <Revelar key={a.id} atraso={i * 90}>
+                <CardAnuncio anuncio={a} />
+              </Revelar>
             ))}
           </div>
         </div>
       </section>
 
-      <ComoFunciona />
+      <Revelar>
+        <ComoFunciona />
+      </Revelar>
       <Rodape />
     </div>
   );

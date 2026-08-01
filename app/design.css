@@ -264,6 +264,11 @@
 .dl-op.marcada{color:var(--azul)}
 .dl-op svg{color:var(--azul)}
 
+/* ---------- scroll-reveal da LP ---------- */
+.rv{opacity:0;transform:translateY(28px);transition:opacity 650ms var(--ease),transform 650ms var(--ease)}
+.rv-visivel{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+
 /* ---------- popup de filtros da vitrine ---------- */
 .fx-botao{border:1.5px solid var(--borda-2);background:#fff;color:var(--txt);font-size:13.5px;font-weight:600;
   padding:9px 12px;border-radius:var(--r-sm);cursor:pointer;display:inline-flex;align-items:center;gap:7px;
