@@ -6,7 +6,7 @@ import { Rodape } from "@/components/landing/Rodape";
 const PERGUNTAS = [
   {
     q: "Como eu anuncio um item?",
-    a: "Cria tua conta com matrícula e senha, clica em Quero anunciar e preenche o formulário: título, descrição, categoria, preço (ou marca como doação) e as fotos. O anúncio entra na vitrine na hora.",
+    a: "Crie sua conta com o email institucional e uma senha, clique em Quero anunciar e preencha o formulário: título, descrição, categoria, preço (ou marque como doação) e as fotos. O anúncio entra na vitrine na hora.",
   },
   {
     q: "Precisa pagar alguma coisa?",
@@ -18,15 +18,15 @@ const PERGUNTAS = [
   },
   {
     q: "Onde a entrega acontece?",
-    a: "Dentro do campus, de preferência no bloco indicado no anúncio. Combina o horário pelo WhatsApp e prioriza lugares movimentados.",
+    a: "Dentro do campus, de preferência no bloco indicado no anúncio. Combine o horário pelo WhatsApp e priorize lugares movimentados.",
   },
   {
     q: "Quem pode usar?",
-    a: "Alunos com matrícula ativa na Unifor. O cadastro pede matrícula, curso e senha.",
+    a: "Alunos da Unifor. O cadastro pede nome, email institucional (@edu.unifor.br) e senha; curso e semestre entram no perfil depois.",
   },
   {
     q: "Vendi ou doei meu item, e agora?",
-    a: "Entra em Meus anúncios e exclui o item, assim a vitrine fica sempre atual pra quem tá procurando.",
+    a: "Entre em Meus anúncios e exclua o item, assim a vitrine fica sempre atual pra quem tá procurando.",
   },
 ];
 
@@ -46,8 +46,8 @@ export default function Ajuda() {
         <span className="info-kicker">CENTRAL DE AJUDA</span>
         <h1 className="info-title">Como podemos ajudar?</h1>
         <p className="info-sub">
-          As dúvidas mais comuns de quem tá chegando no Desapega. Se a tua não
-          estiver aqui, chama no email do rodapé.
+          As dúvidas mais comuns de quem tá chegando no Desapega. Se a sua não
+          estiver aqui, chame no email do rodapé.
         </p>
         <div className="info-bloco">
           {PERGUNTAS.map(({ q, a }) => (

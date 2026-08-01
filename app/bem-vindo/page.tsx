@@ -9,9 +9,9 @@ import { EditorFoto } from "@/components/EditorFoto";
 import { EtapaCampos, type Perfil } from "@/components/wizard/EtapaCampos";
 
 const ETAPAS = [
-  { titulo: "Vamos montar seu perfil", sub: "Uma foto deixa teus anúncios muito mais confiáveis." },
-  { titulo: "Seu contato", sub: "O WhatsApp que aparece pros interessados nos teus anúncios." },
-  { titulo: "Sua vida no campus", sub: "Curso e semestre aparecem junto do teu nome na vitrine." },
+  { titulo: "Vamos montar seu perfil", sub: "Uma foto deixa seus anúncios muito mais confiáveis." },
+  { titulo: "Seu contato", sub: "O WhatsApp que aparece pros interessados nos seus anúncios." },
+  { titulo: "Sua vida no campus", sub: "Curso e semestre aparecem junto do seu nome na vitrine." },
 ];
 
 /**
@@ -154,8 +154,8 @@ export default function BemVindo() {
             <img src="/mark-blue.svg" alt="" style={{ height: 44 }} />
             <h2 className="aviso-titulo">Perfil completo!</h2>
             <p className="aviso-p">
-              Teu cadastro tá pronto e o botão de anunciar já tá liberado.
-              Agora é desapegar do que tá parado e garimpar o que tu precisa.
+              Seu cadastro tá pronto e o botão de anunciar já tá liberado.
+              Agora é desapegar do que tá parado e garimpar o que você precisa.
             </p>
             <Link className="btn btn-primary btn-block" href="/produtos">
               Ir pra vitrine

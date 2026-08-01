@@ -102,7 +102,7 @@ export default function Conta() {
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
     if (salvando) return;
-    if (nome.trim().length < 2) return setErro("Escreve teu nome completo.");
+    if (nome.trim().length < 2) return setErro("Escreva seu nome completo.");
     setSalvando(true);
     setErro(null);
     setSalvo(false);
@@ -129,7 +129,7 @@ export default function Conta() {
   async function apagarTudo() {
     if (apagando) return;
     if (senhaConfirma.length < 6) {
-      setErroApagar("Digite tua senha pra confirmar.");
+      setErroApagar("Digite sua senha pra confirmar.");
       return;
     }
     setApagando(true);
@@ -243,7 +243,7 @@ export default function Conta() {
           <div>
             <h2 className="info-h">Apagar meus dados</h2>
             <p className="info-p">
-              Remove tua conta, teu perfil e TODOS os teus anúncios de uma
+              Remove sua conta, seu perfil e TODOS os seus anúncios de uma
               vez. Sem volta.
             </p>
           </div>
@@ -273,10 +273,10 @@ export default function Conta() {
             <h2 className="aviso-titulo">Apagar tudo mesmo?</h2>
             <p className="aviso-p" style={{ textAlign: "center" }}>
               Conta, perfil e anúncios somem de vez. Essa ação não tem desfazer.
-              Confirma tua senha pra continuar.
+              Confirme sua senha pra continuar.
             </p>
             <label className="field" style={{ marginTop: 14 }}>
-              <span className="field-label">Tua senha</span>
+              <span className="field-label">Sua senha</span>
               <input
                 type="password"
                 placeholder="Senha"

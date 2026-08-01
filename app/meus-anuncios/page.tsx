@@ -87,7 +87,7 @@ export default function MeusAnuncios() {
         )}
         {!erro && anuncios !== null && anuncios.length === 0 && (
           <div className="info-bloco">
-            <p className="info-p">Tu ainda não anunciou nada. Bora desapegar?</p>
+            <p className="info-p">Você ainda não anunciou nada. Bora desapegar?</p>
             <div className="info-cta">
               <Link className="btn btn-hero" href="/anunciar/novo">Anunciar um item</Link>
             </div>

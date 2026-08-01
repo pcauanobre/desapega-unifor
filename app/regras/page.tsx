@@ -18,15 +18,15 @@ const REGRAS = [
   },
   {
     t: "Doação tem prioridade de espírito",
-    d: "Se o item tá parado e tu não precisa do dinheiro, marca como doação. Calouro agradece e a roda gira mais rápido.",
+    d: "Se o item tá parado e você não precisa do dinheiro, marque como doação. Calouro agradece e a roda gira mais rápido.",
   },
   {
     t: "Entrega dentro do campus",
-    d: "Combina a retirada no bloco indicado, em horário de aula e lugar movimentado. Evita encontro fora da universidade.",
+    d: "Combine a retirada no bloco indicado, em horário de aula e lugar movimentado. Evite encontro fora da universidade.",
   },
   {
     t: "Respeito sempre",
-    d: "Sem pressão, sem spam e sem mensagem fora de hora. Conversa de aluno pra aluno, do jeito que tu gostaria de ser tratado.",
+    d: "Sem pressão, sem spam e sem mensagem fora de hora. Conversa de aluno pra aluno, do jeito que você gostaria de ser tratado.",
   },
 ];
 

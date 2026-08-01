@@ -297,7 +297,7 @@ export default function NovoAnuncio() {
             <p className="aviso-p">
               {editandoId
                 ? "As mudanças já estão na vitrine."
-                : "Teu item já tá na vitrine pra todo mundo ver. Boa sorte no desapego!"}
+                : "Seu item já tá na vitrine pra todo mundo ver. Boa sorte no desapego!"}
             </p>
             <Link className="btn btn-primary btn-block" href={`/produtos/${publicadoId}`}>
               Ver meu anúncio

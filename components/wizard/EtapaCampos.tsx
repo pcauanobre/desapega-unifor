@@ -116,8 +116,8 @@ export function EtapaCampos({ etapa, perfil, onMudar, onFoto }: Props) {
           />
         </label>
         <p className="wiz-sub">
-          É por ele que os interessados vão combinar a entrega contigo. Ele
-          aparece na página dos teus anúncios.
+          É por ele que os interessados vão combinar a entrega com você. Ele
+          aparece na página dos seus anúncios.
         </p>
       </div>
     );

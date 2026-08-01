@@ -6,21 +6,21 @@ import { Revelar } from "@/components/Revelar";
 const PASSOS = [
   {
     Icone: AddAPhotoIcon,
-    titulo: "1. Anuncia em um minuto",
+    titulo: "1. Anuncie em um minuto",
     texto:
-      "Título, foto e preço, ou marca como doação. O item entra na vitrine na hora.",
+      "Título, foto e preço, ou marque como doação. O item entra na vitrine na hora.",
   },
   {
     Icone: ForumIcon,
-    titulo: "2. Combina com quem quer",
+    titulo: "2. Combine com quem quiser",
     texto:
-      "Quem se interessar fala contigo e vocês combinam a entrega dentro do campus.",
+      "Quem se interessar fala com você e vocês combinam a entrega dentro do campus.",
   },
   {
     Icone: RecyclingIcon,
-    titulo: "3. Desapega e circula",
+    titulo: "3. Desapegue e faça circular",
     texto:
-      "O que tava parado na tua gaveta vira útil pra quem tá chegando agora.",
+      "O que tava parado na sua gaveta vira útil pra quem tá chegando agora.",
   },
 ];
 

@@ -66,7 +66,7 @@ export default function Entrar() {
       return;
     }
     if (modo === "register") {
-      if (nome.trim().length < 2) return setErro("Escreve teu nome completo.");
+      if (nome.trim().length < 2) return setErro("Escreva seu nome completo.");
       if (!email.trim().toLowerCase().endsWith(DOMINIO_UNIFOR)) {
         return setErro(
           `Só dá pra criar conta com o email institucional da Unifor (nome${DOMINIO_UNIFOR}).`,
@@ -240,7 +240,7 @@ export default function Entrar() {
 
 /* Erros comuns do Auth em português simples. */
 function traduzir(msg: string): string {
-  if (msg.includes("already registered")) return "essa matrícula já tem conta.";
+  if (msg.includes("already registered")) return "esse email já tem conta.";
   if (msg.includes("Password")) return "senha muito fraca.";
   return "tenta de novo em instantes.";
 }
