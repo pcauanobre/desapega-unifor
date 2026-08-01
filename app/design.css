@@ -50,6 +50,9 @@
 @keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes popIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
 
 /* ---------- botões ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:var(--r-sm);
@@ -248,3 +251,72 @@
 .login-social .icones .ico{width:40px;height:40px;border-radius:50%;display:flex;
   align-items:center;justify-content:center;transition:background 160ms ease}
 .login-social .icones .ico:hover{background:rgba(255,255,255,.16)}
+
+/* Entradas animadas: landing em camadas (topo desce, resto sobe)... */
+.pagina-1280 .utilbar{animation:fadeDown 380ms var(--ease) both}
+.pagina-1280 .header{animation:fadeDown 420ms 50ms var(--ease) both}
+.pagina-1280 .statsbar{animation:fadeUp 420ms 110ms var(--ease) both}
+.pagina-1280 .shelf-head{animation:fadeUp 460ms 170ms var(--ease) both}
+.pagina-1280 .footer{animation:fadeIn 500ms 220ms ease both}
+
+/* ...e login revelando por partes: fundo, marca, card, campos em cascata. */
+.login-photo{animation:fadeIn 600ms ease both}
+.login-side{animation:fadeIn 600ms ease both}
+.login-topbrand{animation:fadeDown 500ms 150ms var(--ease) both}
+.login-social{animation:fadeUp 500ms 260ms var(--ease) both}
+.login-card{animation:popIn 420ms 120ms var(--ease) both}
+.login-brand{animation:fadeDown 420ms 230ms var(--ease) both}
+.login-title{animation:fadeUp 420ms 290ms var(--ease) both}
+.login-sub{animation:fadeUp 420ms 340ms var(--ease) both}
+.login-fields > *{animation:fadeUp 400ms var(--ease) both}
+.login-fields > *:nth-child(1){animation-delay:380ms}
+.login-fields > *:nth-child(2){animation-delay:425ms}
+.login-fields > *:nth-child(3){animation-delay:470ms}
+.login-fields > *:nth-child(4){animation-delay:515ms}
+.login-fields > *:nth-child(5){animation-delay:560ms}
+.login-fields > *:nth-child(6){animation-delay:605ms}
+.login-fields > *:nth-child(7){animation-delay:650ms}
+.login-fields > *:nth-child(8){animation-delay:695ms}
+
+/* Cards da vitrine entram em cascata (o riseIn já existe no .card). */
+.grid > *:nth-child(1){animation-delay:0ms}
+.grid > *:nth-child(2){animation-delay:50ms}
+.grid > *:nth-child(3){animation-delay:100ms}
+.grid > *:nth-child(4){animation-delay:150ms}
+.grid > *:nth-child(5){animation-delay:200ms}
+.grid > *:nth-child(6){animation-delay:250ms}
+.grid > *:nth-child(7){animation-delay:300ms}
+.grid > *:nth-child(8){animation-delay:350ms}
+.grid > *:nth-child(9){animation-delay:400ms}
+.grid > *:nth-child(10){animation-delay:450ms}
+.grid > *:nth-child(11){animation-delay:500ms}
+.grid > *:nth-child(12){animation-delay:550ms}
+
+/* LP de apresentação (rota /): hero + prévia da vitrine + como funciona. */
+.hero{background:#fff;border-bottom:1px solid var(--borda);overflow:hidden}
+.hero-inner{padding-top:64px;padding-bottom:64px;display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
+.hero-title{font-family:var(--sora);font-weight:800;font-size:44px;line-height:1.08;letter-spacing:-.03em;color:var(--navy);margin:0}
+.hero-title em{color:var(--azul);font-style:normal}
+.hero-sub{font-size:16.5px;line-height:1.65;color:var(--txt-2);margin:18px 0 0;max-width:520px}
+.hero-ctas{display:flex;gap:12px;margin-top:28px}
+.btn-hero{background:var(--azul);color:#fff;font-size:15.5px;font-weight:700;padding:15px 28px}
+.btn-hero:hover{background:var(--azul-hover);transform:translateY(-2px);color:#fff}
+.btn-hero-ghost{background:#fff;color:var(--navy);border:1.5px solid #D3DAE8;font-size:15.5px;font-weight:700;padding:15px 24px}
+.btn-hero-ghost:hover{border-color:var(--azul);color:var(--azul)}
+.hero-art{background:linear-gradient(rgba(21,62,201,.38),rgba(21,62,201,.38)),url("/campus.png") center/cover no-repeat;
+  border-radius:18px;min-height:340px;animation:fadeIn 700ms 150ms ease both}
+.hero-inner > div:first-child{animation:fadeUp 500ms 80ms var(--ease) both}
+
+.preview{padding-top:8px;padding-bottom:56px}
+.preview-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding-top:44px;padding-bottom:20px}
+.preview-link{font-size:14.5px;font-weight:700}
+
+.como{background:#fff;border-top:1px solid var(--borda)}
+.como-inner{padding-top:52px;padding-bottom:64px}
+.como-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:26px}
+.como-card{border:1px solid var(--borda);border-radius:var(--r-lg);padding:22px;background:#fff;
+  transition:transform 220ms var(--ease),box-shadow 220ms ease}
+.como-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(7,28,61,.1)}
+.como-ico{display:inline-flex;padding:12px;border-radius:12px;background:#E9F0FF;color:var(--azul)}
+.como-t{font-family:var(--sora);font-weight:700;font-size:16.5px;color:var(--navy);margin:14px 0 0}
+.como-p{font-size:14px;line-height:1.6;color:var(--txt-2);margin:8px 0 0}

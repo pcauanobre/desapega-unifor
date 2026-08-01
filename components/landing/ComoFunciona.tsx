@@ -24,32 +24,27 @@ const PASSOS = [
 ];
 
 /**
- * O QUE: a seção "como funciona" em 3 passos, com ícones Material.
+ * O QUE: a seção "como funciona" da LP, 3 passos com ícones Material,
+ *        no visual do design (cards com borda e hover suave).
  * POR QUE: o edital pede que a landing explique a proposta de economia
  *          circular; três passos contam o ciclo inteiro.
- * CHAMA: landing (app/page.tsx). Âncora #como-funciona vem da TopBar.
- * QUEBRA SE: nada; é estática.
+ * CHAMA: LP (app/page.tsx). Âncora #como-funciona vem da TopBar.
+ * QUEBRA SE: as classes .como-* do design.css mudarem.
  */
 export function ComoFunciona() {
   return (
-    <section id="como-funciona" className="bg-white px-6 py-14">
-      <div className="mx-auto max-w-6xl">
-        <h2 className="text-center font-[family-name:var(--font-sora)] text-3xl font-bold text-[#071C3D]">
-          Como funciona
-        </h2>
-        <p className="mt-2 text-center text-[#5A6480]">
-          Economia circular no campus, sem burocracia.
-        </p>
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
+    <section id="como-funciona" className="como">
+      <div className="container como-inner">
+        <h2 className="shelf-title">Como funciona</h2>
+        <p className="shelf-sub">Economia circular no campus, sem burocracia.</p>
+        <div className="como-grid">
           {PASSOS.map(({ Icone, titulo, texto }) => (
-            <div key={titulo} className="rounded-2xl border border-[#EDF1F8] p-6">
-              <span className="inline-flex rounded-xl bg-[#E9F0FF] p-3 text-[#0A5CFF]">
+            <div key={titulo} className="como-card">
+              <span className="como-ico">
                 <Icone />
               </span>
-              <h3 className="mt-4 font-[family-name:var(--font-sora)] text-lg font-bold text-[#071C3D]">
-                {titulo}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#5A6480]">{texto}</p>
+              <h3 className="como-t">{titulo}</h3>
+              <p className="como-p">{texto}</p>
             </div>
           ))}
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -21,7 +22,7 @@ const CURSOS = [
 const TEXTOS = {
   login: {
     title: "Acesse sua conta Unifor",
-    sub: "Entre e utilize nossos serviços digitais em um só lugar",
+    sub: "Entre para cadastrar produtos e acompanhar seus desapegos",
     submit: "Acessar", altHint: "Não tem conta?", altLink: "Criar uma conta",
   },
   register: {
@@ -93,7 +94,7 @@ export default function Entrar() {
       );
       return;
     }
-    router.push("/");
+    router.push("/produtos");
     router.refresh();
   }
 
@@ -104,12 +105,15 @@ export default function Entrar() {
           <div className="login-photo">
             <div className="login-overlay" />
             <div className="login-topbrand">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/unifor-h-negativa.svg"
-                alt="Universidade de Fortaleza"
-                style={{ height: 56, width: "auto", display: "block" }}
-              />
+              <a href="https://www.unifor.br" target="_blank" rel="noopener noreferrer"
+                title="Site oficial da Unifor">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/unifor-h-negativa.svg"
+                  alt="Universidade de Fortaleza"
+                  style={{ height: 56, width: "auto", display: "block" }}
+                />
+              </a>
             </div>
             <div className="login-social">
               <span className="icones">
@@ -128,8 +132,10 @@ export default function Entrar() {
         <div className="login-cardwrap">
           <form className="login-card" onSubmit={enviar}>
             <div className="login-brand">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/mark-blue.svg" alt="Desapega Unifor" className="login-mark" />
+              <Link href="/produtos" title="Ir pra vitrine">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/mark-blue.svg" alt="Desapega Unifor" className="login-mark" />
+              </Link>
             </div>
 
             <h1 className="login-title">{t.title}</h1>

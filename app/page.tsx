@@ -1,73 +1,48 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { Anuncio } from "@/lib/tipos";
 import { TopBar } from "@/components/landing/TopBar";
 import { HeaderBusca } from "@/components/landing/HeaderBusca";
 import { StatsBar } from "@/components/landing/StatsBar";
-import { Vitrine } from "@/components/landing/Vitrine";
+import { CardAnuncio } from "@/components/CardAnuncio";
+import { ComoFunciona } from "@/components/landing/ComoFunciona";
 import { Rodape } from "@/components/landing/Rodape";
 
-/* Tempos de skeleton do código fonte do design (sensação de app real). */
-const DELAY = { filtro: 700, mais: 900 };
-
 /**
- * O QUE: a landing pública no layout do código fonte do design, dona do
- *        estado de busca, filtro e ordenação. Dados reais da API.
- * POR QUE: a busca do header e os chips mexem na MESMA lista; o estado
- *          mora aqui e desce por props. O skeleton nas trocas de filtro
- *          vem do comportamento do próprio design.
+ * O QUE: a LP de apresentação (rota /): hero explicando a proposta,
+ *        estatísticas, prévia dos 4 últimos desapegos e como funciona.
+ *        O CTA principal leva pra vitrine completa em /produtos.
+ * POR QUE: o Pedro definiu a rota raiz como apresentação; a prévia da
+ *          vitrine fica aqui porque a landing do edital pede os últimos
+ *          itens anunciados nela.
  * CHAMA: rota raiz do site.
  * QUEBRA SE: a API mudar o formato { anuncios: [...] }.
  */
 export default function Home() {
+  const router = useRouter();
   const [anuncios, setAnuncios] = useState<Anuncio[] | null>(null);
-  const [erro, setErro] = useState<string | null>(null);
   const [categoria, setCategoria] = useState("");
   const [busca, setBusca] = useState("");
-  const [ordenar, setOrdenar] = useState("recentes");
-  const [mostrandoSkeleton, setMostrandoSkeleton] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     fetch("/api/anuncios")
       .then(async (r) => {
         const corpo = await r.json();
-        if (!r.ok) throw new Error(corpo.erro ?? "erro ao listar");
-        setAnuncios(corpo.anuncios);
+        if (r.ok) setAnuncios(corpo.anuncios);
       })
-      .catch((e: Error) => setErro(e.message));
-    return () => {
-      if (timer.current) clearTimeout(timer.current);
-    };
+      .catch(() => {});
   }, []);
 
-  /* Mostra o skeleton por um tempo curto e aplica a mudança, como no design. */
-  function comSkeleton(ms: number, aplicar: () => void) {
-    setMostrandoSkeleton(true);
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => {
-      aplicar();
-      setMostrandoSkeleton(false);
-    }, ms);
+  function irPraBusca() {
+    const params = new URLSearchParams();
+    if (categoria) params.set("categoria", categoria);
+    if (busca.trim()) params.set("q", busca.trim());
+    const query = params.toString();
+    router.push(query ? `/produtos?${query}` : "/produtos");
   }
-
-  const filtrados = useMemo(() => {
-    let lista = anuncios ?? [];
-    if (categoria) lista = lista.filter((a) => a.categoria === categoria);
-    if (busca.trim()) {
-      const termo = busca.trim().toLowerCase();
-      lista = lista.filter((a) => a.titulo.toLowerCase().includes(termo));
-    }
-    if (ordenar === "menor") {
-      lista = [...lista].sort((a, b) => (a.preco ?? 0) - (b.preco ?? 0));
-    } else if (ordenar === "maior") {
-      lista = [...lista].sort((a, b) => (b.preco ?? 0) - (a.preco ?? 0));
-    } else if (ordenar === "doacoes") {
-      lista = lista.filter((a) => a.is_doacao);
-    }
-    return lista;
-  }, [anuncios, categoria, busca, ordenar]);
 
   return (
     <div className="pagina-1280 flex-1">
@@ -75,24 +50,58 @@ export default function Home() {
       <HeaderBusca
         categoria={categoria}
         busca={busca}
-        onCategoria={(c) => comSkeleton(DELAY.filtro, () => setCategoria(c))}
+        onCategoria={setCategoria}
         onBusca={setBusca}
-        onBuscar={() =>
-          document.getElementById("vitrine")?.scrollIntoView({ behavior: "smooth" })
-        }
+        onBuscar={irPraBusca}
       />
+
+      <section className="hero">
+        <div className="container hero-inner">
+          <div>
+            <h1 className="hero-title">
+              O que sobra pra um, <em>serve pro outro</em>.
+            </h1>
+            <p className="hero-sub">
+              O Desapega Unifor é o marketplace de economia circular do campus:
+              alunos anunciam livros, calculadoras, jalecos e móveis que não
+              usam mais, e quem tá chegando encontra tudo mais barato, ou de
+              graça.
+            </p>
+            <div className="hero-ctas">
+              <Link className="btn btn-hero" href="/produtos">
+                Ver os desapegos
+              </Link>
+              <Link className="btn btn-hero-ghost" href="/entrar">
+                Quero anunciar
+              </Link>
+            </div>
+          </div>
+          <div className="hero-art" />
+        </div>
+      </section>
+
       <StatsBar />
-      <Vitrine
-        anuncios={anuncios}
-        filtrados={filtrados}
-        mostrandoSkeleton={mostrandoSkeleton}
-        erro={erro}
-        categoria={categoria}
-        onCategoria={(c) => comSkeleton(DELAY.filtro, () => setCategoria(c))}
-        ordenar={ordenar}
-        onOrdenar={setOrdenar}
-        onCarregarMais={() => comSkeleton(DELAY.mais, () => undefined)}
-      />
+
+      <section className="preview">
+        <div className="container preview-head">
+          <div>
+            <h2 className="shelf-title">Últimos desapegos</h2>
+            <p className="shelf-sub">O que acabou de chegar na vitrine.</p>
+          </div>
+          <Link className="preview-link" href="/produtos">
+            Ver todos os itens →
+          </Link>
+        </div>
+        <div className="container">
+          <div className="grid">
+            {(anuncios ?? []).slice(0, 4).map((a) => (
+              <CardAnuncio key={a.id} anuncio={a} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <ComoFunciona />
       <Rodape />
     </div>
   );
