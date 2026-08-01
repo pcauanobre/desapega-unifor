@@ -16,8 +16,8 @@ export function TopBar() {
 
   useEffect(() => {
     createClient()
-      .auth.getUser()
-      .then(({ data }) => setLogado(Boolean(data.user)));
+      .auth.getSession()
+      .then(({ data }) => setLogado(Boolean(data.session)));
   }, []);
 
   return (

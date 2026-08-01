@@ -24,14 +24,14 @@ type Props = {
  * QUEBRA SE: as classes .header/.search do design.css mudarem.
  */
 export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }: Props) {
-  // null = ainda conferindo a sessão; o botão só aparece com resposta,
-  // pra não piscar "Quero anunciar" antes de virar "Central de Anúncios".
-  const [logado, setLogado] = useState<boolean | null>(null);
+  // getSession lê do armazenamento local (sem rede): o rótulo certo chega
+  // junto com o primeiro paint do header, sem piscar nem sumir botão.
+  const [logado, setLogado] = useState(false);
 
   useEffect(() => {
     createClient()
-      .auth.getUser()
-      .then(({ data }) => setLogado(Boolean(data.user)));
+      .auth.getSession()
+      .then(({ data }) => setLogado(Boolean(data.session)));
   }, []);
 
   return (
@@ -69,11 +69,9 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
         </form>
 
         <div className="header-actions">
-          {logado !== null && (
-            <Link className="btn btn-white" href="/anunciar">
-              {logado ? "Central de Anúncios" : "Quero anunciar"}
-            </Link>
-          )}
+          <Link className="btn btn-white" href="/anunciar">
+            {logado ? "Central de Anúncios" : "Quero anunciar"}
+          </Link>
         </div>
       </div>
     </header>

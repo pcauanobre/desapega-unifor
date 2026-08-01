@@ -48,6 +48,8 @@ export default function NovoAnuncio() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [publicadoId, setPublicadoId] = useState<string | null>(null);
+  const [pronto, setPronto] = useState(false);
+  const [carregandoEdicao, setCarregandoEdicao] = useState(false);
   const usuario = useRef<string | null>(null);
 
   useEffect(() => {
@@ -62,28 +64,33 @@ export default function NovoAnuncio() {
         const meta = user.user_metadata ?? {};
         if (meta.celular) setContato(meta.celular as string);
 
-        // Modo edição: carrega o anúncio e pré-preenche tudo.
+        // O modo (novo ou edição) é decidido AQUI, antes de qualquer
+        // título aparecer; a tela nunca pisca "Bora desapegar" na edição.
         const idEditar = new URLSearchParams(window.location.search).get("editar");
-        if (!idEditar) return;
-        fetch(`/api/anuncios/${idEditar}`)
-          .then(async (r) => {
-            const corpo = await r.json();
-            if (!r.ok) throw new Error(corpo.erro);
-            const a = corpo.anuncio as Anuncio;
-            setEditandoId(a.id);
-            setTitulo(a.titulo);
-            setDescricao(a.descricao);
-            setCategoria(a.categoria);
-            setDoacao(a.is_doacao);
-            setPreco(a.preco === null ? "" : String(a.preco));
-            setEstado(a.estado ?? "");
-            setBloco(a.bloco ?? "");
-            setContato(a.contato ?? "");
-            setFotosExistentes(
-              a.fotos?.length ? a.fotos : a.imagem_url ? [a.imagem_url] : [],
-            );
-          })
-          .catch(() => setErro("Não deu pra carregar o anúncio pra edição."));
+        if (idEditar) {
+          setEditandoId(idEditar);
+          setCarregandoEdicao(true);
+          fetch(`/api/anuncios/${idEditar}`)
+            .then(async (r) => {
+              const corpo = await r.json();
+              if (!r.ok) throw new Error(corpo.erro);
+              const a = corpo.anuncio as Anuncio;
+              setTitulo(a.titulo);
+              setDescricao(a.descricao);
+              setCategoria(a.categoria);
+              setDoacao(a.is_doacao);
+              setPreco(a.preco === null ? "" : String(a.preco));
+              setEstado(a.estado ?? "");
+              setBloco(a.bloco ?? "");
+              setContato(a.contato ?? "");
+              setFotosExistentes(
+                a.fotos?.length ? a.fotos : a.imagem_url ? [a.imagem_url] : [],
+              );
+              setCarregandoEdicao(false);
+            })
+            .catch(() => setErro("Não deu pra carregar o anúncio pra edição."));
+        }
+        setPronto(true);
       });
   }, [router]);
 
@@ -164,6 +171,15 @@ export default function NovoAnuncio() {
       <TopBar />
       <HeaderNav />
       <main className="container info-wrap">
+        {(!pronto || carregandoEdicao) && (
+          <div>
+            <div className="sk-bar pd-sk-l2" />
+            <div className="sk-bar pd-sk-l1" style={{ width: "55%" }} />
+            <div className="sk-bar pd-sk-l3" style={{ height: 300 }} />
+          </div>
+        )}
+        {pronto && !carregandoEdicao && (
+        <>
         <div>
           <Link className="pd-voltar" style={{ marginTop: 0 }}
             href={editandoId ? "/meus-anuncios" : "/anunciar"}>
@@ -249,6 +265,8 @@ export default function NovoAnuncio() {
               : editandoId ? "Salvar alterações" : "Publicar anúncio"}
           </button>
         </form>
+        </>
+        )}
       </main>
       <Rodape />
 

@@ -98,25 +98,31 @@ export default function MeusAnuncios() {
           <div className="grid ct-grid">
             {anuncios.map((a) => (
               <div className="ct-item" key={a.id}>
+                <div className="ma-icones">
+                  <Link
+                    className="ma-ico"
+                    href={`/anunciar/novo?editar=${a.id}`}
+                    title="Editar anúncio"
+                    aria-label="Editar anúncio"
+                  >
+                    <EditIcon sx={{ fontSize: 17 }} />
+                  </Link>
+                  <button
+                    className="ma-ico ma-ico-vermelho"
+                    onClick={() => excluir(a.id)}
+                    disabled={apagando === a.id}
+                    title="Excluir anúncio"
+                    aria-label="Excluir anúncio"
+                  >
+                    <DeleteOutlineIcon sx={{ fontSize: 18 }} />
+                  </button>
+                </div>
                 <CardAnuncio anuncio={a} />
                 <div className="ma-stats">
                   <span>
                     <VisibilityOutlinedIcon sx={{ fontSize: 17 }} />
                     {a.cliques} clique{a.cliques === 1 ? "" : "s"}
                   </span>
-                </div>
-                <div className="ma-acoes">
-                  <Link className="btn ma-editar" href={`/anunciar/novo?editar=${a.id}`}>
-                    <EditIcon sx={{ fontSize: 15 }} /> Editar
-                  </Link>
-                  <button
-                    className="btn ct-excluir"
-                    onClick={() => excluir(a.id)}
-                    disabled={apagando === a.id}
-                  >
-                    <DeleteOutlineIcon sx={{ fontSize: 16 }} />
-                    {apagando === a.id ? "Excluindo…" : "Excluir"}
-                  </button>
                 </div>
               </div>
             ))}

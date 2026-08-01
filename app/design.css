@@ -337,13 +337,8 @@
 .an-switch input:checked + .an-switch-pista .an-switch-bola{left:23px}
 
 /* ---------- conta ---------- */
-.ct-perfil{margin-top:18px;display:flex;align-items:center;gap:20px;border:1px solid var(--borda);
-  border-radius:16px;background:#fff;padding:24px}
-.ct-dados{min-width:0}
-.ct-nome{font-family:var(--sora);font-weight:700;font-size:24px;letter-spacing:-.02em;color:var(--navy);margin:0}
-.ct-linha{font-size:13.5px;color:var(--txt-2);margin:4px 0 0}
-.ct-acoes{margin-left:auto;display:flex;gap:10px;flex:none}
-.ct-acoes .btn{gap:7px}
+.ct-topo{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.ct-sair{flex:none;gap:7px;font-size:13.5px}
 .ct-grid{margin-top:16px}
 .ct-item{display:flex;flex-direction:column;gap:8px}
 .ct-excluir{background:#fff;border:1.5px solid #F1C7C7;color:#A33B3B;font-size:13px;padding:10px;gap:6px;flex:1}
@@ -352,14 +347,22 @@
   font-size:13px;font-weight:700;color:var(--navy)}
 .ma-stats span{display:inline-flex;align-items:center;gap:6px}
 .ma-stats svg{color:var(--azul)}
-.ma-acoes{display:flex;gap:8px}
-.ma-editar{flex:1;background:#F4F8FF;border:1.5px solid #C7DAFF;color:var(--azul);
-  font-size:13.5px;padding:11px;gap:7px;transition:all 180ms var(--ease)}
-.ma-editar:hover{background:var(--azul);border-color:var(--azul)}
-.pagina-1280 a.ma-editar{color:var(--azul)}
-.pagina-1280 a.ma-editar:hover{color:#fff}
-.ct-excluir:hover{background:#C23B3B;border-color:#C23B3B;color:#fff}
 .info-wrap .pd-voltar{margin-bottom:18px}
+
+/* meus anúncios: cards maiores (3 colunas) com lápis e lixeira flutuando
+   no canto superior direito da foto */
+.ct-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ct-grid .card-photo{height:214px}
+.ct-item{position:relative}
+.ma-icones{position:absolute;top:22px;right:22px;z-index:6;display:flex;gap:8px}
+.ma-ico{width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.96);
+  color:var(--navy);display:flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 4px 12px rgba(7,28,61,.24);transition:all 160ms var(--ease)}
+.ma-ico:hover{background:var(--azul);color:#fff;transform:translateY(-2px)}
+.ma-ico:disabled{opacity:.55;cursor:default;transform:none}
+.ma-ico-vermelho:hover{background:#C23B3B}
+.pagina-1280 a.ma-ico{color:var(--navy)}
+.pagina-1280 a.ma-ico:hover{color:#fff}
 .ct-perigo{margin-top:44px;border:1px solid #F1C7C7;background:#FFFAFA;border-radius:14px;padding:22px;
   display:flex;align-items:center;gap:20px;justify-content:space-between}
 .ct-apagar{background:#C23B3B;color:#fff;font-size:14px;padding:12px 20px}
