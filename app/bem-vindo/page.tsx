@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { otimizarFoto } from "@/lib/otimizar-foto";
 import { BloquearScroll } from "@/components/BloquearScroll";
+import { EditorFoto } from "@/components/EditorFoto";
 import { EtapaCampos, type Perfil } from "@/components/wizard/EtapaCampos";
 
 const ETAPAS = [
@@ -32,6 +32,7 @@ export default function BemVindo() {
   const [salvando, setSalvando] = useState(false);
   const [concluido, setConcluido] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const [paraCortar, setParaCortar] = useState<File | null>(null);
   const uid = useRef<string | null>(null);
 
   useEffect(() => {
@@ -50,11 +51,15 @@ export default function BemVindo() {
     setPerfil((atual) => ({ ...atual, [campo]: valor }));
   }
 
-  /* Foto chegou (galeria ou Ctrl+V): otimiza, sobe pro bucket e mostra. */
-  async function receberFoto(arquivo: File) {
+  /* Foto chegou (galeria ou Ctrl+V): abre o editor de corte primeiro. */
+  function receberFoto(arquivo: File) {
     setErro(null);
+    setParaCortar(arquivo);
+  }
+
+  async function subirFotoCortada(blob: Blob) {
+    setParaCortar(null);
     try {
-      const blob = await otimizarFoto(arquivo);
       const caminho = `${uid.current}/perfil-${Date.now()}.webp`;
       const supabase = createClient();
       const { error } = await supabase.storage
@@ -130,6 +135,16 @@ export default function BemVindo() {
           </div>
         </div>
       </div>
+
+      {paraCortar && (
+        <EditorFoto
+          arquivo={paraCortar}
+          aspecto={1}
+          circular
+          onCancelar={() => setParaCortar(null)}
+          onCortar={subirFotoCortada}
+        />
+      )}
 
       {concluido && (
         <div className="aviso-overlay" role="dialog" aria-modal="true">

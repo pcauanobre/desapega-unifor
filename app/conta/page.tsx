@@ -7,13 +7,13 @@ import PersonIcon from "@mui/icons-material/Person";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { createClient } from "@/lib/supabase/client";
-import { otimizarFoto } from "@/lib/otimizar-foto";
 import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
 import { Rodape } from "@/components/landing/Rodape";
 import { Droplist } from "@/components/Droplist";
 import { CURSOS, SEMESTRES, formatarCelular } from "@/components/wizard/EtapaCampos";
 import { BloquearScroll } from "@/components/BloquearScroll";
+import { EditorFoto } from "@/components/EditorFoto";
 
 /**
  * O QUE: a conta como formulário vivo: clicou em Minha conta, os dados já
@@ -40,6 +40,7 @@ export default function Conta() {
   const [apagando, setApagando] = useState(false);
   const [senhaConfirma, setSenhaConfirma] = useState("");
   const [erroApagar, setErroApagar] = useState<string | null>(null);
+  const [paraCortar, setParaCortar] = useState<File | null>(null);
 
   useEffect(() => {
     // getSession lê do armazenamento local: os dados chegam de uma vez,
@@ -78,11 +79,16 @@ export default function Conta() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uid]);
 
-  async function receberFoto(arquivo: File) {
-    if (!uid) return;
+  /* Foto escolhida abre o editor; o upload acontece só depois do corte. */
+  function receberFoto(arquivo: File) {
     setErro(null);
+    setParaCortar(arquivo);
+  }
+
+  async function subirFotoCortada(blob: Blob) {
+    if (!uid) return;
+    setParaCortar(null);
     try {
-      const blob = await otimizarFoto(arquivo);
       const caminho = `${uid}/perfil-${Date.now()}.webp`;
       const supabase = createClient();
       const { error } = await supabase.storage
@@ -263,6 +269,16 @@ export default function Conta() {
         )}
       </main>
       <Rodape />
+
+      {paraCortar && (
+        <EditorFoto
+          arquivo={paraCortar}
+          aspecto={1}
+          circular
+          onCancelar={() => setParaCortar(null)}
+          onCortar={subirFotoCortada}
+        />
+      )}
 
       {confirmando && (
         <div className="aviso-overlay" role="dialog" aria-modal="true">

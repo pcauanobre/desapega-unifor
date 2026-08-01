@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { otimizarFoto } from "@/lib/otimizar-foto";
 import { CATEGORIAS } from "@/lib/categorias";
 import type { Anuncio } from "@/lib/tipos";
 import { TopBar } from "@/components/landing/TopBar";
@@ -13,6 +12,7 @@ import { Rodape } from "@/components/landing/Rodape";
 import { Droplist } from "@/components/Droplist";
 import { FotosUpload } from "@/components/anunciar/FotosUpload";
 import { BloquearScroll } from "@/components/BloquearScroll";
+import { EditorFoto } from "@/components/EditorFoto";
 
 const ESTADOS = ["Como novo", "Bom estado", "Usado", "Funcionando"];
 
@@ -35,8 +35,9 @@ export default function NovoAnuncio() {
   const router = useRouter();
   const [editandoId, setEditandoId] = useState<string | null>(null);
   const [fotosExistentes, setFotosExistentes] = useState<string[]>([]);
-  const [arquivos, setArquivos] = useState<File[]>([]);
+  const [arquivos, setArquivos] = useState<Blob[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [filaCorte, setFilaCorte] = useState<File[]>([]);
   const [titulo, setTitulo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [categoria, setCategoria] = useState("");
@@ -96,12 +97,18 @@ export default function NovoAnuncio() {
 
   const previewsTotais = [...fotosExistentes, ...previews];
 
+  /* Cada foto escolhida passa pelo editor de corte (4:3) antes de entrar. */
   function escolherFotos(lista: FileList | null) {
     if (!lista) return;
-    const espaco = 5 - fotosExistentes.length;
-    const novos = [...arquivos, ...Array.from(lista)].slice(0, Math.max(0, espaco));
-    setArquivos(novos);
-    setPreviews(novos.map((f) => URL.createObjectURL(f)));
+    const espaco = 5 - previewsTotais.length - filaCorte.length;
+    if (espaco <= 0) return;
+    setFilaCorte((fila) => [...fila, ...Array.from(lista).slice(0, espaco)]);
+  }
+
+  function fotoCortada(blob: Blob) {
+    setArquivos((atuais) => [...atuais, blob]);
+    setPreviews((atuais) => [...atuais, URL.createObjectURL(blob)]);
+    setFilaCorte((fila) => fila.slice(1));
   }
 
   function removerFoto(i: number) {
@@ -110,9 +117,8 @@ export default function NovoAnuncio() {
       return;
     }
     const idx = i - fotosExistentes.length;
-    const novos = arquivos.filter((_, j) => j !== idx);
-    setArquivos(novos);
-    setPreviews(novos.map((f) => URL.createObjectURL(f)));
+    setArquivos(arquivos.filter((_, j) => j !== idx));
+    setPreviews(previews.filter((_, j) => j !== idx));
   }
 
   async function publicar(e: React.FormEvent) {
@@ -130,8 +136,8 @@ export default function NovoAnuncio() {
     try {
       const supabase = createClient();
       const novasUrls: string[] = [];
-      for (const [i, arquivo] of arquivos.entries()) {
-        const blob = await otimizarFoto(arquivo);
+      for (const [i, blob] of arquivos.entries()) {
+        // Já saiu do editor cortada e otimizada; é só subir.
         const caminho = `${usuario.current}/${Date.now()}-${i}.webp`;
         const { error } = await supabase.storage
           .from("fotos")
@@ -269,6 +275,15 @@ export default function NovoAnuncio() {
         )}
       </main>
       <Rodape />
+
+      {filaCorte.length > 0 && (
+        <EditorFoto
+          arquivo={filaCorte[0]}
+          aspecto={4 / 3}
+          onCancelar={() => setFilaCorte((fila) => fila.slice(1))}
+          onCortar={fotoCortada}
+        />
+      )}
 
       {publicadoId && (
         <div className="aviso-overlay" role="dialog" aria-modal="true">
