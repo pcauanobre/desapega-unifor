@@ -13,7 +13,7 @@ const OPCOES = [
     img: "/escolha-anunciar.png",
     kicker: "PUBLICAR",
     titulo: "Anunciar um item",
-    sub: "Fotografa, descreve e publica em um minuto.",
+    sub: "Suba as fotos, defina o preço e publique na vitrine em um minuto.",
     lado: "esq",
   },
   {
@@ -21,7 +21,7 @@ const OPCOES = [
     img: "/escolha-meus.png",
     kicker: "ACOMPANHAR",
     titulo: "Meus anúncios",
-    sub: "Cliques, tempo no ar, edição e tudo que você publicou.",
+    sub: "Acompanhe os cliques, edite ou encerre tudo que você publicou.",
     lado: "dir",
   },
 ];
