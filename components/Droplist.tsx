@@ -23,15 +23,28 @@ type Props = {
  */
 export function Droplist({ opcoes, valor, onMudar, rotuloAria, variante = "normal" }: Props) {
   const [aberto, setAberto] = useState(false);
+  // fechando = janela entre tirar o .aberto e o fim do dlOut no CSS;
+  // sem ela o menu sumia seco antes da animação de saída rodar
+  const [fechando, setFechando] = useState(false);
   const raiz = useRef<HTMLDivElement>(null);
+
+  function abrir() {
+    setFechando(false);
+    setAberto(true);
+  }
+
+  function fechar() {
+    setAberto(false);
+    setFechando(true);
+  }
 
   useEffect(() => {
     if (!aberto) return;
     function cliqueFora(e: MouseEvent) {
-      if (!raiz.current?.contains(e.target as Node)) setAberto(false);
+      if (!raiz.current?.contains(e.target as Node)) fechar();
     }
     function tecla(e: KeyboardEvent) {
-      if (e.key === "Escape") setAberto(false);
+      if (e.key === "Escape") fechar();
     }
     document.addEventListener("mousedown", cliqueFora);
     document.addEventListener("keydown", tecla);
@@ -44,20 +57,27 @@ export function Droplist({ opcoes, valor, onMudar, rotuloAria, variante = "norma
   const atual = opcoes.find((o) => o.valor === valor) ?? opcoes[0];
 
   return (
-    <div className={"dl" + (aberto ? " aberto" : "")} ref={raiz}>
+    <div className={"dl" + (aberto ? " aberto" : "") + (fechando ? " fechando" : "")} ref={raiz}>
       <button
         type="button"
         className={variante === "busca" ? "dl-gatilho-busca" : "dl-gatilho"}
         aria-label={rotuloAria}
         aria-expanded={aberto}
-        onClick={() => setAberto(!aberto)}
+        onClick={aberto ? fechar : abrir}
       >
         {atual.rotulo}
         <KeyboardArrowDownIcon className="dl-chevron" sx={{ fontSize: 18 }} />
       </button>
       {/* montado sempre: se desmontasse ao fechar, a transição de saída
           do CSS não rodava; visibility:hidden tira do tab e do leitor de tela */}
-      <div className="dl-menu" role="listbox" aria-hidden={!aberto}>
+      <div
+        className="dl-menu"
+        role="listbox"
+        aria-hidden={!aberto}
+        onAnimationEnd={(e) => {
+          if (e.animationName === "dlOut") setFechando(false);
+        }}
+      >
         {opcoes.map((o) => (
           <button
             type="button"
@@ -68,7 +88,7 @@ export function Droplist({ opcoes, valor, onMudar, rotuloAria, variante = "norma
             className={"dl-op" + (o.valor === valor ? " marcada" : "")}
             onClick={() => {
               onMudar(o.valor);
-              setAberto(false);
+              fechar();
             }}
           >
             {o.rotulo}
