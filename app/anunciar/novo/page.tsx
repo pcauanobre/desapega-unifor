@@ -127,6 +127,11 @@ export default function Anunciar() {
       <TopBar />
       <HeaderNav />
       <main className="container info-wrap">
+        <div>
+          <Link className="pd-voltar" style={{ marginTop: 0 }} href="/anunciar">
+            ← Voltar
+          </Link>
+        </div>
         <span className="info-kicker">NOVO ANÚNCIO</span>
         <h1 className="info-title">Bora desapegar</h1>
         <p className="info-sub">

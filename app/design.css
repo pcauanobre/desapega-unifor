@@ -294,7 +294,8 @@
 .esc-dir{animation:escInDir .7s 90ms var(--ease) both}
 @keyframes escInEsq{from{opacity:0;transform:translateX(-46px)}to{opacity:1;transform:none}}
 @keyframes escInDir{from{opacity:0;transform:translateX(46px)}to{opacity:1;transform:none}}
-.esc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.esc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%;
+  transition:transform .6s var(--ease)}
 .esc-veu{position:absolute;inset:0;z-index:1;
   background:linear-gradient(to top,rgba(7,28,61,.84) 0%,rgba(7,28,61,.28) 46%,rgba(7,28,61,.06) 72%)}
 .esc-card.is-on{transform:translateY(-8px) scale(1.015);box-shadow:0 26px 60px rgba(7,28,61,.3)}
