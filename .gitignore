@@ -45,3 +45,7 @@ CLAUDE.local.md
 
 # o example e publico de proposito (so chaves publicas)
 !.env.example
+
+# ferramentas locais de agente (nao fazem parte do projeto)
+.agents/
+.claude/
