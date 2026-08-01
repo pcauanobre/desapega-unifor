@@ -47,8 +47,8 @@ export default function Home() {
           </h1>
           <p className="hero-sub">
             O marketplace dos alunos da Unifor pra quem quer vender o que
-            não usa mais ou até mesmo doar. Desapegue agora mesmo e combine
-            tudo direto com o anunciante.
+            não usa mais ou até mesmo doar. Anuncie agora mesmo ou procure
+            produtos para adquirir.
           </p>
           <div className="hero-ctas">
             <Link className="btn btn-hero" href="/produtos">
