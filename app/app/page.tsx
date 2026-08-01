@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Anuncio } from "@/lib/tipos";
+import { Logo } from "@/components/Logo";
 
 /**
  * O QUE: vitrine base do app: busca os anúncios na API e lista em cards.
@@ -26,9 +27,8 @@ export default function AppHome() {
 
   return (
     <main className="flex-1 bg-neutral-50">
-      <header className="bg-[#004AF7] px-4 py-3">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo-horizontal.svg" alt="Desapega Unifor" className="h-9" />
+      <header className="bg-[#0A5CFF] px-4 py-3">
+        <Logo fundo="azul" simboloAltura={36} />
       </header>
 
       <section className="mx-auto max-w-xl px-4 py-6">
@@ -73,16 +73,16 @@ function CardAnuncio({ anuncio }: { anuncio: Anuncio }) {
         />
       )}
       <div className="p-3">
-        <p className="truncate text-sm font-semibold text-[#131A40]">
+        <p className="truncate text-sm font-semibold text-[#071C3D]">
           {anuncio.titulo}
         </p>
         <p className="text-xs text-neutral-500">{anuncio.categoria}</p>
         {anuncio.is_doacao ? (
-          <span className="mt-1 inline-block rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">
+          <span className="mt-1 inline-block rounded bg-[#E6F7F0] px-2 py-0.5 text-xs font-semibold text-[#0B7C57]">
             DOAÇÃO
           </span>
         ) : (
-          <p className="mt-1 text-sm font-bold text-[#004AF7]">
+          <p className="mt-1 text-sm font-bold text-[#0A5CFF]">
             R$ {Number(anuncio.preco).toFixed(2).replace(".", ",")}
           </p>
         )}
