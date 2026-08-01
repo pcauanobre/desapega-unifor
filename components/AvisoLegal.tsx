@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
  */
 export function AvisoLegal() {
   const [aberto, setAberto] = useState(false);
+  const [saindo, setSaindo] = useState(false);
 
   useEffect(() => {
     if (localStorage.getItem("desapega-aviso-visto")) return;
@@ -22,13 +23,19 @@ export function AvisoLegal() {
 
   function fechar() {
     localStorage.setItem("desapega-aviso-visto", "1");
-    setAberto(false);
+    setSaindo(true);
+    setTimeout(() => setAberto(false), 240);
   }
 
   if (!aberto) return null;
 
   return (
-    <div className="aviso-overlay" role="dialog" aria-modal="true" aria-label="Aviso legal">
+    <div
+      className={"aviso-overlay" + (saindo ? " is-saindo" : "")}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Aviso legal"
+    >
       <div className="aviso-card">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/mark-blue.svg" alt="" style={{ height: 40 }} />
@@ -39,13 +46,16 @@ export function AvisoLegal() {
           oficial com a Universidade de Fortaleza.
         </p>
         <p className="aviso-p">
-          O nome, as cores e as referências à universidade aparecem apenas pra
-          dar contexto realista ao exercício. Os anúncios são fictícios e
-          nenhuma transação real acontece por aqui.
+          Apesar de ter nascido como exercício, a plataforma funciona de
+          verdade: dá pra criar conta, anunciar itens e encontrar quem quer
+          comprar, vender ou doar dentro do campus. Os itens que já aparecem
+          na vitrine são de demonstração.
         </p>
         <p className="aviso-p">
-          Logo, nome, domínio e qualquer elemento associado à Unifor podem ser
-          removidos de imediato mediante simples solicitação.
+          O nome, as cores e as referências à universidade aparecem pra dar
+          contexto ao exercício. Logo, nome, domínio e qualquer elemento
+          associado à Unifor podem ser removidos de imediato mediante simples
+          solicitação.
         </p>
         <p className="aviso-mini">Contato: pedrocauaggn@gmail.com</p>
         <button className="btn btn-primary btn-block" onClick={fechar}>

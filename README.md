@@ -39,11 +39,12 @@ da entrega.
 ## Aviso legal
 
 Projeto acadêmico, feito exclusivamente pro desafio técnico do processo
-seletivo do laboratório VORTEX. Não tem vínculo oficial com a Universidade
-de Fortaleza: o nome, as cores e as referências à universidade aparecem
-apenas como contexto do exercício, e todos os anúncios são fictícios.
-Logo, nome, domínio ou qualquer elemento associado à Unifor são removidos
-de imediato mediante solicitação: pedrocauaggn@gmail.com.
+seletivo do laboratório VORTEX, sem vínculo oficial com a Universidade de
+Fortaleza. A plataforma é funcional de verdade (conta, anúncio e busca
+funcionam), e os itens que já aparecem na vitrine são de demonstração.
+O nome, as cores e as referências à universidade existem como contexto do
+exercício: logo, nome, domínio ou qualquer elemento associado à Unifor são
+removidos de imediato mediante solicitação: pedrocauaggn@gmail.com.
 
 ## Deploy
 

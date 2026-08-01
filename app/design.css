@@ -242,6 +242,10 @@
 .aviso-titulo{font-family:var(--sora);font-weight:700;font-size:20px;color:var(--navy);text-align:center;margin:12px 0 0}
 .aviso-p{font-size:13.5px;line-height:1.65;color:var(--txt-2);margin:12px 0 0}
 .aviso-mini{font-size:12px;color:var(--txt-3);margin:12px 0 0;text-align:center}
+@keyframes fadeOut{to{opacity:0}}
+@keyframes popOut{to{opacity:0;transform:translateY(10px) scale(.97)}}
+.aviso-overlay.is-saindo{animation:fadeOut 240ms ease both}
+.aviso-overlay.is-saindo .aviso-card{animation:popOut 240ms var(--ease) both}
 
 /* modos do formulário: o componente troca a classe no wrapper */
 .only-register{display:none}
