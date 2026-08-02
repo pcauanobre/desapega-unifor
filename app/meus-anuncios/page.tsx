@@ -56,7 +56,13 @@ export default function MeusAnuncios() {
             const vendidos = await rVendidos.json();
             if (!rAtivos.ok) throw new Error(ativos.erro ?? "erro ao listar");
             if (!rVendidos.ok) throw new Error(vendidos.erro ?? "erro ao listar");
-            setAnuncios([...ativos.anuncios, ...vendidos.anuncios]);
+            // A vitrine mantém o vendido recente por 3 dias, então ele
+            // vem nas DUAS listas: junta sem repetir (id manda).
+            const porId = new Map<string, Anuncio>();
+            for (const a of [...ativos.anuncios, ...vendidos.anuncios]) {
+              porId.set(a.id, a);
+            }
+            setAnuncios([...porId.values()]);
           })
           .catch((e: Error) => setErro(e.message));
       });

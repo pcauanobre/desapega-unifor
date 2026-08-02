@@ -86,12 +86,18 @@ body{background:var(--bg)}
   animation:fadeIn 300ms ease both}
 .btn-instalar:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.6)}
 .btn-instalar svg{color:#9DC0FF}
-/* linha de conexão: vermelha offline, verde na volta (some em 2s) */
-.conexao{position:fixed;top:0;left:0;right:0;z-index:130;text-align:center;
-  color:#fff;font-size:11.5px;font-weight:700;letter-spacing:.04em;padding:5px 0;
-  animation:fadeDown 240ms var(--ease) both}
+/* faixa de conexão: fica ACIMA do header (no fluxo, empurrando a página),
+   vermelha offline e verde na volta, entrando e saindo deslizando */
+.conexao{position:relative;z-index:130;text-align:center;color:#fff;font-size:11.5px;
+  font-weight:700;letter-spacing:.04em;padding:6px 12px;
+  animation:conexaoEntra 280ms var(--ease) both}
+.conexao.is-saindo{animation:conexaoSai 300ms var(--ease) both}
 .conexao-off{background:#C23B3B}
 .conexao-on{background:var(--verde)}
+@keyframes conexaoEntra{from{opacity:0;transform:translateY(-100%);max-height:0}
+  to{opacity:1;transform:none;max-height:40px}}
+@keyframes conexaoSai{from{opacity:1;transform:none;max-height:40px}
+  to{opacity:0;transform:translateY(-100%);max-height:0;padding-top:0;padding-bottom:0}}
 
 /* saudação do app instalado: mesmo canto do botão de instalar */
 .saudacao-app{display:none}
@@ -329,6 +335,11 @@ body{background:var(--bg)}
   transition:border-color 160ms ease,box-shadow 160ms ease}
 .otp-input:focus{border-color:var(--azul);box-shadow:0 0 0 3px rgba(10,92,255,.14)}
 .otp-input::placeholder{color:#C3CBDD}
+
+/* selo de encerrado na página do produto */
+.pd-selo-vendido{font-family:var(--sora);font-weight:700;font-size:12px;letter-spacing:.08em;
+  color:#fff;background:var(--navy);padding:7px 12px;border-radius:8px;margin-left:12px;
+  display:inline-block;vertical-align:middle}
 
 /* ---------- foto em tela cheia (lightbox do produto) ---------- */
 .pd-foto-abre{cursor:zoom-in;outline:none}
