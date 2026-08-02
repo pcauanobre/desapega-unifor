@@ -81,6 +81,26 @@ export default function Entrar() {
     setModo("login");
   }
 
+  /* Confere o código no servidor. Fora do submit porque o Ctrl+V no campo
+     chama direto, sem precisar de Enter. */
+  async function conferirCodigo(valor: string) {
+    if (enviando) return;
+    setErro(null);
+    setSucesso(null);
+    if (!/^\d{6}$/.test(valor)) return setErro("Digite o código de 6 dígitos do email.");
+    setEnviando(true);
+    const r = await fetch("/api/senha/conferir", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.trim(), otp: valor }),
+    });
+    const corpo = await r.json();
+    setEnviando(false);
+    if (!r.ok) return setErro(corpo.erro ?? "Não deu pra conferir agora.");
+    setSucesso("Código confirmado! Escolha a nova senha.");
+    setEtapaRec("senha");
+  }
+
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
     if (enviando) return;
@@ -103,24 +123,17 @@ export default function Entrar() {
         const corpo = await r.json();
         setEnviando(false);
         if (!r.ok) return setErro(corpo.erro ?? "Não deu pra enviar o código agora.");
-        setSucesso("Se esse email tiver conta, o código chegou na caixa de entrada.");
+        // Email sem conta não avança: typo se resolve aqui, não no código.
+        if (!corpo.existe) {
+          return setErro("Não achamos conta com esse email. Confere se digitou certo.");
+        }
+        setSucesso("Código enviado! Olha seu email.");
         setEtapaRec("codigo");
         return;
       }
 
       if (etapaRec === "codigo") {
-        if (!/^\d{6}$/.test(codigo)) return setErro("Digite o código de 6 dígitos do email.");
-        setEnviando(true);
-        const r = await fetch("/api/senha/conferir", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: email.trim(), otp: codigo }),
-        });
-        const corpo = await r.json();
-        setEnviando(false);
-        if (!r.ok) return setErro(corpo.erro ?? "Não deu pra conferir agora.");
-        setSucesso("Código confirmado! Agora escolha a nova senha.");
-        setEtapaRec("senha");
+        await conferirCodigo(codigo);
         return;
       }
 
@@ -256,11 +269,10 @@ export default function Entrar() {
             <div className="login-fields">
               {modo === "recuperar" ? (
                 <>
-                  {etapaRec !== "senha" && (
+                  {etapaRec === "email" && (
                     <label className="field">
                       <span className="field-label">Email</span>
                       <input type="email" value={email} placeholder="Email da sua conta"
-                        disabled={etapaRec === "codigo"}
                         onChange={(e) => setEmail(e.target.value)} />
                     </label>
                   )}
@@ -268,9 +280,21 @@ export default function Entrar() {
                   {etapaRec === "codigo" && (
                     <label className="field">
                       <span className="field-label">Código do email</span>
+                      {/* Ctrl+V com o código já confirma sozinho, sem Enter */}
                       <input type="text" inputMode="numeric" maxLength={6}
                         placeholder="000000" value={codigo} autoFocus
-                        onChange={(e) => setCodigo(e.target.value.replace(/\D/g, ""))} />
+                        onChange={(e) => setCodigo(e.target.value.replace(/\D/g, ""))}
+                        onPaste={(e) => {
+                          const dig = e.clipboardData
+                            .getData("text")
+                            .replace(/\D/g, "")
+                            .slice(0, 6);
+                          if (dig.length === 6) {
+                            e.preventDefault();
+                            setCodigo(dig);
+                            conferirCodigo(dig);
+                          }
+                        }} />
                     </label>
                   )}
 

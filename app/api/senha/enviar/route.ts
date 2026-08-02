@@ -4,12 +4,13 @@ import { db } from "@/lib/db";
 import { enviarEmailRedefinicao } from "@/lib/email-redefinicao";
 
 /**
- * O QUE: recebe { email } e, SE a conta existir, envia um código de 6
- *        dígitos por email (Brevo). A resposta é sempre a mesma, exista
- *        a conta ou não: quem chama não descobre quais emails têm conta.
- * POR QUE: enumerar contas é o primeiro passo de ataque; a rota nega essa
- *          informação por construção. Rate limit de 5 envios por email a
- *          cada 15 minutos segura flood e spam de caixa de entrada.
+ * O QUE: recebe { email } e, se a conta existir, envia um código de 6
+ *        dígitos por email (Brevo). A resposta diz se a conta existe
+ *        (campo "existe") pro formulário barrar typo de email na hora.
+ * POR QUE: decisão de produto: avisar "esse email não tem conta" vale
+ *          mais aqui que esconder quais emails têm cadastro (o dano de
+ *          enumerar emails institucionais é baixo e o rate limit de 5
+ *          envios por email a cada 15 minutos segura sondagem e flood).
  * CHAMA: fluxo "Esqueci minha senha" do /entrar.
  * QUEBRA SE: DATABASE_URL ou BREVO_API_KEY faltarem no ambiente.
  */
@@ -67,11 +68,16 @@ export async function POST(req: NextRequest) {
       );
 
       const enviado = await enviarEmailRedefinicao(email, usuarios[0].nome, otp);
-      if (!enviado) console.error("[senha/enviar] envio falhou pra conta existente");
+      if (!enviado) {
+        console.error("[senha/enviar] envio falhou pra conta existente");
+        return NextResponse.json(
+          { erro: "não deu pra enviar o código agora" },
+          { status: 500 },
+        );
+      }
     }
 
-    // Mesma resposta com e sem conta: nada de enumeração.
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, existe: usuarios.length > 0 });
   } catch (excecao) {
     console.error("[senha/enviar]:", (excecao as Error).message);
     return NextResponse.json(
