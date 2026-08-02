@@ -1,4 +1,4 @@
--- 011: régua única de conservação no estado do item. Sai a dupla confusa
+-- 012: régua única de conservação no estado do item. Sai a dupla confusa
 -- "Usado"/"Funcionando" (misturava conservação com funcionamento), entra
 -- a escala Novo / Como novo / Bem conservado / Com marcas de uso.
 

@@ -1,4 +1,4 @@
--- 011: redefinição de senha por código de 6 dígitos enviado no email.
+-- 015: redefinição de senha por código de 6 dígitos enviado no email.
 -- A tabela é PRIVADA do servidor: quem escreve e lê é a conexão direta
 -- das rotas /api/senha (DATABASE_URL). Nenhum papel de API tem grant, e
 -- a RLS fica ligada como segunda tranca.
