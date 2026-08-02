@@ -176,7 +176,7 @@ export default function Conta() {
       <HeaderNav />
       <main className="container info-wrap" style={{ maxWidth: 760 }}>
         <div>
-          <Link className="pd-voltar" style={{ marginTop: 0 }} href="/produtos">
+          <Link className="pd-voltar so-desktop" style={{ marginTop: 0 }} href="/produtos">
             ← Voltar
           </Link>
         </div>
