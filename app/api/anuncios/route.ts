@@ -120,10 +120,13 @@ export async function POST(req: NextRequest) {
   const meta = user.user_metadata ?? {};
   const autor_nome = (meta.nome as string | undefined) ?? "Aluno";
   const autor_curso = (meta.curso as string | undefined) ?? null;
+  // O WhatsApp do anúncio é o celular do perfil: uma fonte só, sem campo
+  // repetido no formulário.
+  const contato = (meta.celular as string | undefined) ?? null;
 
   const { data, error } = await supabase
     .from("anuncios")
-    .insert({ ...dados, autor_id: user.id, autor_nome, autor_curso })
+    .insert({ ...dados, autor_id: user.id, autor_nome, autor_curso, contato })
     .select(COLUNAS_PUBLICAS)
     .single();
 

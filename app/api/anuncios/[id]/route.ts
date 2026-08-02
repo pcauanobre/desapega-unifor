@@ -93,9 +93,13 @@ export async function PUT(
     );
   }
 
+  // Editar também renova o contato a partir do celular atual do perfil.
+  const contato =
+    ((user.user_metadata ?? {}).celular as string | undefined) ?? null;
+
   const { data, error } = await supabase
     .from("anuncios")
-    .update(dados)
+    .update({ ...dados, contato })
     .eq("id", id)
     .select(COLUNAS_PUBLICAS)
     .maybeSingle();

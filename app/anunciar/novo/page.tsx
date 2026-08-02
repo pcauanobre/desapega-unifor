@@ -36,7 +36,6 @@ export default function NovoAnuncio() {
   const [preco, setPreco] = useState("");
   const [estado, setEstado] = useState("");
   const [bloco, setBloco] = useState("");
-  const [contato, setContato] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [publicadoId, setPublicadoId] = useState<string | null>(null);
@@ -53,8 +52,6 @@ export default function NovoAnuncio() {
           return;
         }
         usuario.current = user.id;
-        const meta = user.user_metadata ?? {};
-        if (meta.celular) setContato(meta.celular as string);
 
         // O modo (novo ou edição) é decidido AQUI, antes de qualquer
         // título aparecer; a tela nunca pisca "Bora desapegar" na edição.
@@ -74,7 +71,6 @@ export default function NovoAnuncio() {
               setPreco(a.preco === null ? "" : String(a.preco));
               setEstado(a.estado ?? "");
               setBloco(a.bloco ?? "");
-              setContato(a.contato ?? "");
               setFotosExistentes(
                 a.fotos?.length ? a.fotos : a.imagem_url ? [a.imagem_url] : [],
               );
@@ -149,7 +145,6 @@ export default function NovoAnuncio() {
             is_doacao: doacao,
             estado: estado || null,
             bloco: bloco || null,
-            contato: contato || null,
             fotos,
           }),
         },
@@ -239,18 +234,12 @@ export default function NovoAnuncio() {
             </label>
           </div>
 
-          <div className="an-linha">
-            <div className="wiz-dl">
-              <span className="field-label">Local de retirada</span>
-              <Droplist rotuloAria="Local de retirada" valor={bloco} onMudar={setBloco}
-                opcoes={[{ valor: "", rotulo: "Onde encontrar?" },
-                  ...LOCAIS.map((l) => ({ valor: l, rotulo: l }))]} />
-            </div>
-            <label className="field">
-              <span className="field-label">WhatsApp de contato</span>
-              <input type="tel" placeholder="(85) 90000-0000" maxLength={20}
-                value={contato} onChange={(e) => setContato(e.target.value)} />
-            </label>
+          {/* o WhatsApp não é pedido aqui: sai do celular do perfil */}
+          <div className="wiz-dl">
+            <span className="field-label">Local de retirada</span>
+            <Droplist rotuloAria="Local de retirada" valor={bloco} onMudar={setBloco}
+              opcoes={[{ valor: "", rotulo: "Onde encontrar?" },
+                ...LOCAIS.map((l) => ({ valor: l, rotulo: l }))]} />
           </div>
 
           {erro && <p className="login-erro">{erro}</p>}

@@ -10,7 +10,6 @@ export type DadosAnuncio = {
   imagem_url: string | null;
   estado: string | null;
   bloco: string | null;
-  contato: string | null;
   fotos: string[] | null;
 };
 
@@ -71,11 +70,6 @@ export function validarAnuncio(body: unknown): {
       ? b.bloco.trim().slice(0, 40)
       : null;
 
-  const contato =
-    typeof b.contato === "string" && b.contato.trim() !== ""
-      ? b.contato.trim().slice(0, 60)
-      : null;
-
   let fotos: string[] | null = null;
   if (Array.isArray(b.fotos) && b.fotos.length > 0) {
     const limpas = b.fotos
@@ -93,7 +87,7 @@ export function validarAnuncio(body: unknown): {
     dados: {
       titulo, descricao, categoria, preco, is_doacao,
       imagem_url: imagem_url ?? fotos?.[0] ?? null,
-      estado, bloco, contato, fotos,
+      estado, bloco, fotos,
     },
   };
 }
