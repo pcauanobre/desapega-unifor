@@ -130,6 +130,12 @@ middleware.ts   rate limit por IP na borda da API
 | POST | `/api/senha/conferir` | Confere o código sem queimar ele |
 | POST | `/api/senha/confirmar` | Troca a senha com o código válido |
 
+Sobre a foto do anúncio: o `POST /api/anuncios` aceita as duas formas. O app
+manda as URLs das fotos que subiram pro Storage (campo `fotos`), e a API
+também aceita uma URL de imagem direta no campo `imagem_url`, que é o formato
+citado no edital. A interface faz o upload de verdade porque colar link de
+imagem é ruim de usar no celular.
+
 ## Variáveis de ambiente
 
 As duas do `.env.example` são públicas e suficientes pra rodar tudo. Existem
