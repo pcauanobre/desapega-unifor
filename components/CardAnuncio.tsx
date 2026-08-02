@@ -109,11 +109,11 @@ export function CardAnuncio({
             <PlaceIcon sx={{ fontSize: 16 }} />
             <span className="card-bloco-nome">{encurtarLocal(anuncio.bloco)}</span>
           </span>
-          <div className="card-linha2">
-            <span className="card-quando">
-              <ScheduleIcon sx={{ fontSize: 15 }} />
-              {quandoPublicado(anuncio.created_at)}
-            </span>
+          <span className="card-quando">
+            <ScheduleIcon sx={{ fontSize: 15 }} />
+            {quandoPublicado(anuncio.created_at)}
+          </span>
+          <div className="card-valor">
             {anuncio.is_doacao ? (
               <span className="card-doacao-txt">
                 <VolunteerActivismIcon sx={{ fontSize: 15 }} />

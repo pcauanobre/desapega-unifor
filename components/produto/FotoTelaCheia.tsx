@@ -27,7 +27,9 @@ type Props = {
  */
 export function FotoTelaCheia({ fotos, titulo, inicial, onFechar }: Props) {
   const [atual, setAtual] = useState(inicial);
-  const toqueX = useRef<number | null>(null);
+  const toque = useRef<{ x: number; y: number } | null>(null);
+  /* Quanto a foto já desceu enquanto o dedo arrasta (feedback do gesto). */
+  const [puxada, setPuxada] = useState(0);
 
   useEffect(() => {
     function tecla(e: KeyboardEvent) {
@@ -55,14 +57,41 @@ export function FotoTelaCheia({ fotos, titulo, inicial, onFechar }: Props) {
       aria-label={`Fotos de ${titulo}`}
       onClick={onFechar}
       onTouchStart={(e) => {
-        toqueX.current = e.touches[0].clientX;
+        toque.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }}
+      onTouchMove={(e) => {
+        if (!toque.current) return;
+        const dy = e.touches[0].clientY - toque.current.y;
+        const dx = e.touches[0].clientX - toque.current.x;
+        // Só acompanha o dedo se o gesto for claramente pra baixo.
+        if (dy > 0 && Math.abs(dy) > Math.abs(dx)) setPuxada(dy);
       }}
       onTouchEnd={(e) => {
-        if (toqueX.current === null) return;
-        const dx = e.changedTouches[0].clientX - toqueX.current;
-        if (Math.abs(dx) > 50) (dx > 0 ? anterior : proxima)();
-        toqueX.current = null;
+        if (!toque.current) return;
+        const dx = e.changedTouches[0].clientX - toque.current.x;
+        const dy = e.changedTouches[0].clientY - toque.current.y;
+        toque.current = null;
+
+        // Arrastou pra baixo o bastante: fecha (gesto de galeria de celular).
+        if (dy > 110 && Math.abs(dy) > Math.abs(dx)) {
+          setPuxada(0);
+          onFechar();
+          return;
+        }
+        setPuxada(0);
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+          (dx > 0 ? anterior : proxima)();
+        }
       }}
+      style={
+        puxada > 0
+          ? {
+              // some junto com a distância, como no visualizador nativo
+              opacity: Math.max(0.35, 1 - puxada / 400),
+              transition: "none",
+            }
+          : undefined
+      }
     >
       <BloquearScroll />
 
@@ -80,7 +109,15 @@ export function FotoTelaCheia({ fotos, titulo, inicial, onFechar }: Props) {
         </span>
       </header>
 
-      <figure className="visor-palco" onClick={(e) => e.stopPropagation()}>
+      <figure
+        className="visor-palco"
+        onClick={(e) => e.stopPropagation()}
+        style={
+          puxada > 0
+            ? { transform: `translateY(${puxada}px) scale(${Math.max(0.8, 1 - puxada / 900)})` }
+            : undefined
+        }
+      >
         {fotos.length > 1 && (
           <button className="visor-seta esq" onClick={anterior} aria-label="Foto anterior">
             <ChevronLeftIcon sx={{ fontSize: 28 }} />
