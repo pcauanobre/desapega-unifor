@@ -963,13 +963,14 @@ body{background:var(--bg)}
   .busca-veu.is-saindo{animation:fadeOut 220ms ease both}
   /* o input voa pro MEIO da tela e as tags moram num card branco embaixo,
      com chips claros: tudo legível por cima do fundo escurecido */
-  .search.focada{position:fixed;z-index:76;left:18px;right:18px;top:32vh;order:0;flex:none;
+  /* mais pro alto que o meio: com o teclado aberto o campo fica visível */
+  .search.focada{position:fixed;z-index:76;left:18px;right:18px;top:13vh;order:0;flex:none;
     box-shadow:0 24px 60px rgba(0,0,0,.4)}
   .search.focada .search-input{padding:15px 16px;font-size:16px}
   .search.focada.is-saindo{animation:fadeOut 220ms ease both}
   /* enquanto a barra viaja, o lugar dela no header fica reservado (e azul) */
   .busca-lugar{display:block;flex:1 1 100%;order:3;height:46px}
-  .busca-tags{display:block;position:fixed;z-index:76;left:18px;right:18px;top:calc(32vh + 64px);
+  .busca-tags{display:block;position:fixed;z-index:76;left:18px;right:18px;top:calc(13vh + 64px);
     background:#fff;border-radius:16px;padding:16px 16px 18px;
     box-shadow:0 24px 60px rgba(0,0,0,.35);animation:fadeUp 380ms 90ms var(--ease) both}
   .busca-tags.is-saindo{animation:fadeOut 220ms ease both}
