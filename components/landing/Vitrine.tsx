@@ -52,21 +52,37 @@ export function Vitrine(props: Props) {
 
   // A espiadinha é rolagem DE VERDADE (scrollTo suave), não transform:
   // transform deslocava a régua pra fora da caixa e cortava chip no meio.
+  // O snap fica desligado só durante o vai-e-volta (senão ele puxa a régua
+  // de volta pro encaixe no mesmo instante e a espiadinha morre invisível).
   useEffect(() => {
     if (!dicaRolagem) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const alvo = chipsRef.current;
     if (!alvo) return;
-    const intervalo = setInterval(() => {
-      if (alvo.scrollWidth <= alvo.clientWidth || alvo.scrollLeft > 0) return;
+
+    function espiar() {
+      if (!alvo || alvo.scrollWidth <= alvo.clientWidth || alvo.scrollLeft > 1) return;
       animandoDica.current = true;
-      alvo.scrollTo({ left: 46, behavior: "smooth" });
+      alvo.style.scrollSnapType = "none";
+      alvo.scrollTo({ left: 52, behavior: "smooth" });
       setTimeout(() => alvo.scrollTo({ left: 0, behavior: "smooth" }), 700);
       setTimeout(() => {
+        alvo.style.scrollSnapType = "";
         animandoDica.current = false;
       }, 1600);
-    }, 3000);
-    return () => clearInterval(intervalo);
+    }
+
+    let intervalo: ReturnType<typeof setInterval> | undefined;
+    const inicial = setTimeout(() => {
+      espiar();
+      intervalo = setInterval(espiar, 3200);
+    }, 1200);
+
+    return () => {
+      clearTimeout(inicial);
+      if (intervalo) clearInterval(intervalo);
+      alvo.style.scrollSnapType = "";
+    };
   }, [dicaRolagem]);
 
   // O ícone de filtros da barra de busca (mobile) abre o mesmo popup.
@@ -125,7 +141,9 @@ export function Vitrine(props: Props) {
         <div
           ref={chipsRef}
           className="chips"
-          onScroll={() => {
+          onScroll={(e) => {
+            // deslocou? liga o fade da esquerda (a tag derrete, não corta)
+            e.currentTarget.classList.toggle("rolado", e.currentTarget.scrollLeft > 2);
             if (!animandoDica.current) setDicaRolagem(false);
           }}
           onPointerDown={() => setDicaRolagem(false)}
