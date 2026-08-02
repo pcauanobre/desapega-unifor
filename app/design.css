@@ -119,6 +119,10 @@ body{background:var(--bg)}
     background:#fff;border:none;color:var(--azul-hover);font-size:12px;font-weight:800;
     padding:8px 13px;box-shadow:0 2px 8px rgba(7,28,61,.28)}
   .btn-instalar-mobile svg{color:var(--azul)}
+  /* toque no celular deixa o :hover grudado, e o hover da versão desktop é
+     translúcido: sem isto o botão "apagava" depois de cancelar a instalação */
+  .btn-instalar-mobile:hover,.btn-instalar-mobile:focus,.btn-instalar-mobile:active{
+    background:#fff;color:var(--azul-hover);border:none}
 }
 
 /* ---------- header ---------- */
@@ -315,6 +319,11 @@ body{background:var(--bg)}
 /* aberto, o droplist inteiro sobe de camada: o painel nunca fica por
    baixo de vizinho com contexto próprio (ex: chips com mask no mobile) */
 .dl.aberto{z-index:60}
+/* o menu aberto precisa vencer os campos que vêm depois no formulário: eles
+   entram com animação de fill both, e elemento animado cria contexto de
+   empilhamento próprio, então o z-index de dentro do .dl não bastava */
+.an-linha,.wiz-dl{position:relative}
+.an-linha:has(.dl.aberto),.wiz-dl:has(.dl.aberto){z-index:70}
 .search .dl{display:flex;align-items:stretch}
 .dl-gatilho{border:1.5px solid var(--borda-2);background:#fff;color:var(--txt);font-size:13.5px;font-weight:600;
   padding:9px 12px;border-radius:var(--r-sm);cursor:pointer;display:inline-flex;align-items:center;gap:8px;
@@ -1223,7 +1232,9 @@ body{background:var(--bg)}
      nav (sem chutar altura). Passo grande rola dentro do card. */
   .pagina-wizard{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
   .pagina-wizard .wiz-fundo{flex:1;min-height:0;height:auto}
-  .wiz-fundo{padding:10px 12px;align-items:stretch;overflow:hidden}
+  /* o card acompanha o tamanho do conteúdo em vez de esticar até o rodapé:
+     etapa curta deixava metade da tela vazia */
+  .wiz-fundo{padding:10px 12px;align-items:flex-start;overflow:hidden}
   .wiz-card{padding:16px 15px;width:100%;max-height:100%;display:flex;flex-direction:column;
     overflow:hidden}
   /* visualizador no celular: setas menores e miniaturas rentes à borda */
