@@ -1090,6 +1090,13 @@ body{background:var(--bg)}
   .bnav-fab i{font-style:normal;font-size:10.5px;font-weight:700;color:var(--txt-3);padding:3px 0 8px}
   .bnav-espaco{display:block;height:calc(78px + env(safe-area-inset-bottom));background:var(--bg)}
 }
+/* App instalado (standalone): comportamento de app de verdade, sem
+   pull-to-refresh recarregando a página e sem gesto de zoom bugando layout */
+@media (display-mode: standalone){
+  html,body{overscroll-behavior-y:none}
+  body{touch-action:pan-x pan-y}
+}
+
 @keyframes bnavPulo{0%{transform:scale(1)}40%{transform:scale(.82)}100%{transform:scale(1)}}
 @keyframes sheetIn{from{transform:translateY(100%)}to{transform:none}}
 @keyframes sheetOut{to{transform:translateY(100%)}}
