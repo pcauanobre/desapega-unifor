@@ -43,7 +43,7 @@ export default function MeusAnuncios() {
       .auth.getUser()
       .then(({ data: { user } }) => {
         if (!user) {
-          router.replace("/entrar");
+          router.replace("/entrar?voltar=" + encodeURIComponent(window.location.pathname));
           return;
         }
         // Ativos na frente, vendidos no fim: encerrar não apaga nada.

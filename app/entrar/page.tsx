@@ -254,8 +254,12 @@ export default function Entrar() {
         return;
       }
       // Perfil que nunca passou pelo setup cai no wizard antes da vitrine.
+      // O destino pedido (?voltar=) atravessa o wizard e é honrado no fim.
       const completo = data.user?.user_metadata?.perfil_completo === true;
-      router.push(completo ? "/produtos" : "/bem-vindo");
+      const alvo = destinoDeVolta();
+      router.push(
+        completo ? alvo : `/bem-vindo?voltar=${encodeURIComponent(alvo)}`,
+      );
       router.refresh();
       return;
     }
@@ -276,8 +280,8 @@ export default function Entrar() {
       return;
     }
     if (data.session) {
-      // Conta criada e logada: segue pro setup do perfil.
-      router.push("/bem-vindo");
+      // Conta criada e logada: setup do perfil, levando o destino junto.
+      router.push(`/bem-vindo?voltar=${encodeURIComponent(destinoDeVolta())}`);
       router.refresh();
     } else {
       setEnviando(false);
@@ -550,6 +554,16 @@ export default function Entrar() {
       )}
     </div>
   );
+}
+
+/**
+ * Pra onde ir depois de entrar: o ?voltar= da URL (a aba que a pessoa
+ * tentou abrir sem conta) ou a vitrine. Só aceita caminho interno, pra
+ * ninguém usar o parâmetro como trampolim pra site de fora.
+ */
+function destinoDeVolta(): string {
+  const bruto = new URLSearchParams(window.location.search).get("voltar") ?? "";
+  return /^\/[a-z0-9/-]*$/i.test(bruto) ? bruto : "/produtos";
 }
 
 /* Erros comuns do Auth em português simples. */

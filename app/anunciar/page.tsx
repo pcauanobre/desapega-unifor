@@ -43,7 +43,7 @@ export default function CentralAnunciar() {
     createClient()
       .auth.getUser()
       .then(({ data: { user } }) => {
-        if (!user) router.replace("/entrar");
+        if (!user) router.replace("/entrar?voltar=" + encodeURIComponent(window.location.pathname));
       });
   }, [router]);
 

@@ -185,7 +185,10 @@ export function Vitrine(props: Props) {
                 key={`${i}-${a.id}`}
                 anuncio={a}
                 /* itens anexados pelo "carregar mais" sobem em onda, um a um */
-                atraso={i >= filtrados.length ? (i - filtrados.length) * 65 : 0}
+                /* entrada em cascata da esquerda pra direita, linha a
+                   linha: os primeiros cards chegam primeiro, e os que o
+                   "carregar mais" trouxe seguem a mesma onda */
+                atraso={i * 55}
               />
             ))}
           </div>

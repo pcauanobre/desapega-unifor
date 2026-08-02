@@ -36,8 +36,11 @@ export function BottomNav() {
 
   if (SEM_NAV.some((rota) => pathname.startsWith(rota))) return null;
 
-  /* Aba que precisa de conta manda o visitante pro /entrar. */
-  const logado = (rota: string) => (uid ? rota : "/entrar");
+  /* Aba que precisa de conta manda o visitante pro /entrar, avisando pra
+     onde ele queria ir: depois de entrar (e do setup, se for conta nova)
+     ele cai na aba que clicou, não na home. */
+  const logado = (rota: string) =>
+    uid ? rota : `/entrar?voltar=${encodeURIComponent(rota)}`;
   const classe = (ativo: boolean) => "bnav-item" + (ativo ? " is-on" : "");
 
   return (

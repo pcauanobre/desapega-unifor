@@ -60,7 +60,7 @@ export default function Conta() {
       .then(({ data: { session } }) => {
         const user = session?.user;
         if (!user) {
-          router.replace("/entrar");
+          router.replace("/entrar?voltar=" + encodeURIComponent(window.location.pathname));
           return;
         }
         const m = user.user_metadata ?? {};

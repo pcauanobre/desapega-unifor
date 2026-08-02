@@ -63,7 +63,7 @@ export default function NovoAnuncio() {
       .auth.getUser()
       .then(({ data: { user } }) => {
         if (!user) {
-          router.replace("/entrar");
+          router.replace("/entrar?voltar=" + encodeURIComponent(window.location.pathname));
           return;
         }
         usuario.current = user.id;
