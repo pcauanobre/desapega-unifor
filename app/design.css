@@ -492,6 +492,9 @@ body{background:var(--bg)}
 .aviso-card > img{display:block;margin:0 auto}
 .aviso-titulo{font-family:var(--sora);font-weight:700;font-size:20px;color:var(--navy);text-align:center;margin:12px 0 0}
 .aviso-p{font-size:13.5px;line-height:1.65;color:var(--txt-2);margin:12px 0 0}
+/* o popup mora fora do wrapper .pagina-1280, então o link se veste aqui */
+.aviso-p a{color:var(--azul);text-decoration:none}
+.aviso-p a:hover{color:var(--azul-hover);text-decoration:underline}
 .aviso-mini{font-size:12px;color:var(--txt-3);margin:12px 0 0;text-align:center}
 /* editor de foto (recorte com arraste e zoom) */
 .ef-card{width:520px}
