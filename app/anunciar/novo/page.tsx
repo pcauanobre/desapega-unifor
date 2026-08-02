@@ -321,7 +321,7 @@ export default function NovoAnuncio() {
 
             <div className="wiz-acoes">
               {etapa === 0 ? (
-                <Link className="btn wiz-voltar" href="/anunciar">
+                <Link className="btn wiz-voltar" href="/">
                   Cancelar
                 </Link>
               ) : (

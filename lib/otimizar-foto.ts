@@ -39,26 +39,23 @@ export async function recortarFoto(arquivo: File, area: AreaCorte): Promise<Blob
 }
 
 /**
- * O QUE: prepara a foto ANTES do editor de corte: encolhe pra no máximo
- *        2000px no lado maior e devolve um File leve.
- * POR QUE: foto de celular vem com 12MP (4000x3000). Jogar isso direto no
- *          editor come memória, trava o arrasto e em aparelho mais fraco o
- *          navegador desiste no meio. Encolhendo antes, foto grande passa
- *          a ser aceita numa boa e o corte fica fluido.
+ * O QUE: prepara a foto ANTES do editor de corte: converte SEMPRE pra WebP
+ *        e limita o lado maior a 2000px.
+ * POR QUE: duas coisas de uma vez. Foto de celular vem com 12MP e em HEIC
+ *          ou PNG pesado; jogar isso no editor come memória e trava o
+ *          arrasto. E arquivo em resolução nativa nunca deve seguir adiante,
+ *          nem quando é pequeno: WebP é sempre mais leve pelo mesmo olho.
+ *          Assim foto gigante é aceita numa boa, em vez de ser recusada.
  * CHAMA: quem recebe arquivo do usuário (anunciar, conta, wizard).
- * QUEBRA SE: nada; se o navegador não conseguir decodificar, devolve o
- *            arquivo original e o editor tenta do jeito que veio.
+ * QUEBRA SE: nada; se o navegador não conseguir decodificar (formato exótico),
+ *            devolve o arquivo original e o editor tenta do jeito que veio.
  */
 export async function prepararFoto(arquivo: File): Promise<File> {
   const MAX = 2000;
   try {
     const bitmap = await createImageBitmap(arquivo);
-    const maior = Math.max(bitmap.width, bitmap.height);
-    if (maior <= MAX) {
-      bitmap.close();
-      return arquivo;
-    }
-    const escala = MAX / maior;
+    // escala 1 quando a foto já é pequena: ela continua sendo convertida.
+    const escala = Math.min(1, MAX / Math.max(bitmap.width, bitmap.height));
     const canvas = document.createElement("canvas");
     canvas.width = Math.round(bitmap.width * escala);
     canvas.height = Math.round(bitmap.height * escala);
@@ -66,34 +63,13 @@ export async function prepararFoto(arquivo: File): Promise<File> {
     bitmap.close();
 
     const blob = await new Promise<Blob | null>((r) =>
-      canvas.toBlob(r, "image/jpeg", 0.92),
+      canvas.toBlob(r, "image/webp", 0.9),
     );
     if (!blob) return arquivo;
-    return new File([blob], arquivo.name.replace(/\.\w+$/, "") + ".jpg", {
-      type: "image/jpeg",
+    return new File([blob], arquivo.name.replace(/\.\w+$/, "") + ".webp", {
+      type: "image/webp",
     });
   } catch {
     return arquivo;
   }
-}
-
-export async function otimizarFoto(arquivo: File): Promise<Blob> {
-  const bitmap = await createImageBitmap(arquivo);
-  const MAX = 1280;
-  const escala = Math.min(1, MAX / Math.max(bitmap.width, bitmap.height));
-
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.round(bitmap.width * escala);
-  canvas.height = Math.round(bitmap.height * escala);
-  canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  bitmap.close();
-
-  return new Promise((resolver, rejeitar) => {
-    canvas.toBlob(
-      (blob) =>
-        blob ? resolver(blob) : rejeitar(new Error("falha ao converter a foto")),
-      "image/webp",
-      0.82,
-    );
-  });
 }
