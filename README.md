@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Desapega Unifor
 
-## Getting Started
+Marketplace de economia circular do campus, feito pro desafio técnico do
+Laboratório VORTEX 2026.2. Um aluno anuncia o que não usa mais (livro de
+cálculo, calculadora científica, jaleco, arduino), outro aluno acha e
+aproveita, comprando barato ou recebendo doação. A vitrine é pública e
+anunciar pede conta com email institucional.
 
-First, run the development server:
+O projeto é uma aplicação única. O backend é uma API REST em JSON dentro
+das rotas do próprio Next (`app/api/`), e o frontend é a landing rica no
+desktop que vira app de bolso no celular, instalável como PWA.
+
+## O que tem funcionando
+
+- Landing page com estatísticas, vitrine com filtro por categoria, busca,
+  filtro por faixa de preço e FAQ
+- Conta real (cadastro com email institucional, login, recuperação de senha
+  com código por email, perfil editável, apagar conta com confirmação)
+- Anunciar com até 5 fotos (recorte interativo, compressão pra WebP no
+  navegador antes do upload), editar, excluir e marcar como vendido
+- Página de produto com carrossel e contato direto por WhatsApp
+- Perfil público do vendedor com histórico de vendas e estatísticas reais
+- Contador de cliques por anúncio
+- PWA com manifest, service worker escrito à mão, cache offline e botão de
+  instalar
+
+## Tecnologias
+
+- Next.js 16 (App Router) com React 19 e TypeScript
+- API REST nas rotas do próprio Next (`app/api/`), tudo em JSON
+- Supabase (Postgres na nuvem, autenticação e storage de fotos), com Row
+  Level Security e privilégio por coluna no banco
+- `pg` pra conexão direta do servidor nos fluxos que a anon key não alcança
+- Brevo pro email transacional do "esqueci minha senha"
+- PWA com `manifest.json` e `public/sw.js` escritos à mão, sem lib
+- MUI Icons, react-easy-crop e Tailwind na base de estilos
+
+## Como rodar localmente
+
+Pré-requisito: Node 20 ou mais novo.
+
+```bash
+git clone https://github.com/pcauanobre/desapega-unifor.git
+cd desapega-unifor
+npm install
+```
+
+Copie o arquivo de ambiente (as chaves dele são as públicas do projeto, a
+segurança fica nas policies do banco e não no segredo da chave):
+
+```bash
+# Windows
+copy .env.example .env.local
+
+# Linux / Mac
+cp .env.example .env.local
+```
+
+Suba o projeto (backend e frontend juntos, é uma aplicação só):
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abriu `http://localhost:3000`, tá rodando. Landing no desktop e, no modo
+device do DevTools (ou no celular), a experiência de app com bottom nav.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+A API responde em `http://localhost:3000/api/anuncios` pra testar direto.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Rodando como PWA (instalação e modo offline)
 
-## Learn More
+O service worker fica desligado no modo dev de propósito (cache atrapalha o
+hot reload). Pra testar o PWA de verdade use o build de produção:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+npm start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Aí é só abrir `http://localhost:3000` e clicar em "Instalar app" na barra
+do topo (no celular o botão fica no header azul). Pra ver o offline
+funcionando, abra o app instalado, navegue na vitrine, ative o modo Offline
+no DevTools (aba Network) e recarregue. A última vitrine vista continua lá,
+servida do cache do service worker.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Estrutura de pastas
 
-## Deploy on Vercel
+```
+app/            páginas (landing, produtos, conta, perfil, anunciar...)
+app/api/        a API REST (anuncios, perfil, senha)
+components/     componentes de interface
+lib/            utilidades puras (tipos, validação, regras de senha...)
+public/         manifest.json, sw.js, ícones e imagens
+sql/            migrations numeradas do banco (com RLS e grants)
+scripts/        aplicar migrations pelo terminal
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Rotas da API
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Método | Rota | O que faz |
+|---|---|---|
+| GET | `/api/anuncios` | Lista anúncios (filtros `?categoria=`, `?autor=`, `?vendidos=1`) |
+| POST | `/api/anuncios` | Cria anúncio (exige login) |
+| GET | `/api/anuncios/[id]` | Um anúncio + conta o clique |
+| PUT | `/api/anuncios/[id]` | Edita (só o dono, garantido pela RLS) |
+| PATCH | `/api/anuncios/[id]` | Marca como vendido (vira histórico) |
+| DELETE | `/api/anuncios/[id]` | Exclui (só o dono) |
+| GET | `/api/perfil/[id]` | Perfil público do vendedor com estatísticas |
+| POST | `/api/senha/enviar` | Envia código de redefinição por email |
+| POST | `/api/senha/conferir` | Confere o código sem queimar ele |
+| POST | `/api/senha/confirmar` | Troca a senha com o código válido |
+
+## Variáveis de ambiente
+
+As duas do `.env.example` são públicas e suficientes pra rodar tudo. Existem
+duas privadas (`DATABASE_URL` e `BREVO_API_KEY`) que só o dono do projeto
+usa, pra rodar migrations e pro envio de email do "esqueci minha senha". Sem
+elas o app funciona normal, só esse fluxo de email fica de fora.

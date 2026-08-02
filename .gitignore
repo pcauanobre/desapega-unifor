@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# regras locais de IA (nao versionado)
+CLAUDE.local.md
+
+# o example e publico de proposito (so chaves publicas)
+!.env.example
+
+# ferramentas locais de agente (nao fazem parte do projeto)
+.agents/
+.claude/
+skills-lock.json

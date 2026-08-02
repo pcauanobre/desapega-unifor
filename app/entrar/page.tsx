@@ -1,0 +1,492 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import XIcon from "@mui/icons-material/X";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import { createClient } from "@/lib/supabase/client";
+import { problemaDaSenha } from "@/lib/senha";
+import { MedidorSenha } from "@/components/MedidorSenha";
+import { BloquearScroll } from "@/components/BloquearScroll";
+import { useSaidaAnimada } from "@/components/useSaidaAnimada";
+
+const TEXTOS = {
+  login: {
+    title: "Acesse sua conta Desapega",
+    sub: "Entre para cadastrar produtos e acompanhar seus desapegos",
+    submit: "Acessar", altHint: "Não tem conta?", altLink: "Criar uma conta",
+  },
+  register: {
+    title: "Crie sua conta Desapega Unifor",
+    sub: "Apenas para alunos Unifor",
+    submit: "Criar conta", altHint: "Já tem conta?", altLink: "Entrar",
+  },
+  recuperar: {
+    title: "Recupere seu acesso",
+    sub: "Receba um código no email e escolha uma senha nova",
+    submit: "Enviar código", altHint: "Lembrou a senha?", altLink: "Entrar",
+  },
+};
+
+/* Só aluno da Unifor cria conta: o cadastro exige o email institucional. */
+const DOMINIO_UNIFOR = "@edu.unifor.br";
+
+/**
+ * O QUE: a tela de acesso no layout do design (foto do campus + card),
+ *        com login e cadastro REAIS no Supabase Auth por email. O cadastro
+ *        só aceita email institucional da Unifor (@edu.unifor.br).
+ * POR QUE: a vitrine promete itens anunciados por alunos da Unifor, então
+ *          quem cria conta precisa provar o vínculo pelo email institucional.
+ * CHAMA: "Entrar", "Quero anunciar" e clique nos cards levam pra cá.
+ * QUEBRA SE: confirmação de email estiver LIGADA no painel do Supabase
+ *            (o cadastro passa a exigir email real confirmado).
+ */
+export default function Entrar() {
+  const router = useRouter();
+  const [modo, setModo] = useState<"login" | "register" | "recuperar">("login");
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [verSenha, setVerSenha] = useState(false);
+  const [aceite, setAceite] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+  const [sucesso, setSucesso] = useState<string | null>(null);
+  /* Recuperação em TRÊS etapas (estrutura do AgenHub): email → popup do
+     código → e só quem confirma o código chega na tela de nova senha. */
+  const [etapaRec, setEtapaRec] = useState<"email" | "codigo" | "senha">("email");
+  const [codigo, setCodigo] = useState("");
+  const { saindo: saindoOtp, fecharCom: fecharOtpCom } = useSaidaAnimada();
+  const t = TEXTOS[modo];
+
+  function irPraRecuperar(e: React.MouseEvent) {
+    e.preventDefault();
+    setErro(null);
+    setSucesso(null);
+    setCodigo("");
+    setSenha("");
+    setEtapaRec("email");
+    setModo("recuperar");
+  }
+
+  function voltarPraLogin(e: React.MouseEvent) {
+    e.preventDefault();
+    setErro(null);
+    setSucesso(null);
+    setCodigo("");
+    setSenha("");
+    setModo("login");
+  }
+
+  /* Confere o código no servidor. Fora do submit porque o Ctrl+V no campo
+     chama direto, sem precisar de Enter. */
+  async function conferirCodigo(valor: string) {
+    if (enviando) return;
+    setErro(null);
+    setSucesso(null);
+    if (!/^\d{6}$/.test(valor)) return setErro("Digite o código de 6 dígitos do email.");
+    setEnviando(true);
+    const r = await fetch("/api/senha/conferir", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.trim(), otp: valor }),
+    });
+    const corpo = await r.json();
+    setEnviando(false);
+    if (!r.ok) return setErro(corpo.erro ?? "Não deu pra conferir agora.");
+    // Código certo: o popup desce animado e a tela de nova senha assume.
+    fecharOtpCom(() => {
+      setSucesso("Código confirmado! Escolha a nova senha.");
+      setEtapaRec("senha");
+    });
+  }
+
+  function fecharPopupCodigo() {
+    fecharOtpCom(() => {
+      setCodigo("");
+      setErro(null);
+      setEtapaRec("email");
+    });
+  }
+
+  async function reenviarCodigo(e: React.MouseEvent) {
+    e.preventDefault();
+    if (enviando) return;
+    setErro(null);
+    setEnviando(true);
+    const r = await fetch("/api/senha/enviar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.trim() }),
+    });
+    setEnviando(false);
+    if (!r.ok) {
+      const corpo = await r.json();
+      return setErro(corpo.erro ?? "Não deu pra reenviar agora.");
+    }
+    setCodigo("");
+    setSucesso("Código novo enviado!");
+  }
+
+  async function enviar(e: React.FormEvent) {
+    e.preventDefault();
+    if (enviando) return;
+    setErro(null);
+    setSucesso(null);
+
+    if (!/.+@.+\..+/.test(email.trim())) {
+      setErro("Escreve um email válido.");
+      return;
+    }
+
+    if (modo === "recuperar") {
+      if (etapaRec === "email") {
+        setEnviando(true);
+        const r = await fetch("/api/senha/enviar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email.trim() }),
+        });
+        const corpo = await r.json();
+        setEnviando(false);
+        if (!r.ok) return setErro(corpo.erro ?? "Não deu pra enviar o código agora.");
+        // Email sem conta não avança: typo se resolve aqui, não no código.
+        if (!corpo.existe) {
+          return setErro("Não achamos conta com esse email. Confere se digitou certo.");
+        }
+        setSucesso("Código enviado! Olha seu email.");
+        setEtapaRec("codigo");
+        return;
+      }
+
+      if (etapaRec === "codigo") {
+        await conferirCodigo(codigo);
+        return;
+      }
+
+      const problema = problemaDaSenha(senha);
+      if (problema) return setErro(problema);
+      setEnviando(true);
+      const r = await fetch("/api/senha/confirmar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), otp: codigo, senha }),
+      });
+      const corpo = await r.json();
+      setEnviando(false);
+      if (!r.ok) return setErro(corpo.erro ?? "Não deu pra redefinir agora.");
+      setCodigo("");
+      setSenha("");
+      setEtapaRec("email");
+      setModo("login");
+      setSucesso("Senha redefinida! Entre com a nova senha.");
+      return;
+    }
+    if (senha.length < 6) {
+      setErro("A senha precisa ter pelo menos 6 caracteres.");
+      return;
+    }
+    if (modo === "register") {
+      if (nome.trim().length < 2) return setErro("Escreva seu nome completo.");
+      if (!email.trim().toLowerCase().endsWith(DOMINIO_UNIFOR)) {
+        return setErro(
+          `Só dá pra criar conta com o email institucional da Unifor (nome${DOMINIO_UNIFOR}).`,
+        );
+      }
+      // Senha nova segue a régua do projeto (8+, letra e número).
+      const problema = problemaDaSenha(senha);
+      if (problema) return setErro(problema);
+      if (!aceite) return setErro("Precisa aceitar as regras do desapego.");
+    }
+
+    setEnviando(true);
+    const supabase = createClient();
+
+    if (modo === "login") {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: senha,
+      });
+      if (error) {
+        setEnviando(false);
+        setErro(
+          error.message.includes("not confirmed")
+            ? "Essa conta ainda não foi ativada. Tenta de novo em instantes."
+            : "Email ou senha incorretos.",
+        );
+        return;
+      }
+      // Perfil que nunca passou pelo setup cai no wizard antes da vitrine.
+      const completo = data.user?.user_metadata?.perfil_completo === true;
+      router.push(completo ? "/produtos" : "/bem-vindo");
+      router.refresh();
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password: senha,
+      options: { data: { nome: nome.trim() } },
+    });
+    if (error) {
+      setEnviando(false);
+      setErro("Não deu pra criar a conta: " + traduzir(error.message));
+      return;
+    }
+    if (data.session) {
+      // Conta criada e logada: segue pro setup do perfil.
+      router.push("/bem-vindo");
+      router.refresh();
+    } else {
+      setEnviando(false);
+      setModo("login");
+      setSucesso("Conta criada! Entre com seu email e senha.");
+    }
+  }
+
+  return (
+    <div className={`pagina-1280 login-body flex-1 ${modo === "register" ? "is-register" : ""}`}>
+      <div className="login">
+        <div className="login-bg">
+          <div className="login-photo">
+            <div className="login-overlay" />
+            <div className="login-topbrand">
+              <a href="https://www.unifor.br" target="_blank" rel="noopener noreferrer"
+                title="Site oficial da Unifor">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/unifor-h-negativa.svg"
+                  alt="Universidade de Fortaleza"
+                  style={{ height: 56, width: "auto", display: "block" }}
+                />
+              </a>
+            </div>
+            <div className="login-social">
+              <span className="icones">
+                <span className="ico"><FacebookIcon sx={{ fontSize: 20 }} /></span>
+                <span className="ico"><InstagramIcon sx={{ fontSize: 20 }} /></span>
+                <span className="ico"><YouTubeIcon sx={{ fontSize: 22 }} /></span>
+                <span className="ico"><XIcon sx={{ fontSize: 17 }} /></span>
+                <span className="ico"><LinkedInIcon sx={{ fontSize: 20 }} /></span>
+              </span>
+              <span>Projeto Desapega Unifor | Universidade de Fortaleza</span>
+            </div>
+          </div>
+          <div className="login-side" />
+        </div>
+
+        <div className="login-cardwrap">
+          {/* key={modo}: trocar de modo remonta o card e a cascata de
+              entrada roda inteira de novo, idêntica à da chegada. */}
+          <form key={modo} className="login-card com-entrada" onSubmit={enviar}>
+            <Link className="login-voltar" href="/produtos">
+              ← Voltar
+            </Link>
+            <div className="login-brand">
+              <Link href="/produtos" title="Ir pra vitrine">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/mark-blue.svg" alt="Desapega Unifor" className="login-mark" />
+              </Link>
+            </div>
+
+            <h1 className="login-title">{t.title}</h1>
+            <p className="login-sub">{t.sub}</p>
+            {sucesso && <p className="login-ok">{sucesso}</p>}
+
+            <div className="login-fields">
+              {modo === "recuperar" ? (
+                <>
+                  {etapaRec !== "senha" && (
+                    <label className="field">
+                      <span className="field-label">Email</span>
+                      <input type="email" value={email} placeholder="Email da sua conta"
+                        onChange={(e) => setEmail(e.target.value)} />
+                    </label>
+                  )}
+
+                  {etapaRec === "senha" && (
+                    <label className="field">
+                      <span className="field-label">Nova senha</span>
+                      <span className="field-pwd">
+                        <input type={verSenha ? "text" : "password"} autoFocus
+                          placeholder="Mínimo 8, com letra e número"
+                          value={senha} onChange={(e) => setSenha(e.target.value)} />
+                        <button type="button" className="pwd-toggle" title="Mostrar senha"
+                          onClick={() => setVerSenha(!verSenha)}>
+                          {verSenha
+                            ? <VisibilityOffIcon sx={{ fontSize: 19 }} />
+                            : <VisibilityIcon sx={{ fontSize: 19 }} />}
+                        </button>
+                      </span>
+                      <MedidorSenha senha={senha} />
+                    </label>
+                  )}
+
+                  {erro && <p className="login-erro">{erro}</p>}
+
+                  <button className="btn btn-primary btn-block" type="submit">
+                    {enviando && <span className="spinner" />}
+                    <span>
+                      {enviando
+                        ? "Enviando…"
+                        : etapaRec === "senha"
+                          ? "Redefinir senha"
+                          : "Enviar código"}
+                    </span>
+                  </button>
+
+                  <p className="login-alt">
+                    <span>{t.altHint}</span>{" "}
+                    <a href="#" onClick={voltarPraLogin}>{t.altLink}</a>
+                  </p>
+                </>
+              ) : (
+                <>
+              <label className="field only-register">
+                <span className="field-label">Nome completo</span>
+                <input type="text" placeholder="Nome completo" value={nome}
+                  onChange={(e) => setNome(e.target.value)} />
+              </label>
+
+              <label className="field">
+                <span className="field-label">
+                  {modo === "register" ? "Email institucional" : "Email"}
+                </span>
+                <input type="email" value={email}
+                  placeholder={modo === "register" ? `nome${DOMINIO_UNIFOR}` : "Email"}
+                  onChange={(e) => setEmail(e.target.value)} />
+              </label>
+
+              <label className="field">
+                <span className="field-label">Senha</span>
+                <span className="field-pwd">
+                  <input type={verSenha ? "text" : "password"}
+                    placeholder={modo === "register" ? "Mínimo 8, com letra e número" : "Senha"}
+                    value={senha} onChange={(e) => setSenha(e.target.value)} />
+                  <button type="button" className="pwd-toggle" title="Mostrar senha"
+                    onClick={() => setVerSenha(!verSenha)}>
+                    {verSenha
+                      ? <VisibilityOffIcon sx={{ fontSize: 19 }} />
+                      : <VisibilityIcon sx={{ fontSize: 19 }} />}
+                  </button>
+                </span>
+                {modo === "register" && <MedidorSenha senha={senha} />}
+              </label>
+
+              <label className="check only-register">
+                <input type="checkbox" checked={aceite}
+                  onChange={(e) => setAceite(e.target.checked)} />
+                <span>
+                  Aceito as{" "}
+                  <a href="/regras" target="_blank" rel="noopener noreferrer">
+                    regras do desapego
+                  </a>{" "}
+                  e a{" "}
+                  <a href="/privacidade" target="_blank" rel="noopener noreferrer">
+                    política de privacidade
+                  </a>
+                  .
+                </span>
+              </label>
+
+              <div className="login-row only-login">
+                <label className="check inline"><input type="checkbox" /><span>Continuar conectado</span></label>
+                <a href="#" onClick={irPraRecuperar}>Esqueci minha senha</a>
+              </div>
+
+              {erro && <p className="login-erro">{erro}</p>}
+
+              <button className="btn btn-primary btn-block" type="submit">
+                {enviando && <span className="spinner" />}
+                <span>{enviando ? "Validando…" : t.submit}</span>
+              </button>
+
+              <p className="login-alt">
+                <span>{t.altHint}</span>{" "}
+                <a href="#" onClick={(e) => { e.preventDefault(); setErro(null); setModo(modo === "login" ? "register" : "login"); }}>
+                  {t.altLink}
+                </a>
+              </p>
+                </>
+              )}
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {/* Popup do código: uma tela só, com Ctrl+V confirmando sozinho. */}
+      {modo === "recuperar" && etapaRec === "codigo" && (
+        <div
+          className={"aviso-overlay" + (saindoOtp ? " is-saindo" : "")}
+          role="dialog"
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !enviando) fecharPopupCodigo();
+          }}
+        >
+          <BloquearScroll />
+          <div className="aviso-card" style={{ textAlign: "center" }}>
+            <h2 className="aviso-titulo">Digite o código</h2>
+            <p className="aviso-p" style={{ textAlign: "center" }}>
+              Enviamos um código de 6 dígitos pra <b>{email.trim()}</b>.
+              Cola ele aqui que o resto é com a gente.
+            </p>
+            <input
+              className="otp-input"
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              placeholder="000000"
+              value={codigo}
+              autoFocus
+              onChange={(e) => setCodigo(e.target.value.replace(/\D/g, ""))}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") conferirCodigo(codigo);
+              }}
+              onPaste={(e) => {
+                const dig = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+                if (dig.length === 6) {
+                  e.preventDefault();
+                  setCodigo(dig);
+                  conferirCodigo(dig);
+                }
+              }}
+            />
+            {erro && <p className="login-erro">{erro}</p>}
+            {sucesso && <p className="login-ok">{sucesso}</p>}
+            <button
+              className="btn btn-primary btn-block"
+              type="button"
+              onClick={() => conferirCodigo(codigo)}
+            >
+              {enviando && <span className="spinner" />}
+              <span>{enviando ? "Conferindo…" : "Confirmar código"}</span>
+            </button>
+            <p className="login-alt" style={{ marginTop: 14 }}>
+              <span>Não chegou?</span>{" "}
+              <a href="#" onClick={reenviarCodigo}>Enviar de novo</a>
+            </p>
+            <p className="login-alt">
+              <a href="#" onClick={(e) => { e.preventDefault(); fecharPopupCodigo(); }}>
+                Trocar o email
+              </a>
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* Erros comuns do Auth em português simples. */
+function traduzir(msg: string): string {
+  if (msg.includes("already registered")) return "esse email já tem conta.";
+  if (msg.includes("Password")) return "senha muito fraca.";
+  return "tenta de novo em instantes.";
+}

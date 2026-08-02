@@ -1,0 +1,22 @@
+{
+  "name": "Desapega Unifor",
+  "short_name": "Desapega",
+  "description": "O marketplace de desapego dos alunos da Unifor: compre, venda e doe dentro do campus.",
+  "lang": "pt-BR",
+  "theme_color": "#0A5CFF",
+  "background_color": "#F5F6FA",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/produtos",
+  "icons": [
+    { "src": "/icone-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icone-512.png", "sizes": "512x512", "type": "image/png" },
+    {
+      "src": "/icone-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
