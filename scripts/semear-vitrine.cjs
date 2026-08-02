@@ -4,7 +4,8 @@
  * POR QUE: os 50 itens de demonstração precisam de foto própria (nada de
  *          host externo, que já saiu do ar uma vez) e de dados coerentes.
  * CHAMA: node scripts/semear-vitrine.cjs (só o dono do projeto roda).
- * QUEBRA SE: a pasta de fotos não existir ou faltar DATABASE_URL.
+ * QUEBRA SE: FOTOS_DEMO apontar pra pasta que não existe, ou faltar
+ *            DATABASE_URL no .env.local.
  *
  * Detalhe:
    1. corta em 4:3 e converte pra WebP (mesmo formato do upload do app)
@@ -15,8 +16,10 @@
    identificados pelo título (não duplica). */
 const fs = require("fs");
 const path = require("path");
-const RAIZ = "C:/Users/Pedro Cauã/Desktop/ProjetoVortex/projeto";
-const PASTA = "C:/Users/Pedro Cauã/Desktop/fotos-desapega";
+const RAIZ = path.join(__dirname, "..");
+/* Pasta com as fotos de origem, fora do repo. Vem por variável de ambiente
+   em vez de caminho cravado, senão o script só roda numa máquina. */
+const PASTA = process.env.FOTOS_DEMO || path.join(RAIZ, "fotos-demo");
 const sharp = require(RAIZ + "/node_modules/sharp");
 const { Client } = require(RAIZ + "/node_modules/pg");
 const { createClient } = require(RAIZ + "/node_modules/@supabase/supabase-js");

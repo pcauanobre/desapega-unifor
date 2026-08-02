@@ -68,7 +68,8 @@ export default function Entrar() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [sucesso, setSucesso] = useState<string | null>(null);
-  /* Recuperação em TRÊS etapas (estrutura do AgenHub): email → popup do
+  /* Recuperação em TRÊS etapas (estrutura reaproveitada de outro projeto
+     meu): email → popup do
      código → e só quem confirma o código chega na tela de nova senha. */
   const [etapaRec, setEtapaRec] = useState<"email" | "codigo" | "senha">("email");
   const [codigo, setCodigo] = useState("");

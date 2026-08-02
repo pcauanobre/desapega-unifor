@@ -7,7 +7,8 @@ const ERRO_GENERICO = "Código inválido ou vencido. Peça um novo e tente de no
  * O QUE: confere o código sem trocar nada: é o portão entre a etapa do
  *        código e a tela de nova senha.
  * POR QUE: a pessoa só escolhe senha nova depois de provar posse do email
- *          (estrutura do fluxo de reset do AgenHub). Conferir não queima o
+ *          (mesma estrutura de reset que eu já tinha usado
+ *          em outro projeto meu). Conferir não queima o
  *          código: a troca de verdade revalida ele. Tentativa errada conta
  *          no mesmo limite de 5.
  * CHAMA: etapa do código do "Esqueci minha senha".
