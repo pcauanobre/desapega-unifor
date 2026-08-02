@@ -144,9 +144,11 @@ export function Vitrine(props: Props) {
           onScroll={(e) => {
             // deslocou? liga o fade da esquerda (a tag derrete, não corta)
             e.currentTarget.classList.toggle("rolado", e.currentTarget.scrollLeft > 2);
-            if (!animandoDica.current) setDicaRolagem(false);
           }}
+          /* a dica só morre com gesto REAL (dedo/roda); evento de scroll
+             não conta, porque a própria espiadinha e o snap disparam ele */
           onPointerDown={() => setDicaRolagem(false)}
+          onWheel={() => setDicaRolagem(false)}
         >
           {["", ...CATEGORIAS].map((c) => (
             <button
