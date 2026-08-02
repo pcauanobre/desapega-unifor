@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -34,6 +34,8 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
   // junto com o primeiro paint do header, sem piscar nem sumir botão.
   const [logado, setLogado] = useState(false);
   const [focada, setFocada] = useState(false);
+  const [tagEscolhida, setTagEscolhida] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
   const { saindo, fecharCom } = useSaidaAnimada();
   const pathname = usePathname();
 
@@ -43,13 +45,42 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
       .then(({ data }) => setLogado(Boolean(data.session)));
   }, []);
 
-  function fecharBusca() {
-    fecharCom(() => setFocada(false));
+  /* FLIP: mede onde a barra está no header, fixa ela no meio da tela e
+     anima a viagem entre os dois pontos (a barra literalmente se move). */
+  function abrirBusca() {
+    if (focada) return;
+    const el = formRef.current;
+    const antes = el?.getBoundingClientRect();
+    setTagEscolhida(categoria);
+    setFocada(true);
+    requestAnimationFrame(() => {
+      const depois = el?.getBoundingClientRect();
+      if (!el || !antes || !depois) return;
+      el.style.transition = "none";
+      el.style.transform =
+        `translate(${antes.left - depois.left}px, ${antes.top - depois.top}px)`;
+      requestAnimationFrame(() => {
+        el.style.transition = "transform 380ms cubic-bezier(.2,.8,.2,1)";
+        el.style.transform = "";
+      });
+    });
   }
 
-  function buscarPorTag(c: string) {
-    onCategoria(c);
-    onBuscar(c);
+  function fecharBusca() {
+    fecharCom(() => {
+      const el = formRef.current;
+      if (el) {
+        el.style.transform = "";
+        el.style.transition = "";
+      }
+      setFocada(false);
+    });
+  }
+
+  /* Tag só marca; quem dispara a busca é o Confirmar (ou o Enter). */
+  function confirmar() {
+    onCategoria(tagEscolhida);
+    onBuscar(tagEscolhida);
     fecharBusca();
   }
 
@@ -75,11 +106,12 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
           />
         )}
         <form
+          ref={formRef}
           className={"search" + (focada ? " focada" : "") + (saindo ? " is-saindo" : "")}
           onSubmit={(e) => {
             e.preventDefault();
-            onBuscar();
-            if (focada) fecharBusca();
+            if (focada) confirmar();
+            else onBuscar();
           }}
         >
           <Droplist
@@ -98,31 +130,44 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
             placeholder="Buscar item"
             value={busca}
             onChange={(e) => onBusca(e.target.value)}
-            onFocus={() => setFocada(true)}
+            onFocus={abrirBusca}
           />
           <button className="search-btn" type="submit">
             <span className="search-icon">⌕</span>Buscar
           </button>
         </form>
 
+        {focada && <span className="busca-lugar" />}
+
         {focada && (
           <div className={"busca-tags" + (saindo ? " is-saindo" : "")}>
             <p className="busca-tags-t">BUSCAR POR CATEGORIA</p>
             <div className="busca-tags-lista">
-              <button type="button" className="busca-tag" onClick={() => buscarPorTag("")}>
+              <button
+                type="button"
+                className={"busca-tag" + (tagEscolhida === "" ? " is-on" : "")}
+                onClick={() => setTagEscolhida("")}
+              >
                 Todas
               </button>
               {CATEGORIAS.map((c) => (
                 <button
                   key={c}
                   type="button"
-                  className="busca-tag"
-                  onClick={() => buscarPorTag(c)}
+                  className={"busca-tag" + (tagEscolhida === c ? " is-on" : "")}
+                  onClick={() => setTagEscolhida(c)}
                 >
                   {c}
                 </button>
               ))}
             </div>
+            <button
+              type="button"
+              className="btn btn-primary btn-block busca-confirmar"
+              onClick={confirmar}
+            >
+              Confirmar
+            </button>
           </div>
         )}
 
