@@ -2,8 +2,9 @@
    Eles apontavam pro pravatar.cc, um host externo que a CSP do projeto
    bloqueia (e que pode sair do ar, como o loremflickr saiu). */
 const fs = require("fs");
+const path = require("path");
 const crypto = require("crypto");
-const RAIZ = "C:/Users/Pedro Cauã/Desktop/ProjetoVortex/projeto";
+const RAIZ = path.join(__dirname, "..");
 const sharp = require(RAIZ + "/node_modules/sharp");
 const { Client } = require(RAIZ + "/node_modules/pg");
 const { createClient } = require(RAIZ + "/node_modules/@supabase/supabase-js");
