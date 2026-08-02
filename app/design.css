@@ -835,19 +835,23 @@ body{background:var(--bg)}
   .busca-veu{display:block;position:fixed;inset:0;z-index:75;background:rgba(5,15,36,.66);
     backdrop-filter:blur(4px);animation:fadeIn 240ms ease both}
   .busca-veu.is-saindo{animation:fadeOut 220ms ease both}
-  .search.focada{position:fixed;z-index:76;left:16px;right:16px;top:16vh;order:0;flex:none;
-    box-shadow:0 22px 54px rgba(0,0,0,.35);animation:buscaSobe 340ms var(--ease) both}
+  /* o input voa pro MEIO da tela e as tags moram num card branco embaixo,
+     com chips claros: tudo legível por cima do fundo escurecido */
+  .search.focada{position:fixed;z-index:76;left:18px;right:18px;top:32vh;order:0;flex:none;
+    box-shadow:0 24px 60px rgba(0,0,0,.4);animation:buscaSobe 360ms var(--ease) both}
+  .search.focada .search-input{padding:15px 16px;font-size:15px}
   .search.focada.is-saindo{animation:fadeOut 220ms ease both}
-  .busca-tags{display:block;position:fixed;z-index:76;left:16px;right:16px;top:calc(16vh + 62px);
-    animation:fadeUp 380ms 70ms var(--ease) both}
+  .busca-tags{display:block;position:fixed;z-index:76;left:18px;right:18px;top:calc(32vh + 64px);
+    background:#fff;border-radius:16px;padding:16px 16px 18px;
+    box-shadow:0 24px 60px rgba(0,0,0,.35);animation:fadeUp 380ms 90ms var(--ease) both}
   .busca-tags.is-saindo{animation:fadeOut 220ms ease both}
-  .busca-tags-t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--azul-claro);
-    font-weight:700;margin:0 0 10px}
+  .busca-tags-t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--txt-3);
+    font-weight:700;margin:0 0 12px}
   .busca-tags-lista{display:flex;flex-wrap:wrap;gap:8px}
-  .busca-tag{border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.14);color:#fff;
+  .busca-tag{border:1.5px solid var(--borda-2);background:#fff;color:#3D4A66;
     font-size:13px;font-weight:600;padding:9px 15px;border-radius:99px;cursor:pointer;
-    backdrop-filter:blur(2px);transition:background 160ms ease,color 160ms ease}
-  .busca-tag:active{background:#fff;color:var(--navy)}
+    transition:background 160ms ease,color 160ms ease,border-color 160ms ease}
+  .busca-tag:active{background:var(--azul);border-color:var(--azul);color:#fff}
 
   /* faixa de números */
   .statsbar-inner{flex-wrap:wrap;gap:8px 18px;font-size:12px;padding-top:11px;padding-bottom:11px}
