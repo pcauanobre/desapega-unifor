@@ -13,6 +13,8 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { createClient } from "@/lib/supabase/client";
 import { problemaDaSenha } from "@/lib/senha";
 import { MedidorSenha } from "@/components/MedidorSenha";
+import { BloquearScroll } from "@/components/BloquearScroll";
+import { useSaidaAnimada } from "@/components/useSaidaAnimada";
 
 const TEXTOS = {
   login: {
@@ -27,7 +29,7 @@ const TEXTOS = {
   },
   recuperar: {
     title: "Recupere seu acesso",
-    sub: "A gente envia um código de 6 dígitos pro email da sua conta",
+    sub: "Receba um código no email e escolha uma senha nova",
     submit: "Enviar código", altHint: "Lembrou a senha?", altLink: "Entrar",
   },
 };
@@ -56,10 +58,11 @@ export default function Entrar() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [sucesso, setSucesso] = useState<string | null>(null);
-  /* Recuperação em TRÊS etapas (estrutura do AgenHub): email → código →
-     e só quem confirma o código chega na tela de nova senha. */
+  /* Recuperação em TRÊS etapas (estrutura do AgenHub): email → popup do
+     código → e só quem confirma o código chega na tela de nova senha. */
   const [etapaRec, setEtapaRec] = useState<"email" | "codigo" | "senha">("email");
   const [codigo, setCodigo] = useState("");
+  const { saindo: saindoOtp, fecharCom: fecharOtpCom } = useSaidaAnimada();
   const t = TEXTOS[modo];
 
   function irPraRecuperar(e: React.MouseEvent) {
@@ -97,8 +100,38 @@ export default function Entrar() {
     const corpo = await r.json();
     setEnviando(false);
     if (!r.ok) return setErro(corpo.erro ?? "Não deu pra conferir agora.");
-    setSucesso("Código confirmado! Escolha a nova senha.");
-    setEtapaRec("senha");
+    // Código certo: o popup desce animado e a tela de nova senha assume.
+    fecharOtpCom(() => {
+      setSucesso("Código confirmado! Escolha a nova senha.");
+      setEtapaRec("senha");
+    });
+  }
+
+  function fecharPopupCodigo() {
+    fecharOtpCom(() => {
+      setCodigo("");
+      setErro(null);
+      setEtapaRec("email");
+    });
+  }
+
+  async function reenviarCodigo(e: React.MouseEvent) {
+    e.preventDefault();
+    if (enviando) return;
+    setErro(null);
+    setEnviando(true);
+    const r = await fetch("/api/senha/enviar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.trim() }),
+    });
+    setEnviando(false);
+    if (!r.ok) {
+      const corpo = await r.json();
+      return setErro(corpo.erro ?? "Não deu pra reenviar agora.");
+    }
+    setCodigo("");
+    setSucesso("Código novo enviado!");
   }
 
   async function enviar(e: React.FormEvent) {
@@ -269,32 +302,11 @@ export default function Entrar() {
             <div className="login-fields">
               {modo === "recuperar" ? (
                 <>
-                  {etapaRec === "email" && (
+                  {etapaRec !== "senha" && (
                     <label className="field">
                       <span className="field-label">Email</span>
                       <input type="email" value={email} placeholder="Email da sua conta"
                         onChange={(e) => setEmail(e.target.value)} />
-                    </label>
-                  )}
-
-                  {etapaRec === "codigo" && (
-                    <label className="field">
-                      <span className="field-label">Código do email</span>
-                      {/* Ctrl+V com o código já confirma sozinho, sem Enter */}
-                      <input type="text" inputMode="numeric" maxLength={6}
-                        placeholder="000000" value={codigo} autoFocus
-                        onChange={(e) => setCodigo(e.target.value.replace(/\D/g, ""))}
-                        onPaste={(e) => {
-                          const dig = e.clipboardData
-                            .getData("text")
-                            .replace(/\D/g, "")
-                            .slice(0, 6);
-                          if (dig.length === 6) {
-                            e.preventDefault();
-                            setCodigo(dig);
-                            conferirCodigo(dig);
-                          }
-                        }} />
                     </label>
                   )}
 
@@ -323,28 +335,12 @@ export default function Entrar() {
                     <span>
                       {enviando
                         ? "Enviando…"
-                        : etapaRec === "email"
-                          ? "Enviar código"
-                          : etapaRec === "codigo"
-                            ? "Confirmar código"
-                            : "Redefinir senha"}
+                        : etapaRec === "senha"
+                          ? "Redefinir senha"
+                          : "Enviar código"}
                     </span>
                   </button>
 
-                  {etapaRec === "codigo" && (
-                    <p className="login-alt">
-                      <span>Não chegou?</span>{" "}
-                      <a href="#" onClick={(e) => {
-                        e.preventDefault();
-                        setErro(null);
-                        setSucesso(null);
-                        setCodigo("");
-                        setEtapaRec("email");
-                      }}>
-                        Enviar de novo
-                      </a>
-                    </p>
-                  )}
                   <p className="login-alt">
                     <span>{t.altHint}</span>{" "}
                     <a href="#" onClick={voltarPraLogin}>{t.altLink}</a>
@@ -423,6 +419,67 @@ export default function Entrar() {
           </form>
         </div>
       </div>
+
+      {/* Popup do código: uma tela só, com Ctrl+V confirmando sozinho. */}
+      {modo === "recuperar" && etapaRec === "codigo" && (
+        <div
+          className={"aviso-overlay" + (saindoOtp ? " is-saindo" : "")}
+          role="dialog"
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !enviando) fecharPopupCodigo();
+          }}
+        >
+          <BloquearScroll />
+          <div className="aviso-card" style={{ textAlign: "center" }}>
+            <h2 className="aviso-titulo">Digite o código</h2>
+            <p className="aviso-p" style={{ textAlign: "center" }}>
+              Enviamos um código de 6 dígitos pra <b>{email.trim()}</b>.
+              Cola ele aqui que o resto é com a gente.
+            </p>
+            <input
+              className="otp-input"
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              placeholder="000000"
+              value={codigo}
+              autoFocus
+              onChange={(e) => setCodigo(e.target.value.replace(/\D/g, ""))}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") conferirCodigo(codigo);
+              }}
+              onPaste={(e) => {
+                const dig = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+                if (dig.length === 6) {
+                  e.preventDefault();
+                  setCodigo(dig);
+                  conferirCodigo(dig);
+                }
+              }}
+            />
+            {erro && <p className="login-erro">{erro}</p>}
+            {sucesso && <p className="login-ok">{sucesso}</p>}
+            <button
+              className="btn btn-primary btn-block"
+              type="button"
+              onClick={() => conferirCodigo(codigo)}
+            >
+              {enviando && <span className="spinner" />}
+              <span>{enviando ? "Conferindo…" : "Confirmar código"}</span>
+            </button>
+            <p className="login-alt" style={{ marginTop: 14 }}>
+              <span>Não chegou?</span>{" "}
+              <a href="#" onClick={reenviarCodigo}>Enviar de novo</a>
+            </p>
+            <p className="login-alt">
+              <a href="#" onClick={(e) => { e.preventDefault(); fecharPopupCodigo(); }}>
+                Trocar o email
+              </a>
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

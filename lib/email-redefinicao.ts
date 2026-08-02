@@ -8,6 +8,10 @@
  */
 const FONTE = `'Plus Jakarta Sans','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif`;
 
+/* Cliente de email não renderiza SVG nem data URI: o ícone é um PNG
+   hospedado no bucket público do Storage (subido uma vez, URL fixa). */
+const LOGO_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/fotos/023065de-1f1d-408c-a9a3-cd9d45379251/marca/icone-email.png`;
+
 export async function enviarEmailRedefinicao(
   email: string,
   nome: string,
@@ -21,8 +25,9 @@ export async function enviarEmailRedefinicao(
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F6FA;padding:32px 16px;">
     <tr><td align="center">
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#FFFFFF;border-radius:12px;border:1px solid #E7EAF2;overflow:hidden;box-shadow:0 2px 12px rgba(7,28,61,0.08);">
-        <tr><td style="background:linear-gradient(135deg,#071C3D 0%,#0B2A5B 45%,#0A5CFF 100%);padding:30px 32px;text-align:center;">
-          <p style="margin:0;font-size:24px;font-weight:800;color:#FFFFFF;font-family:${FONTE};letter-spacing:-0.5px;">Desapega <span style="color:#BFD5FF;font-weight:500;">Unifor</span></p>
+        <tr><td style="background:linear-gradient(135deg,#071C3D 0%,#0B2A5B 45%,#0A5CFF 100%);padding:28px 32px 24px;text-align:center;">
+          <img src="${LOGO_URL}" alt="Desapega Unifor" width="64" height="64" style="display:block;margin:0 auto 12px;border:0;outline:none;border-radius:14px;" />
+          <p style="margin:0;font-size:22px;font-weight:800;color:#FFFFFF;font-family:${FONTE};letter-spacing:-0.5px;">Desapega <span style="color:#BFD5FF;font-weight:500;">Unifor</span></p>
         </td></tr>
         <tr><td style="padding:32px 36px 8px;">
           <p style="margin:0 0 18px;font-size:16px;font-weight:700;color:#0847CC;font-family:${FONTE};">Olá, ${nome}</p>
