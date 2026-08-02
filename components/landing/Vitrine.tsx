@@ -99,6 +99,19 @@ export function Vitrine(props: Props) {
   const carregando = mostrandoSkeleton || (anuncios === null && !erro);
   const lista = [...filtrados, ...extras];
 
+  // Categoria escolhida na busca: traz o chip dela pra vista, encostado
+  // na esquerda, senão ele fica azul fora da tela e parece que nada mudou.
+  useEffect(() => {
+    const regua = chipsRef.current;
+    if (!regua) return;
+    const ativo = regua.querySelector<HTMLElement>(".chip.is-active");
+    if (!ativo) return;
+    const alvo = ativo.offsetLeft - 16;
+    if (Math.abs(regua.scrollLeft - alvo) > 4) {
+      regua.scrollTo({ left: Math.max(0, alvo), behavior: "smooth" });
+    }
+  }, [categoria]);
+
   // Abriu o espaço de skeleton do "carregar mais": desce a página até ele.
   useEffect(() => {
     if (carregandoMais) {

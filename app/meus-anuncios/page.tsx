@@ -115,7 +115,7 @@ export default function MeusAnuncios() {
       <HeaderNav />
       <main className="container info-wrap" style={{ maxWidth: 1240 }}>
         <div>
-          <Link className="pd-voltar" style={{ marginTop: 0 }} href="/anunciar">
+          <Link className="pd-voltar so-desktop" style={{ marginTop: 0 }} href="/anunciar">
             ← Voltar
           </Link>
         </div>

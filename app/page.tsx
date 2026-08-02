@@ -56,7 +56,12 @@ export default function Home() {
             <Link className="btn btn-hero" href="/produtos">
               Ver produtos
             </Link>
-            <Link className="btn btn-hero-ghost" href="/anunciar">
+            {/* no celular a bottom nav já cobre "meus anúncios", então o
+                CTA vai direto pro formulário; no desktop passa pela central */}
+            <Link className="btn btn-hero-ghost so-desktop" href="/anunciar">
+              Quero anunciar
+            </Link>
+            <Link className="btn btn-hero-ghost so-mobile" href="/anunciar/novo">
               Quero anunciar
             </Link>
           </div>

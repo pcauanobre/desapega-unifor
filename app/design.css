@@ -646,6 +646,10 @@ body{background:var(--bg)}
 .wiz-foto-acoes{flex:1;display:flex;flex-direction:column;gap:8px}
 .wiz-foto-btn{font-size:13.5px;padding:11px 14px;gap:8px;position:relative}
 .wiz-dl .dl-gatilho{width:100%;justify-content:space-between;padding:11px 13px;font-size:14px}
+/* o painel aberto passa por cima do que vem depois no formulário
+   (o botão do perfil público ficava na frente da lista de cursos) */
+.wiz-dl{position:relative;z-index:1}
+.wiz-dl:has(.dl.aberto){z-index:60}
 .wiz-dl .dl-menu{width:100%;max-height:240px;overflow-y:auto}
 
 /* popup de aviso legal */
@@ -1156,11 +1160,16 @@ body{background:var(--bg)}
   .ct-perigo{flex-direction:column;align-items:stretch;text-align:left;margin-top:30px}
   .ct-perigo .ct-apagar{width:100%}
 
-  /* central de anúncios: um retângulo por linha */
+  /* central de anúncios: um retângulo por linha. O véu fica bem mais
+     forte embaixo pra o texto branco não se misturar com a foto clara. */
   .esc-wrap{height:auto;min-height:0;padding-top:18px;padding-bottom:26px}
   .esc-grid{grid-template-columns:1fr;gap:14px}
   .esc-card{height:190px}
-  .esc-titulo{font-size:20px}
+  .esc-veu{background:linear-gradient(to top,rgba(5,15,36,.94) 0%,rgba(5,15,36,.72) 42%,
+    rgba(5,15,36,.32) 72%,rgba(5,15,36,.12) 100%)}
+  .esc-titulo{font-size:20px;text-shadow:0 2px 10px rgba(3,10,26,.6)}
+  .esc-kicker{color:#BFD5FF;text-shadow:0 1px 8px rgba(3,10,26,.7)}
+  .esc-sub{color:#E4EDFF;text-shadow:0 1px 8px rgba(3,10,26,.7)}
   .esc-texto{left:18px;right:18px;bottom:18px}
 
   /* entrar e wizard: só o card, ocupando a tela */
@@ -1197,9 +1206,10 @@ body{background:var(--bg)}
   /* o wizard de anunciar entra por baixo do header do app */
   .wiz-card-anuncio{margin-top:0}
 
-  /* dois caminhos pra foto no celular: câmera e galeria */
+  /* pares desktop/mobile (foto pela câmera, CTAs que mudam de destino) */
   .so-desktop{display:none!important}
-  .so-mobile{display:flex}
+  .so-mobile{display:inline-flex}
+  .an-foto-add.so-mobile{display:flex}
 
   /* no app de bolso o rodapé institucional sai de cena; a bottom nav é
      quem navega, e o aviso legal continua no popup */
