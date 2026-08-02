@@ -56,6 +56,14 @@ export function HeaderBusca({
       .then(({ data }) => setLogado(Boolean(data.session)));
   }, []);
 
+  /* Pesquisou uma vez (chip, tag, texto ou filtro)? O ícone de filtros
+     fica de vez, mesmo voltando pra "Todos". */
+  useEffect(() => {
+    if (categoria !== "" || busca.trim() !== "" || filtrosAtivos) {
+      setPesquisou(true);
+    }
+  }, [categoria, busca, filtrosAtivos]);
+
   /* FLIP: mede onde a barra está no header, fixa ela no meio da tela e
      anima a viagem entre os dois pontos (a barra literalmente se move). */
   function abrirBusca() {
@@ -165,7 +173,7 @@ export function HeaderBusca({
             onChange={(e) => onBusca(e.target.value)}
             onFocus={abrirBusca}
           />
-          {onFiltros && (pesquisou || busca.trim() !== "" || categoria !== "") && (
+          {onFiltros && pesquisou && (
             <button
               type="button"
               className={"busca-filtros" + (filtrosAtivos ? " ativo" : "")}
