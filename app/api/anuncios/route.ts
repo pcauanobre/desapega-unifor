@@ -30,7 +30,10 @@ export async function GET(req: NextRequest) {
   let query = supabase
     .from("anuncios")
     .select(COLUNAS_PUBLICAS)
-    .limit(30);
+    // Teto alto de propósito: a vitrine pagina no cliente (8 + 4 por
+    // clique) e os contadores dos chips contam a lista inteira, então
+    // cortar aqui deixaria categoria com número errado.
+    .limit(200);
 
   // Vitrine mostra o que tá no ar MAIS o que foi vendido nos últimos 3
   // dias (marcado como vendido no card): a pessoa vê que o item saiu, em
