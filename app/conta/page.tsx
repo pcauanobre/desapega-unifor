@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import PersonIcon from "@mui/icons-material/Person";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import LogoutIcon from "@mui/icons-material/Logout";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { createClient } from "@/lib/supabase/client";
 import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
@@ -188,9 +189,17 @@ export default function Conta() {
             <h1 className="info-title">Meu perfil</h1>
             <p className="info-sub">{email}</p>
           </div>
-          <button className="btn wiz-voltar ct-sair" onClick={sair}>
-            <LogoutIcon sx={{ fontSize: 16 }} /> Sair
-          </button>
+          <div className="ct-topo-acoes">
+            {/* o mesmo perfil que os outros abrem pelo card do produto */}
+            {uid && (
+              <Link className="btn wiz-voltar" href={`/perfil/${uid}`}>
+                <VisibilityOutlinedIcon sx={{ fontSize: 16 }} /> Meu perfil público
+              </Link>
+            )}
+            <button className="btn wiz-voltar ct-sair" onClick={sair}>
+              <LogoutIcon sx={{ fontSize: 16 }} /> Sair
+            </button>
+          </div>
         </div>
 
         {pronto && (

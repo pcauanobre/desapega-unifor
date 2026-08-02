@@ -463,6 +463,10 @@ body{background:var(--bg)}
 /* ---------- conta ---------- */
 .ct-topo{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;max-width:640px}
 .ct-sair{flex:none;gap:7px;font-size:13.5px}
+.ct-topo-acoes{display:flex;align-items:center;gap:8px;flex:none}
+.ct-topo-acoes .wiz-voltar{gap:7px;font-size:13.5px}
+.pagina-1280 a.wiz-voltar{color:var(--txt-2)}
+.pagina-1280 a.wiz-voltar:hover{color:var(--azul)}
 .ct-grid{margin-top:16px}
 .ct-item{display:flex;flex-direction:column;gap:8px}
 .ct-excluir{background:#fff;border:1.5px solid #F1C7C7;color:#A33B3B;font-size:13px;padding:10px;gap:6px;flex:1}
