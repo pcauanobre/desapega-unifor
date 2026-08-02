@@ -26,6 +26,9 @@ export default function Produtos() {
   const [erro, setErro] = useState<string | null>(null);
   const [categoria, setCategoria] = useState("");
   const [categoriaHeader, setCategoriaHeader] = useState("");
+  /* Qual chip aparece aceso. Anda na frente de `categoria` porque o
+     destaque é resposta imediata ao toque, e a lista vem em seguida. */
+  const [chipAtivo, setChipAtivo] = useState("");
   const [busca, setBusca] = useState("");
   const [ordenar, setOrdenar] = useState("recentes");
   const [filtros, setFiltros] = useState<Filtros | null>(null);
@@ -50,6 +53,7 @@ export default function Produtos() {
         setAnuncios(corpo.anuncios);
         if (categoriaInicial) {
           setCategoria(categoriaInicial);
+          setChipAtivo(categoriaInicial);
           setCategoriaHeader(categoriaInicial);
         }
         if (buscaInicial) setBusca(buscaInicial);
@@ -77,6 +81,9 @@ export default function Produtos() {
   /* Chip: filtra na hora (comportamento do design) e sincroniza o dropdown. */
   function filtrarPorChip(c: string) {
     setCategoriaHeader(c);
+    // O chip acende NA HORA (resposta ao toque); a lista troca depois,
+    // com o skeleton. Sem isso, o clique parecia não ter funcionado.
+    setChipAtivo(c);
     comSkeleton(DELAY.filtro, () => setCategoria(c));
   }
 
@@ -84,6 +91,7 @@ export default function Produtos() {
   function aplicarBusca(categoriaEscolhida?: string) {
     const alvo = categoriaEscolhida ?? categoriaHeader;
     if (categoriaEscolhida !== undefined) setCategoriaHeader(categoriaEscolhida);
+    setChipAtivo(alvo);
     comSkeleton(DELAY.filtro, () => setCategoria(alvo));
     document.getElementById("vitrine")?.scrollIntoView({ behavior: "smooth" });
   }
@@ -159,7 +167,7 @@ export default function Produtos() {
         mostrandoSkeleton={mostrandoSkeleton}
         carregandoMais={carregandoMais}
         erro={erro}
-        categoria={categoria}
+        categoria={chipAtivo}
         onCategoria={filtrarPorChip}
         ordenar={ordenar}
         onOrdenar={(v) => {
