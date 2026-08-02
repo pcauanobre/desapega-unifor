@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import TuneIcon from "@mui/icons-material/Tune";
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 import type { Anuncio } from "@/lib/tipos";
 import { CATEGORIAS } from "@/lib/categorias";
 import { CardAnuncio } from "@/components/CardAnuncio";
@@ -117,9 +118,16 @@ export function Vitrine(props: Props) {
             <Skeletons quantos={8} />
           </div>
         ) : lista.length === 0 ? (
-          <p className="shelf-sub">
-            Nenhum anúncio nessa busca ainda. Seja a primeira pessoa a desapegar!
-          </p>
+          <div className="ma-vazio">
+            <span className="ma-vazio-ico">
+              <SearchOffIcon sx={{ fontSize: 32 }} />
+            </span>
+            <h2 className="ma-vazio-t">Nenhum anúncio nessa busca</h2>
+            <p className="ma-vazio-p">
+              Tente outra categoria, ajuste os filtros ou seja a primeira
+              pessoa a desapegar!
+            </p>
+          </div>
         ) : (
           <div className="grid">
             {lista.map((a, i) => (
@@ -137,16 +145,19 @@ export function Vitrine(props: Props) {
             <Skeletons quantos={4} />
           </div>
         )}
-        <div className="shelf-more">
-          <button
-            className="btn btn-outline"
-            onClick={onCarregarMais}
-            disabled={carregandoMais || carregando || !temMais}
-          >
-            {carregandoMais && <span className="spinner azul" />}
-            {carregandoMais ? "Carregando itens…" : "Carregar mais itens"}
-          </button>
-        </div>
+        {/* sem resultado (ou com erro) não existe "mais" pra carregar */}
+        {!erro && (carregando || lista.length > 0) && (
+          <div className="shelf-more">
+            <button
+              className="btn btn-outline"
+              onClick={onCarregarMais}
+              disabled={carregandoMais || carregando || !temMais}
+            >
+              {carregandoMais && <span className="spinner azul" />}
+              {carregandoMais ? "Carregando itens…" : "Carregar mais itens"}
+            </button>
+          </div>
+        )}
       </div>
 
       {filtroAberto && (
