@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TuneIcon from "@mui/icons-material/Tune";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import type { Anuncio } from "@/lib/tipos";
@@ -47,11 +47,35 @@ export function Vitrine(props: Props) {
   const [filtroAberto, setFiltroAberto] = useState(false);
   /* Dica de que os chips rolam (mobile): anima até o primeiro toque. */
   const [dicaRolagem, setDicaRolagem] = useState(true);
+  const chipsRef = useRef<HTMLDivElement>(null);
+  const animandoDica = useRef(false);
+
+  // A espiadinha é rolagem DE VERDADE (scrollTo suave), não transform:
+  // transform deslocava a régua pra fora da caixa e cortava chip no meio.
+  useEffect(() => {
+    if (!dicaRolagem) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const alvo = chipsRef.current;
+    if (!alvo) return;
+    const intervalo = setInterval(() => {
+      if (alvo.scrollWidth <= alvo.clientWidth || alvo.scrollLeft > 0) return;
+      animandoDica.current = true;
+      alvo.scrollTo({ left: 46, behavior: "smooth" });
+      setTimeout(() => alvo.scrollTo({ left: 0, behavior: "smooth" }), 700);
+      setTimeout(() => {
+        animandoDica.current = false;
+      }, 1600);
+    }, 3000);
+    return () => clearInterval(intervalo);
+  }, [dicaRolagem]);
 
   // O ícone de filtros da barra de busca (mobile) abre o mesmo popup.
-  useEffect(() => {
-    if (abrirFiltros > 0) setFiltroAberto(true);
-  }, [abrirFiltros]);
+  // Ajuste durante o render (sem efeito): o contador da prop subiu, abre.
+  const [pedidoVisto, setPedidoVisto] = useState(0);
+  if (abrirFiltros > pedidoVisto) {
+    setPedidoVisto(abrirFiltros);
+    setFiltroAberto(true);
+  }
 
   const contar = (c: string) =>
     (anuncios ?? []).filter((a) => (c === "" ? true : a.categoria === c)).length;
@@ -99,8 +123,11 @@ export function Vitrine(props: Props) {
           </div>
         </div>
         <div
-          className={"chips" + (dicaRolagem ? " com-dica" : "")}
-          onScroll={() => setDicaRolagem(false)}
+          ref={chipsRef}
+          className="chips"
+          onScroll={() => {
+            if (!animandoDica.current) setDicaRolagem(false);
+          }}
           onPointerDown={() => setDicaRolagem(false)}
         >
           {["", ...CATEGORIAS].map((c) => (

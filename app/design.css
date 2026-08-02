@@ -954,8 +954,8 @@ body{background:var(--bg)}
   .shelf-sub{font-size:13px}
   .chips{flex-wrap:nowrap;overflow-x:auto;margin:16px -16px 4px;padding:0 16px 6px;scrollbar-width:none}
   .chips::-webkit-scrollbar{display:none}
-  /* espiadinha a cada 3s: mostra que a régua rola, até o primeiro toque */
-  .chips.com-dica{animation:chipsDica 3s 1.4s ease-in-out infinite}
+  /* a espiadinha dos chips virou scrollTo suave no componente (transform
+     cortava chip no meio); aqui fica só a régua rolável */
   .chip{padding:9px 14px;font-size:13px;border-radius:99px;white-space:nowrap;flex:none}
   .shelf-body{padding-bottom:40px}
   .shelf-more{margin-top:26px}
@@ -1066,5 +1066,3 @@ body{background:var(--bg)}
 }
 @keyframes sheetIn{from{transform:translateY(100%)}to{transform:none}}
 @keyframes sheetOut{to{transform:translateY(100%)}}
-@keyframes chipsDica{0%,100%{transform:none}10%{transform:translateX(-22px)}20%{transform:none}}
-@media (prefers-reduced-motion:reduce){.chips.com-dica{animation:none}}
