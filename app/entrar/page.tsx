@@ -14,13 +14,13 @@ import { createClient } from "@/lib/supabase/client";
 
 const TEXTOS = {
   login: {
-    title: "Acesse sua conta Unifor",
+    title: "Acesse sua conta Desapega",
     sub: "Entre para cadastrar produtos e acompanhar seus desapegos",
     submit: "Acessar", altHint: "Não tem conta?", altLink: "Criar uma conta",
   },
   register: {
     title: "Crie sua conta Desapega Unifor",
-    sub: "Só para alunos da Unifor, com o email institucional (@edu.unifor.br)",
+    sub: "Apenas para alunos Unifor",
     submit: "Criar conta", altHint: "Já tem conta?", altLink: "Entrar",
   },
 };
@@ -155,6 +155,9 @@ export default function Entrar() {
           {/* key={modo}: trocar de modo remonta o card e a cascata de
               entrada roda inteira de novo, idêntica à da chegada. */}
           <form key={modo} className="login-card com-entrada" onSubmit={enviar}>
+            <Link className="login-voltar" href="/produtos">
+              ← Voltar
+            </Link>
             <div className="login-brand">
               <Link href="/produtos" title="Ir pra vitrine">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
