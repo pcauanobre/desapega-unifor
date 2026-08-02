@@ -1,4 +1,4 @@
--- 012: seed refeito com um autor de verdade por anúncio. Cada pessoa demo
+-- 013: seed refeito com um autor de verdade por anúncio. Cada pessoa demo
 -- vira um usuário no auth (com nome, curso, semestre e foto de perfil da
 -- API pravatar.cc), então o perfil público mostra SÓ os anúncios dela.
 -- Fotos de produto vêm do loremflickr.com por palavra-chave da categoria

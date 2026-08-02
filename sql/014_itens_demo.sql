@@ -1,4 +1,4 @@
--- 013: marca os anúncios de demonstração. A tag azul do card e a checkbox
+-- 014: marca os anúncios de demonstração. A tag azul do card e a checkbox
 -- "Mostrar itens de demonstração" do filtro leem esta coluna; anúncio de
 -- gente real nasce com demo = false.
 

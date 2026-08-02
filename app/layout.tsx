@@ -35,12 +35,22 @@ const openSans = Open_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.desapegaunifor.com.br"),
   title: "Desapega Unifor",
   description:
     "Marketplace de desapego entre estudantes do campus: anuncie o que você não usa mais e ache o que precisa, de aluno pra aluno.",
   manifest: "/manifest.json",
   icons: { icon: "/icone-192.png", apple: "/icone-192.png" },
   appleWebApp: { capable: true, title: "DesapegaUnifor" },
+  // A logo no preview de link (WhatsApp, Discord, redes em geral).
+  openGraph: {
+    title: "DesapegaUnifor",
+    description:
+      "O marketplace dos alunos da Unifor pra vender, doar e achar de tudo dentro do campus.",
+    images: ["/icone-512.png"],
+    locale: "pt_BR",
+    type: "website",
+  },
 };
 
 /* maximumScale/userScalable travam o pinch zoom (o iOS respeita isso no

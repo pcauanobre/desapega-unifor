@@ -1,4 +1,4 @@
--- 014: código de confirmação de email no cadastro.
+-- 016: código de confirmação de email no cadastro.
 -- Mesma mecânica do reset de senha: 6 dígitos, 15 minutos de validade,
 -- 5 tentativas e um uso só. Tabela privada do servidor (RLS ligada e
 -- grants revogados; só a conexão direta das rotas /api/cadastro toca).
