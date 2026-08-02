@@ -14,7 +14,7 @@
  * A versão participa do nome do cache: mudar a versão descarta os caches
  * antigos no activate, sem sobrar lixo de deploy passado.
  */
-const VERSAO = "desapega-v2";
+const VERSAO = "desapega-v3";
 const CASCO = [
   "/",
   "/produtos",
@@ -23,7 +23,15 @@ const CASCO = [
   "/icone-512.png",
   "/mark-blue.svg",
   "/mark-white.svg",
+  "/hero-campus.jpg",
 ];
+
+/* Resposta de outro domínio via <img> chega "opaca" (ok=false, status 0).
+   Ela é válida e cacheável; sem isto as fotos do Storage nunca entravam
+   no cache e o offline ficava sem imagem. */
+function cacheavel(resposta) {
+  return resposta.ok || resposta.type === "opaque";
+}
 
 self.addEventListener("install", (evento) => {
   evento.waitUntil(
@@ -76,7 +84,7 @@ async function cachePrimeiro(req) {
   const salvo = await cache.match(req);
   if (salvo) return salvo;
   const resposta = await fetch(req);
-  if (resposta.ok) cache.put(req, resposta.clone());
+  if (cacheavel(resposta)) cache.put(req, resposta.clone());
   return resposta;
 }
 
@@ -84,7 +92,7 @@ async function redePrimeiro(req) {
   const cache = await caches.open(VERSAO);
   try {
     const resposta = await fetch(req);
-    if (resposta.ok) cache.put(req, resposta.clone());
+    if (cacheavel(resposta)) cache.put(req, resposta.clone());
     return resposta;
   } catch {
     const salvo = await cache.match(req);

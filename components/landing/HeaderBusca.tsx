@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import TuneIcon from "@mui/icons-material/Tune";
 import { createClient } from "@/lib/supabase/client";
 import { BotaoInstalar } from "@/components/BotaoInstalar";
+import { SaudacaoApp } from "@/components/SaudacaoApp";
 import { Brand } from "@/components/Brand";
 import { CATEGORIAS } from "@/lib/categorias";
 import { Droplist } from "@/components/Droplist";
@@ -222,8 +223,10 @@ export function HeaderBusca({
         </div>
       </div>
       {/* no mobile a utilbar (dona do botão desktop) some; este fica
-          ancorado no topo direito do header azul */}
+          ancorado no topo direito do header azul. Dentro do app instalado
+          o Instalar não existe e a saudação assume o mesmo canto. */}
       <BotaoInstalar mobile />
+      <SaudacaoApp />
     </header>
   );
 }
