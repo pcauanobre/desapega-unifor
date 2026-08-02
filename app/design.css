@@ -857,17 +857,20 @@ body{background:var(--bg)}
   .shelf-body{padding-bottom:40px}
   .shelf-more{margin-top:26px}
 
-  /* cards em 2 colunas, compactos como no protótipo */
+  /* cards em 2 colunas: foto alta, título travado em 2 linhas e rodapé em
+     duas linhas fixas (local + horário inteiros; preço embaixo à direita).
+     Card vira coluna flex pro rodapé descer e a fileira ficar pareada. */
   .grid,.ct-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-  .card{padding:8px}
-  .card-photo,.ct-grid .card-photo,.sk-photo{height:118px}
-  .card-body{padding:10px 3px 3px}
+  .card{padding:8px;display:flex;flex-direction:column}
+  .card-photo,.ct-grid .card-photo,.sk-photo{height:142px}
+  .card-body{padding:10px 3px 3px;display:flex;flex-direction:column;flex:1}
   .card-cat{font-size:9.5px}
-  .card-title{font-size:13.5px;min-height:36px}
-  .card-foot{margin-top:9px;padding-top:9px;gap:8px;flex-wrap:wrap}
-  .card-price{font-size:15px}
-  .card-doacao-txt{font-size:12.5px}
-  .card-local{font-size:11.5px}
+  .card-title{font-size:14px;line-height:1.3;min-height:37px;display:-webkit-box;
+    -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card-foot{margin-top:auto;padding-top:9px;flex-wrap:wrap;gap:6px}
+  .card-local{flex:1 1 100%;font-size:12px}
+  .card-foot .card-price{margin-left:auto;font-size:16px}
+  .card-foot .card-doacao-txt{margin-left:auto;font-size:13px}
   .card-cond{font-size:10px;padding:4px 7px;top:7px;left:7px}
   .ma-icones{top:14px;right:14px}
   .ma-ico{width:32px;height:32px}
