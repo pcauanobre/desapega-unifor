@@ -435,11 +435,9 @@ export default function Entrar() {
               </label>
 
               <label className="field">
-                <span className="field-label">
-                  {modo === "register" ? "Email institucional" : "Email"}
-                </span>
+                <span className="field-label">Email institucional</span>
                 <input type="email" value={email}
-                  placeholder={modo === "register" ? `nome${DOMINIO_UNIFOR}` : "Email"}
+                  placeholder={`nome${DOMINIO_UNIFOR}`}
                   onChange={(e) => setEmail(e.target.value)} />
               </label>
 
