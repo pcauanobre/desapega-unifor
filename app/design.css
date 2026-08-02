@@ -546,6 +546,8 @@ body{background:var(--bg)}
 /* ---------- setup wizard (/bem-vindo) ---------- */
 .wiz-fundo{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 24px;
   background:#EAF3FE url("/bg-shapes.png") right center/cover no-repeat}
+/* "Tirar foto" só existe no celular; no desktop fica o botão único */
+.so-mobile{display:none}
 .wiz-card{width:540px;max-width:100%;background:#fff;border-radius:16px;
   box-shadow:0 22px 54px rgba(7,28,61,.16);padding:34px 38px;animation:popIn 360ms var(--ease) both}
 .wiz-topo{display:flex;align-items:center;justify-content:space-between}
@@ -1095,8 +1097,17 @@ body{background:var(--bg)}
   .login{min-height:100vh}
   .login-cardwrap{padding:36px 16px;justify-content:center}
   .login-card,.login-body .login-card{width:100%;padding:26px 20px}
-  .wiz-fundo{padding:24px 14px}
-  .wiz-card{padding:24px 20px}
+  /* wizard no celular: ocupa a tela entre header e bottom nav, centrado,
+     sem sobra que gere scroll (o conteúdo rola dentro do card se precisar) */
+  .wiz-fundo{padding:14px;min-height:calc(100dvh - 78px - env(safe-area-inset-bottom));
+    align-items:center;overflow:hidden}
+  .wiz-card{padding:22px 18px;max-height:calc(100dvh - 110px);overflow-y:auto}
+  /* o wizard de anunciar entra por baixo do header do app */
+  .wiz-card-anuncio{margin-top:0}
+
+  /* dois caminhos pra foto no celular: câmera e galeria */
+  .so-desktop{display:none!important}
+  .so-mobile{display:flex}
 
   /* no app de bolso o rodapé institucional sai de cena; a bottom nav é
      quem navega, e o aviso legal continua no popup */
