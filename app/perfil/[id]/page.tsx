@@ -104,25 +104,25 @@ export default function PerfilVendedor() {
             <div className="pf-stats">
               <div className="pf-stat">
                 <CalendarMonthIcon sx={{ fontSize: 20 }} />
+                <span>No Desapega desde</span>
                 <strong>{mesAno(perfil.desde)}</strong>
-                <span>no Desapega desde</span>
               </div>
               <div className="pf-stat">
                 <ScheduleIcon sx={{ fontSize: 20 }} />
+                <span>Última vez online</span>
                 <strong>
                   {perfil.ultimo_acesso ? tempoRelativo(perfil.ultimo_acesso) : "sem registro"}
                 </strong>
-                <span>última vez online</span>
               </div>
               <div className="pf-stat">
                 <SellOutlinedIcon sx={{ fontSize: 20 }} />
+                <span>Venda{perfil.vendas === 1 ? "" : "s"} concluída{perfil.vendas === 1 ? "" : "s"}</span>
                 <strong>{perfil.vendas}</strong>
-                <span>venda{perfil.vendas === 1 ? "" : "s"} concluída{perfil.vendas === 1 ? "" : "s"}</span>
               </div>
               <div className="pf-stat pf-stat-verde">
                 <VolunteerActivismIcon sx={{ fontSize: 20 }} />
+                <span>Doaç{perfil.doacoes === 1 ? "ão feita" : "ões feitas"}</span>
                 <strong>{perfil.doacoes}</strong>
-                <span>doaç{perfil.doacoes === 1 ? "ão feita" : "ões feitas"}</span>
               </div>
             </div>
 
