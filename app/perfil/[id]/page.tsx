@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import PersonIcon from "@mui/icons-material/Person";
 import SchoolIcon from "@mui/icons-material/School";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -27,6 +26,7 @@ import { CardAnuncio } from "@/components/CardAnuncio";
  */
 export default function PerfilVendedor() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const [perfil, setPerfil] = useState<PerfilPublico | null>(null);
   const [ativos, setAtivos] = useState<Anuncio[] | null>(null);
   const [vendidos, setVendidos] = useState<Anuncio[] | null>(null);
@@ -59,9 +59,17 @@ export default function PerfilVendedor() {
       <HeaderNav />
       <main className="container info-wrap" style={{ maxWidth: 1240 }}>
         <div>
-          <Link className="pd-voltar" style={{ marginTop: 0 }} href="/produtos">
+          {/* volta pra onde a pessoa veio (conta, produto...), não pra
+              vitrine fixa; sem histórico, a vitrine é o plano B */}
+          <button
+            className="pd-voltar pd-voltar-botao"
+            style={{ marginTop: 0 }}
+            onClick={() =>
+              window.history.length > 1 ? router.back() : router.push("/produtos")
+            }
+          >
             ← Voltar
-          </Link>
+          </button>
         </div>
 
         {erro && (

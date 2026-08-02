@@ -53,10 +53,7 @@ export function FotosUpload({ previews, onEscolher, onRemover }: Props) {
           </label>
         )}
       </div>
-      <p className="wiz-sub">
-        A primeira foto vira a capa. Tudo é comprimido antes de subir, pode
-        mandar direto da galeria.
-      </p>
+      <p className="wiz-sub">A primeira foto vira a capa.</p>
     </div>
   );
 }
