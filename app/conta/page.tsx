@@ -42,7 +42,9 @@ export default function Conta() {
   const [senhaConfirma, setSenhaConfirma] = useState("");
   const [erroApagar, setErroApagar] = useState<string | null>(null);
   const [paraCortar, setParaCortar] = useState<File | null>(null);
+  const [contaApagada, setContaApagada] = useState(false);
   const { saindo, fecharCom } = useSaidaAnimada();
+  const { saindo: saindoTchau, fecharCom: fecharTchauCom } = useSaidaAnimada();
 
   useEffect(() => {
     // getSession lê do armazenamento local: os dados chegam de uma vez,
@@ -154,8 +156,11 @@ export default function Conta() {
       return;
     }
     await supabase.auth.signOut();
-    router.push("/");
-    router.refresh();
+    // A despedida entra no lugar da confirmação; o redirect fica pro Fechar.
+    fecharCom(() => {
+      setConfirmando(false);
+      setContaApagada(true);
+    });
   }
 
   return (
@@ -315,6 +320,39 @@ export default function Conta() {
                 {apagando ? "Apagando…" : "Sim, apagar tudo"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {contaApagada && (
+        <div
+          className={"aviso-overlay" + (saindoTchau ? " is-saindo" : "")}
+          role="dialog"
+          aria-modal="true"
+        >
+          <BloquearScroll />
+          <div className="aviso-card" style={{ textAlign: "center" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/mark-blue.svg" alt="" style={{ height: 44, margin: "0 auto" }} />
+            <h2 className="aviso-titulo">Tudo apagado. Valeu por ter feito parte!</h2>
+            <p className="aviso-p" style={{ textAlign: "center" }}>
+              Seus dados e anúncios foram removidos de vez, como prometido.
+              Se algo aqui te incomodou ou se você tem uma ideia que deixaria
+              o Desapega melhor, escreve pra{" "}
+              <a href="mailto:pedrocauaggn@gmail.com">pedrocauaggn@gmail.com</a>
+              . E as portas ficam sempre abertas pra voltar.
+            </p>
+            <button
+              className="btn btn-primary btn-block"
+              onClick={() =>
+                fecharTchauCom(() => {
+                  router.push("/");
+                  router.refresh();
+                })
+              }
+            >
+              Fechar
+            </button>
           </div>
         </div>
       )}
