@@ -5,7 +5,6 @@ import "./design.css";
 import { AvisoLegal } from "@/components/AvisoLegal";
 import { BottomNav } from "@/components/BottomNav";
 import { PwaRegistro } from "@/components/PwaRegistro";
-import { BotaoInstalar } from "@/components/BotaoInstalar";
 
 // As três fontes do código fonte do design: Sora (títulos, preços, marca),
 // Plus Jakarta Sans (corpo) e JetBrains Mono (microlabels).
@@ -63,8 +62,6 @@ export default function RootLayout({
         <AvisoLegal />
         {children}
         <BottomNav />
-        {/* no mobile a barra do topo some; o instalar vira pill flutuante */}
-        <BotaoInstalar flutuante />
       </body>
     </html>
   );

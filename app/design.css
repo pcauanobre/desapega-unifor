@@ -86,14 +86,14 @@ body{background:var(--bg)}
   animation:fadeIn 300ms ease both}
 .btn-instalar:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.6)}
 .btn-instalar svg{color:#9DC0FF}
-/* a variante flutuante só existe no mobile (a de cima some junto da utilbar) */
-.btn-instalar-flutuante{display:none}
+/* a variante mobile mora no topo direito do header azul (a desktop some
+   junto da utilbar quando a tela encolhe) */
+.btn-instalar-mobile{display:none}
 @media (max-width:760px){
-  .btn-instalar-flutuante{display:inline-flex;position:fixed;right:14px;
-    bottom:calc(92px + env(safe-area-inset-bottom));z-index:69;
-    background:var(--azul);border:none;color:#fff;font-size:13px;font-weight:700;
-    padding:11px 16px;box-shadow:0 10px 26px rgba(10,92,255,.45)}
-  .btn-instalar-flutuante svg{color:#fff}
+  .btn-instalar-mobile{display:inline-flex;position:absolute;top:14px;right:14px;z-index:6;
+    background:#fff;border:none;color:var(--azul-hover);font-size:12px;font-weight:800;
+    padding:8px 13px;box-shadow:0 2px 8px rgba(7,28,61,.28)}
+  .btn-instalar-mobile svg{color:var(--azul)}
 }
 
 /* ---------- header ---------- */

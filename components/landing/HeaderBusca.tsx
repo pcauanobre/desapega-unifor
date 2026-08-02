@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import TuneIcon from "@mui/icons-material/Tune";
 import { createClient } from "@/lib/supabase/client";
+import { BotaoInstalar } from "@/components/BotaoInstalar";
 import { Brand } from "@/components/Brand";
 import { CATEGORIAS } from "@/lib/categorias";
 import { Droplist } from "@/components/Droplist";
@@ -220,6 +221,9 @@ export function HeaderBusca({
           )}
         </div>
       </div>
+      {/* no mobile a utilbar (dona do botão desktop) some; este fica
+          ancorado no topo direito do header azul */}
+      <BotaoInstalar mobile />
     </header>
   );
 }

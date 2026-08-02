@@ -18,7 +18,7 @@ type EventoInstalar = Event & {
  * CHAMA: TopBar. Some sozinho depois de instalado (appinstalled).
  * QUEBRA SE: nada; navegador sem suporte (iOS) simplesmente não mostra.
  */
-export function BotaoInstalar({ flutuante = false }: { flutuante?: boolean }) {
+export function BotaoInstalar({ mobile = false }: { mobile?: boolean }) {
   const [evento, setEvento] = useState<EventoInstalar | null>(null);
 
   useEffect(() => {
@@ -48,10 +48,10 @@ export function BotaoInstalar({ flutuante = false }: { flutuante?: boolean }) {
 
   return (
     <button
-      className={"btn-instalar" + (flutuante ? " btn-instalar-flutuante" : "")}
+      className={"btn-instalar" + (mobile ? " btn-instalar-mobile" : "")}
       onClick={instalar}
     >
-      <InstallMobileIcon sx={{ fontSize: flutuante ? 17 : 15 }} />
+      <InstallMobileIcon sx={{ fontSize: 15 }} />
       Instalar app
     </button>
   );
