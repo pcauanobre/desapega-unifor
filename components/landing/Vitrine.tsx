@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TuneIcon from "@mui/icons-material/Tune";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import type { Anuncio } from "@/lib/tipos";
@@ -47,11 +47,52 @@ export function Vitrine(props: Props) {
   const [filtroAberto, setFiltroAberto] = useState(false);
   /* Dica de que os chips rolam (mobile): anima até o primeiro toque. */
   const [dicaRolagem, setDicaRolagem] = useState(true);
+  const chipsRef = useRef<HTMLDivElement>(null);
+  const animandoDica = useRef(false);
+
+  // A espiadinha é rolagem DE VERDADE (scrollTo suave), não transform:
+  // transform deslocava a régua pra fora da caixa e cortava chip no meio.
+  // O snap fica desligado só durante o vai-e-volta (senão ele puxa a régua
+  // de volta pro encaixe no mesmo instante e a espiadinha morre invisível).
+  useEffect(() => {
+    if (!dicaRolagem) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const alvo = chipsRef.current;
+    if (!alvo) return;
+
+    function espiar() {
+      if (!alvo || alvo.scrollWidth <= alvo.clientWidth || alvo.scrollLeft > 1) return;
+      animandoDica.current = true;
+      alvo.style.scrollSnapType = "none";
+      // easing manual: fluido e no ritmo próprio (o smooth nativo é seco)
+      rolarSuave(alvo, 52, 540);
+      setTimeout(() => rolarSuave(alvo, 0, 540), 820);
+      setTimeout(() => {
+        alvo.style.scrollSnapType = "";
+        animandoDica.current = false;
+      }, 1600);
+    }
+
+    let intervalo: ReturnType<typeof setInterval> | undefined;
+    const inicial = setTimeout(() => {
+      espiar();
+      intervalo = setInterval(espiar, 3800);
+    }, 1200);
+
+    return () => {
+      clearTimeout(inicial);
+      if (intervalo) clearInterval(intervalo);
+      alvo.style.scrollSnapType = "";
+    };
+  }, [dicaRolagem]);
 
   // O ícone de filtros da barra de busca (mobile) abre o mesmo popup.
-  useEffect(() => {
-    if (abrirFiltros > 0) setFiltroAberto(true);
-  }, [abrirFiltros]);
+  // Ajuste durante o render (sem efeito): o contador da prop subiu, abre.
+  const [pedidoVisto, setPedidoVisto] = useState(0);
+  if (abrirFiltros > pedidoVisto) {
+    setPedidoVisto(abrirFiltros);
+    setFiltroAberto(true);
+  }
 
   const contar = (c: string) =>
     (anuncios ?? []).filter((a) => (c === "" ? true : a.categoria === c)).length;
@@ -99,9 +140,12 @@ export function Vitrine(props: Props) {
           </div>
         </div>
         <div
-          className={"chips" + (dicaRolagem ? " com-dica" : "")}
-          onScroll={() => setDicaRolagem(false)}
+          ref={chipsRef}
+          className="chips"
+          /* a dica só morre com gesto REAL (dedo/roda); evento de scroll
+             não conta, porque a própria espiadinha e o snap disparam ele */
           onPointerDown={() => setDicaRolagem(false)}
+          onWheel={() => setDicaRolagem(false)}
         >
           {["", ...CATEGORIAS].map((c) => (
             <button
@@ -179,6 +223,20 @@ export function Vitrine(props: Props) {
       )}
     </main>
   );
+}
+
+/* Rolagem animada com easeInOutQuad: o smooth nativo é rápido e sem
+   controle de duração; aqui a espiadinha define o próprio ritmo. */
+function rolarSuave(el: HTMLElement, ate: number, ms: number) {
+  const de = el.scrollLeft;
+  const inicio = performance.now();
+  function passo(agora: number) {
+    const t = Math.min(1, (agora - inicio) / ms);
+    const suave = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    el.scrollLeft = de + (ate - de) * suave;
+    if (t < 1) requestAnimationFrame(passo);
+  }
+  requestAnimationFrame(passo);
 }
 
 /* Cards de skeleton com shimmer (8 na carga inicial, 4 no "carregar mais"). */

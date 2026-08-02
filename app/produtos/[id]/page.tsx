@@ -25,6 +25,7 @@ import { Carrossel } from "@/components/produto/Carrossel";
 export default function PaginaProduto() {
   const { id } = useParams<{ id: string }>();
   const [anuncio, setAnuncio] = useState<Anuncio | null>(null);
+  const [fotoAutor, setFotoAutor] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);
 
   useEffect(() => {
@@ -34,6 +35,13 @@ export default function PaginaProduto() {
         const corpo = await r.json();
         if (!r.ok) throw new Error(corpo.erro ?? "erro ao carregar");
         setAnuncio(corpo.anuncio);
+        // A foto de quem anunciou mora no perfil público, não no anúncio.
+        return fetch(`/api/perfil/${corpo.anuncio.autor_id}`);
+      })
+      .then(async (r) => {
+        if (!r?.ok) return;
+        const corpo = await r.json();
+        if (corpo.perfil?.foto) setFotoAutor(corpo.perfil.foto);
       })
       .catch((e: Error) => setErro(e.message));
   }, [id]);
@@ -115,7 +123,14 @@ export default function PaginaProduto() {
                 href={`/perfil/${anuncio.autor_id}`}
                 title={`Ver perfil de ${anuncio.autor_nome}`}
               >
-                <span className="pd-avatar">{anuncio.autor_nome.charAt(0)}</span>
+                <span className="pd-avatar">
+                  {fotoAutor ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={fotoAutor} alt={`Foto de ${anuncio.autor_nome}`} />
+                  ) : (
+                    anuncio.autor_nome.charAt(0)
+                  )}
+                </span>
                 <span>
                   <span className="pd-vend-nome">{anuncio.autor_nome}</span>
                   <br />

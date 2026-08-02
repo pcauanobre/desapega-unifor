@@ -1,9 +1,11 @@
 /**
- * O QUE: monta e envia o email do código de redefinição via Brevo (API
- *        HTTP), com o visual da marca em tabela de email old-school.
+ * O QUE: monta e envia os emails de código via Brevo (API HTTP), com o
+ *        visual da marca em tabela de email old-school. Dois sabores:
+ *        redefinição de senha e confirmação de email no cadastro.
  * POR QUE: cliente de email não renderiza CSS moderno; o layout precisa
  *          ser tabela com estilo inline pra abrir igual no Gmail/Outlook.
- * CHAMA: rota /api/senha/enviar.
+ *          O template é um só; muda a mensagem.
+ * CHAMA: rotas /api/senha/enviar e /api/cadastro/enviar.
  * QUEBRA SE: BREVO_API_KEY faltar no ambiente (o envio falha e é logado).
  */
 const FONTE = `'Plus Jakarta Sans','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif`;
@@ -12,11 +14,51 @@ const FONTE = `'Plus Jakarta Sans','Inter',system-ui,-apple-system,'Segoe UI',Ro
    hospedado no bucket público do Storage (subido uma vez, URL fixa). */
 const LOGO_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/fotos/023065de-1f1d-408c-a9a3-cd9d45379251/marca/icone-email.png`;
 
-export async function enviarEmailRedefinicao(
+type Conteudo = {
+  assunto: string;
+  intro: string;
+  instrucoes: string[];
+};
+
+export function enviarEmailRedefinicao(email: string, nome: string, otp: string) {
+  return enviarEmailComCodigo(email, nome, otp, {
+    assunto: "Desapega Unifor — Código de redefinição de senha",
+    intro:
+      "Você pediu pra redefinir a senha da sua conta. Use o código abaixo na tela de recuperação:",
+    instrucoes: [
+      "Digite este código na tela de recuperação e escolha a nova senha.",
+      "Mantenha o código em segredo: ninguém do Desapega vai pedir ele.",
+      "Se você não pediu a redefinição, ignore este email e nada muda.",
+    ],
+  });
+}
+
+export function enviarEmailCadastro(email: string, nome: string, otp: string) {
+  return enviarEmailComCodigo(email, nome, otp, {
+    assunto: "Desapega Unifor — Confirme seu email",
+    intro:
+      "Falta pouco pra sua conta existir. Use o código abaixo pra confirmar que este email é seu:",
+    instrucoes: [
+      "Digite este código na tela de cadastro pra concluir a conta.",
+      "Mantenha o código em segredo: ninguém do Desapega vai pedir ele.",
+      "Se você não tentou criar conta, ignore este email e nada acontece.",
+    ],
+  });
+}
+
+async function enviarEmailComCodigo(
   email: string,
   nome: string,
   otp: string,
+  conteudo: Conteudo,
 ): Promise<boolean> {
+  const instrucoesHtml = conteudo.instrucoes
+    .map(
+      (linha) =>
+        `<p style="margin:0 0 10px;font-size:13px;color:#10162B;line-height:1.6;font-family:${FONTE};">${linha}</p>`,
+    )
+    .join("");
+
   const html = `
 <!DOCTYPE html>
 <html>
@@ -32,7 +74,7 @@ export async function enviarEmailRedefinicao(
         <tr><td style="padding:32px 36px 8px;">
           <p style="margin:0 0 18px;font-size:16px;font-weight:700;color:#0847CC;font-family:${FONTE};">Olá, ${nome}</p>
           <p style="margin:0 0 24px;font-size:14px;color:#10162B;line-height:1.6;font-family:${FONTE};">
-            Você pediu pra redefinir a senha da sua conta. Use o código abaixo na tela de recuperação:
+            ${conteudo.intro}
           </p>
           <table cellpadding="0" cellspacing="0" style="margin:0 auto 28px;width:100%;">
             <tr><td align="center" style="background:#F2F6FF;border:1px solid #D7DDE8;border-radius:8px;padding:24px 20px;">
@@ -45,9 +87,7 @@ export async function enviarEmailRedefinicao(
         <tr><td style="padding:0 36px 32px;">
           <table cellpadding="0" cellspacing="0" style="width:100%;border-left:3px solid #0A5CFF;background:#F5F8FF;border-radius:4px;">
             <tr><td style="padding:18px 22px;">
-              <p style="margin:0 0 10px;font-size:13px;color:#10162B;line-height:1.6;font-family:${FONTE};">Digite este código na tela de recuperação e escolha a nova senha.</p>
-              <p style="margin:0 0 10px;font-size:13px;color:#10162B;line-height:1.6;font-family:${FONTE};">Mantenha o código em segredo: ninguém do Desapega vai pedir ele.</p>
-              <p style="margin:0;font-size:13px;color:#10162B;line-height:1.6;font-family:${FONTE};">Se você não pediu a redefinição, ignore este email e nada muda.</p>
+              ${instrucoesHtml}
             </td></tr>
           </table>
         </td></tr>
@@ -69,13 +109,13 @@ export async function enviarEmailRedefinicao(
     body: JSON.stringify({
       sender: { name: "Desapega Unifor", email: "pedrocauaggn@gmail.com" },
       to: [{ email, name: nome }],
-      subject: "Desapega Unifor — Código de redefinição de senha",
+      subject: conteudo.assunto,
       htmlContent: html,
     }),
   });
 
   if (!resposta.ok) {
-    console.error("[senha/enviar] Brevo:", resposta.status, await resposta.text());
+    console.error("[email-codigo] Brevo:", resposta.status, await resposta.text());
     return false;
   }
   return true;
