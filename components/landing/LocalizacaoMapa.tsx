@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import PlaceIcon from "@mui/icons-material/Place";
 
 /**
  * O QUE: o endereço da Unifor na coluna CONTATO do footer. Mouse por cima:
@@ -65,7 +64,6 @@ export function LocalizacaoMapa({ children }: { children?: ReactNode }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <PlaceIcon sx={{ fontSize: 16 }} />
           <span className="loc-texto">{ENDERECO}</span>
         </a>
         <div className="loc-mapa" aria-hidden="true">
