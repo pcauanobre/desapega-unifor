@@ -853,14 +853,20 @@ body{background:var(--bg)}
   .statsbar-inner{flex-wrap:wrap;gap:8px 18px;font-size:12px;padding-top:11px;padding-bottom:11px}
   .statsbar-sep{display:none}
 
-  /* hero da LP: no celular o texto cobre a foto, então o véu volta a ser
-     vertical e mais leve, com altura suficiente pra imagem aparecer */
-  .hero{height:auto;min-height:420px;padding:48px 0 52px;
-    background:linear-gradient(180deg,rgba(5,15,36,.72) 0%,rgba(5,15,36,.55) 55%,rgba(5,15,36,.66) 100%),
+  /* hero da LP: no celular a foto vira uma banda cheia em cima, sem texto
+     por cima, e o texto desce pra uma seção clara logo abaixo */
+  .hero{display:block;height:auto;min-height:0;padding:0 0 40px;background:#fff}
+  .hero::before{content:"";display:block;height:300px;
+    background:linear-gradient(180deg,rgba(5,15,36,.16),rgba(5,15,36,0) 45%),
       url("/hero-campus.jpg") center 45%/cover no-repeat}
-  .hero-title{font-size:30px}
-  .hero-sub{font-size:14.5px;margin-top:14px}
+  .hero-inner{padding-top:26px}
+  .hero-title{font-size:27px;color:var(--navy);text-shadow:none}
+  .hero-title em{color:var(--azul)}
+  .hero-sub{font-size:14.5px;margin-top:14px;color:var(--txt-2);text-shadow:none}
   .hero-ctas{flex-wrap:wrap;margin-top:24px}
+  .btn-hero-ghost{background:#fff;border-color:#D3DAE8;backdrop-filter:none}
+  .pagina-1280 .hero a.btn-hero-ghost{color:var(--navy)}
+  .pagina-1280 .hero a.btn-hero-ghost:hover{color:var(--azul);border-color:var(--azul)}
   .preview-head{flex-wrap:wrap;gap:10px;padding-top:32px}
   .como-grid{grid-template-columns:1fr;gap:14px;margin-top:20px}
   .como-inner{padding-top:38px;padding-bottom:44px}
