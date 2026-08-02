@@ -857,7 +857,8 @@ body{background:var(--bg)}
   .utilbar{display:none}
 
   /* header: marca menor e busca descendo pra linha de baixo, inteira */
-  .header-inner{flex-wrap:wrap;gap:12px;padding-top:12px;padding-bottom:14px}
+  /* vão vertical maior: a busca respira abaixo da marca e do instalar app */
+  .header-inner{flex-wrap:wrap;gap:17px 12px;padding-top:12px;padding-bottom:14px}
   .brand{gap:10px}
   .brand-mark{height:32px}
   .brand-divider{height:26px}
