@@ -165,7 +165,7 @@ export function HeaderBusca({
             onChange={(e) => onBusca(e.target.value)}
             onFocus={abrirBusca}
           />
-          {onFiltros && pesquisou && (
+          {onFiltros && (pesquisou || busca.trim() !== "" || categoria !== "") && (
             <button
               type="button"
               className={"busca-filtros" + (filtrosAtivos ? " ativo" : "")}
