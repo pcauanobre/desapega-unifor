@@ -149,6 +149,17 @@ que valida cada camada, está em [docs/seguranca.md](docs/seguranca.md).
 
 ### Estratégia de engenharia de prompts
 
+Antes de escrever a primeira linha, e antes até do design, passei uma ou
+duas horas conversando com o Claude só sobre o projeto: o que o desafio
+pedia de verdade, que problema isso resolve dentro do campus, o que dava pra
+entregar no prazo e por onde começar. O desenvolvimento só começou depois
+dessa conversa.
+
+A marca também nasceu antes do código. Fiz o rebranding e a vetorização da
+logo no CorelDRAW, o D azul com a casinha dentro, usando a IA como apoio de
+referência enquanto eu testava as versões. É dela que sai a paleta de dois
+azuis que aparece no primeiro prompt.
+
 Meu jeito de trabalhar foi sempre o mesmo. Descrevo o comportamento que eu
 quero como usuário, testo na hora no navegador e volto com print do que não
 ficou bom. O detalhe de implementação fica com a IA. O que entra, como fica
