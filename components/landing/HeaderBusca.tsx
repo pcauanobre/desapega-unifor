@@ -142,6 +142,12 @@ export function HeaderBusca({
           }
           onSubmit={(e) => {
             e.preventDefault();
+            // No teclado do celular, Enter só recolhe o teclado; a busca
+            // dispara no botão Confirmar. No desktop, Enter busca normal.
+            if (focada && window.matchMedia("(max-width: 760px)").matches) {
+              (document.activeElement as HTMLElement | null)?.blur();
+              return;
+            }
             if (focada) confirmar();
             else onBuscar();
           }}
