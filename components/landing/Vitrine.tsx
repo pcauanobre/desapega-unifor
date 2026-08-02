@@ -45,6 +45,8 @@ export function Vitrine(props: Props) {
     tetoPreco, filtros, onFiltrar, abrirFiltros,
   } = props;
   const [filtroAberto, setFiltroAberto] = useState(false);
+  /* Dica de que os chips rolam (mobile): anima até o primeiro toque. */
+  const [dicaRolagem, setDicaRolagem] = useState(true);
 
   // O ícone de filtros da barra de busca (mobile) abre o mesmo popup.
   useEffect(() => {
@@ -96,7 +98,11 @@ export function Vitrine(props: Props) {
             />
           </div>
         </div>
-        <div className="chips">
+        <div
+          className={"chips" + (dicaRolagem ? " com-dica" : "")}
+          onScroll={() => setDicaRolagem(false)}
+          onPointerDown={() => setDicaRolagem(false)}
+        >
           {["", ...CATEGORIAS].map((c) => (
             <button
               key={c || "todos"}
