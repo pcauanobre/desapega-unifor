@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Sora, Plus_Jakarta_Sans, JetBrains_Mono, Open_Sans } from "next/font/google";
 import "./globals.css";
 import "./design.css";
 import { AvisoLegal } from "@/components/AvisoLegal";
 import { BottomNav } from "@/components/BottomNav";
+import { PwaRegistro } from "@/components/PwaRegistro";
 
 // As três fontes do código fonte do design: Sora (títulos, preços, marca),
 // Plus Jakarta Sans (corpo) e JetBrains Mono (microlabels).
@@ -37,6 +38,13 @@ export const metadata: Metadata = {
   title: "Desapega Unifor",
   description:
     "Marketplace de desapego entre estudantes do campus: anuncie o que você não usa mais e ache o que precisa, de aluno pra aluno.",
+  manifest: "/manifest.webmanifest",
+  icons: { icon: "/icone-192.png", apple: "/icone-192.png" },
+  appleWebApp: { capable: true, title: "Desapega Unifor" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0A5CFF",
 };
 
 export default function RootLayout({
@@ -50,6 +58,7 @@ export default function RootLayout({
       className={`${sora.variable} ${jakarta.variable} ${jetbrains.variable} ${openSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <PwaRegistro />
         <AvisoLegal />
         {children}
         <BottomNav />

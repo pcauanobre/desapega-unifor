@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { BotaoInstalar } from "@/components/BotaoInstalar";
 
 /**
  * O QUE: a barra utilitária navy do topo. Mostra "Entrar" pra visitante e
@@ -28,6 +29,7 @@ export function TopBar() {
           <span>Universidade de Fortaleza, Ceará</span>
         </div>
         <div className="row gap-22">
+          <BotaoInstalar />
           <Link href="/regras">Regras do desapego</Link>
           {logado ? (
             <Link href="/conta" className="utilbar-login">

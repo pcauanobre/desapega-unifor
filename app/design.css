@@ -79,6 +79,13 @@ body{background:var(--bg)}
 .utilbar a:hover{color:#fff}
 .utilbar-tag{font-size:11px;color:var(--navy-txt-fraco)}
 .utilbar-login{font-weight:700;color:#fff!important}
+/* botão de instalar o PWA: só existe quando o navegador diz que dá */
+.btn-instalar{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.35);
+  background:rgba(255,255,255,.08);color:#fff;font-size:12px;font-weight:700;padding:5px 12px;
+  border-radius:99px;cursor:pointer;transition:background 150ms ease,border-color 150ms ease;
+  animation:fadeIn 300ms ease both}
+.btn-instalar:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.6)}
+.btn-instalar svg{color:#9DC0FF}
 
 /* ---------- header ---------- */
 .header{background:var(--azul);background-image:radial-gradient(900px 260px at 78% -40%,rgba(255,255,255,.18),transparent 70%);position:relative;z-index:5}
