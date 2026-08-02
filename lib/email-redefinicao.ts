@@ -100,6 +100,19 @@ async function enviarEmailComCodigo(
 </body>
 </html>`;
 
+  /* Sem chave de email fora de produção (quem clonou o repo e só copiou o
+     .env.example), o código sai no terminal em vez de sair por email. Assim
+     dá pra criar conta e testar o fluxo inteiro sem ter conta no Brevo. Em
+     produção isso não vale: lá a falta da chave tem que falhar alto. */
+  if (!process.env.BREVO_API_KEY) {
+    if (process.env.NODE_ENV === "production") return false;
+    console.log(
+      `\n[email-codigo] sem BREVO_API_KEY, então vai por aqui mesmo.\n` +
+        `  para: ${email}\n  código: ${otp}\n`,
+    );
+    return true;
+  }
+
   const resposta = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
     headers: {
