@@ -342,7 +342,10 @@ export default function Entrar() {
             <div className="login-social">
               <span className="icones">
                 <span className="ico"><FacebookIcon sx={{ fontSize: 20 }} /></span>
-                <span className="ico"><InstagramIcon sx={{ fontSize: 20 }} /></span>
+                <a className="ico" href="https://www.instagram.com/unifor"
+                  target="_blank" rel="noopener noreferrer" title="Instagram da Unifor">
+                  <InstagramIcon sx={{ fontSize: 20 }} />
+                </a>
                 <span className="ico"><YouTubeIcon sx={{ fontSize: 22 }} /></span>
                 <span className="ico"><XIcon sx={{ fontSize: 17 }} /></span>
                 <span className="ico"><LinkedInIcon sx={{ fontSize: 20 }} /></span>
