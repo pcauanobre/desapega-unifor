@@ -1,5 +1,8 @@
 # Desapega Unifor
 
+**No ar em [www.desapegaunifor.com.br](https://www.desapegaunifor.com.br)**
+(espelho: [desapega-unifor-alpha.vercel.app](https://desapega-unifor-alpha.vercel.app))
+
 Marketplace de economia circular do campus, feito pro desafio técnico do
 Laboratório VORTEX 2026.2. Um aluno anuncia o que não usa mais (livro de
 cálculo, calculadora científica, jaleco, arduino), outro aluno acha e
@@ -116,3 +119,20 @@ As duas do `.env.example` são públicas e suficientes pra rodar tudo. Existem
 duas privadas (`DATABASE_URL` e `BREVO_API_KEY`) que só o dono do projeto
 usa, pra rodar migrations e pro envio de email do "esqueci minha senha". Sem
 elas o app funciona normal, só esse fluxo de email fica de fora.
+
+## Segurança
+
+A chave `anon` do Supabase é pública por design (ela vai no bundle do
+navegador), então a segurança mora no banco e na borda da API, nunca no
+React. Row Level Security em todas as tabelas, privilégio por coluna,
+funções `SECURITY DEFINER` de propósito único, rate limit por IP e headers
+(CSP, HSTS, frame-ancestors). O modelo inteiro, junto do teste de invasão
+que valida cada camada, está em [docs/seguranca.md](docs/seguranca.md).
+
+## Deploy
+
+- **Produção:** [www.desapegaunifor.com.br](https://www.desapegaunifor.com.br)
+- **Hospedagem:** Vercel (frontend e API juntos, deploy automático a cada
+  push na `main`) com Supabase na nuvem pro banco, autenticação e storage
+- **Domínio:** registrado no Registro.br, DNS apontando pra Vercel, HTTPS
+  emitido automaticamente
