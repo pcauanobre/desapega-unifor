@@ -822,7 +822,9 @@ body{background:var(--bg)}
   .brand-mark{height:32px}
   .brand-divider{height:26px}
   .brand-name-1,.brand-name-2{font-size:15px}
-  .header-actions .btn-white{font-size:12.5px;padding:10px 14px}
+  /* o botão do header sai: na bottom nav o FAB de Anunciar e a aba
+     Anúncios já cobrem a central */
+  .header-actions{display:none}
   .search{flex:1 1 100%;order:3;max-width:none}
   .search .dl{display:none}
   .search-input{border-top-left-radius:var(--r-sm);border-bottom-left-radius:var(--r-sm)}
@@ -925,7 +927,13 @@ body{background:var(--bg)}
     padding:24px 20px calc(24px + env(safe-area-inset-bottom));
     animation:sheetIn 300ms var(--ease) both;max-height:88vh;overflow-y:auto}
   .aviso-overlay.is-saindo .aviso-card{animation:sheetOut 260ms var(--ease) both}
-  .ef-area{height:260px}
+
+  /* escolher/ajustar foto vira tela cheia: área de corte esticada e os
+     botões colados embaixo, no alcance do polegar */
+  .ef-card{border-radius:0;height:100dvh;max-height:none;display:flex;flex-direction:column;
+    padding-top:calc(16px + env(safe-area-inset-top))}
+  .ef-card .ef-area{flex:1;height:auto;min-height:0}
+  .ef-card .wiz-acoes{margin-top:16px}
 
   /* bottom nav do protótipo: 5 casas com o Anunciar saltado no meio */
   .bnav{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;
