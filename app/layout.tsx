@@ -43,8 +43,12 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, title: "Desapega Unifor" },
 };
 
+/* maximumScale/userScalable travam o pinch zoom (o iOS respeita isso no
+   app instalado); o pull-to-refresh morre no CSS via overscroll-behavior. */
 export const viewport: Viewport = {
   themeColor: "#0A5CFF",
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
