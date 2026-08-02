@@ -34,6 +34,9 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
   // junto com o primeiro paint do header, sem piscar nem sumir botão.
   const [logado, setLogado] = useState(false);
   const [focada, setFocada] = useState(false);
+  /* Depois da primeira abertura o header fica sem a animação de entrada
+     PRA SEMPRE: se ela voltasse, o header inteiro refazia o fade ao fechar. */
+  const [jaAbriu, setJaAbriu] = useState(false);
   const [voltando, setVoltando] = useState(false);
   const [tagEscolhida, setTagEscolhida] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -53,6 +56,7 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
     const el = formRef.current;
     const antes = el?.getBoundingClientRect();
     setTagEscolhida(categoria);
+    setJaAbriu(true);
     setFocada(true);
     requestAnimationFrame(() => {
       const depois = el?.getBoundingClientRect();
@@ -99,7 +103,11 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
   }, [focada]);
 
   return (
-    <header className={"header" + (focada ? " busca-aberta" : "")}>
+    <header
+      className={
+        "header" + (focada ? " busca-aberta" : "") + (jaAbriu ? " sem-anim" : "")
+      }
+    >
       <div className="container header-inner">
         <Brand />
 

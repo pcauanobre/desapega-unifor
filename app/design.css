@@ -832,10 +832,12 @@ body{background:var(--bg)}
   /* busca imersiva: sem botão, o Enter busca; focar escurece o fundo,
      sobe o campo e mostra as categorias como tags de vidro */
   .search-btn{display:none}
-  /* com a busca aberta o header sobe de camada E perde a animação de
-     entrada: o transform dela prendia o véu fixed dentro da caixa do
-     header; sem ele, o escurecimento cobre a página INTEIRA */
-  .header.busca-aberta{z-index:90;animation:none}
+  /* com a busca aberta o header sobe de camada; e da primeira abertura em
+     diante ele fica sem a animação de entrada (o transform dela prendia o
+     véu fixed na caixa do header, e o retorno refazia o fade no header
+     inteiro). O fade da volta é SÓ do input (.voltando). */
+  .header.busca-aberta{z-index:90}
+  .header.sem-anim{animation:none}
   .search.voltando{animation:fadeIn 320ms ease both}
   .busca-veu{display:block;position:fixed;inset:0;z-index:75;background:rgba(5,15,36,.74);
     animation:fadeIn 240ms ease both}
