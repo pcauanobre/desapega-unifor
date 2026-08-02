@@ -876,6 +876,8 @@ body{background:var(--bg)}
 
   /* header: marca menor e busca descendo pra linha de baixo, inteira */
   /* vão vertical maior: a busca respira abaixo da marca e do instalar app */
+  /* no app de bolso o header é fixo de espírito: azul parado, sem entrada */
+  .pagina-1280 .header{animation:none}
   .header-inner{flex-wrap:wrap;gap:22px 12px;padding-top:12px;padding-bottom:14px}
   .brand{gap:10px}
   .brand-mark{height:32px}
