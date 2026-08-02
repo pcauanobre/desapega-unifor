@@ -24,6 +24,8 @@ type Props = {
   tetoPreco: number;
   filtros: Filtros | null;
   onFiltrar: (f: Filtros | null) => void;
+  /* contador: cada incremento vindo da barra de busca abre o popup */
+  abrirFiltros: number;
 };
 
 /**
@@ -39,9 +41,14 @@ export function Vitrine(props: Props) {
   const {
     anuncios, filtrados, extras, temMais, mostrandoSkeleton, carregandoMais,
     erro, categoria, onCategoria, ordenar, onOrdenar, onCarregarMais,
-    tetoPreco, filtros, onFiltrar,
+    tetoPreco, filtros, onFiltrar, abrirFiltros,
   } = props;
   const [filtroAberto, setFiltroAberto] = useState(false);
+
+  // O ícone de filtros da barra de busca (mobile) abre o mesmo popup.
+  useEffect(() => {
+    if (abrirFiltros > 0) setFiltroAberto(true);
+  }, [abrirFiltros]);
 
   const contar = (c: string) =>
     (anuncios ?? []).filter((a) => (c === "" ? true : a.categoria === c)).length;

@@ -32,6 +32,7 @@ export default function Produtos() {
   const [mostrandoSkeleton, setMostrandoSkeleton] = useState(false);
   const [visiveis, setVisiveis] = useState(PAGINA.inicial);
   const [carregandoMais, setCarregandoMais] = useState(false);
+  const [pedirFiltros, setPedirFiltros] = useState(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -146,6 +147,8 @@ export default function Produtos() {
           setVisiveis(PAGINA.inicial);
         }}
         onBuscar={aplicarBusca}
+        onFiltros={() => setPedirFiltros((n) => n + 1)}
+        filtrosAtivos={Boolean(filtros)}
       />
       <Vitrine
         anuncios={anuncios}
@@ -164,6 +167,7 @@ export default function Produtos() {
         }}
         onCarregarMais={carregarMais}
         tetoPreco={tetoPreco}
+        abrirFiltros={pedirFiltros}
         filtros={filtros}
         onFiltrar={(f) => comSkeleton(DELAY.filtro, () => setFiltros(f))}
       />

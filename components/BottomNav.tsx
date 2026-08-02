@@ -7,7 +7,7 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import AddIcon from "@mui/icons-material/Add";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import { createClient } from "@/lib/supabase/client";
 
 /* Telas que já são um fluxo próprio, sem barra por baixo. */
@@ -67,7 +67,7 @@ export function BottomNav() {
           Anúncios
         </Link>
         <Link className={classe(pathname.startsWith("/conta"))} href={logado("/conta")}>
-          <SettingsOutlinedIcon sx={{ fontSize: 23 }} />
+          <PersonOutlinedIcon sx={{ fontSize: 23 }} />
           Conta
         </Link>
       </nav>

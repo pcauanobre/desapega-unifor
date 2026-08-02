@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import TuneIcon from "@mui/icons-material/Tune";
 import { createClient } from "@/lib/supabase/client";
 import { Brand } from "@/components/Brand";
 import { CATEGORIAS } from "@/lib/categorias";
@@ -17,6 +18,9 @@ type Props = {
   /* No toque numa tag o estado do caller ainda não virou; a categoria
      escolhida vai por parâmetro pra busca sair certa na hora. */
   onBuscar: (categoriaEscolhida?: string) => void;
+  /* Só a vitrine passa: ícone de filtros na barra (mobile, após buscar). */
+  onFiltros?: () => void;
+  filtrosAtivos?: boolean;
 };
 
 /**
@@ -29,7 +33,9 @@ type Props = {
  * CHAMA: landing (app/page.tsx).
  * QUEBRA SE: as classes .header/.search/.busca-* do design.css mudarem.
  */
-export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }: Props) {
+export function HeaderBusca({
+  categoria, busca, onCategoria, onBusca, onBuscar, onFiltros, filtrosAtivos,
+}: Props) {
   // getSession lê do armazenamento local (sem rede): o rótulo certo chega
   // junto com o primeiro paint do header, sem piscar nem sumir botão.
   const [logado, setLogado] = useState(false);
@@ -38,6 +44,7 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
      PRA SEMPRE: se ela voltasse, o header inteiro refazia o fade ao fechar. */
   const [jaAbriu, setJaAbriu] = useState(false);
   const [voltando, setVoltando] = useState(false);
+  const [pesquisou, setPesquisou] = useState(false);
   const [tagEscolhida, setTagEscolhida] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
   const { saindo, fecharCom } = useSaidaAnimada();
@@ -87,6 +94,7 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
 
   /* Tag só marca; quem dispara a busca é o Confirmar (ou o Enter). */
   function confirmar() {
+    setPesquisou(true);
     onCategoria(tagEscolhida);
     onBuscar(tagEscolhida);
     fecharBusca();
@@ -102,10 +110,17 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focada]);
 
+  /* Conta e meus anúncios são abas de gestão: no mobile a busca sai. */
+  const semBusca =
+    pathname.startsWith("/conta") || pathname.startsWith("/meus-anuncios");
+
   return (
     <header
       className={
-        "header" + (focada ? " busca-aberta" : "") + (jaAbriu ? " sem-anim" : "")
+        "header" +
+        (focada ? " busca-aberta" : "") +
+        (jaAbriu ? " sem-anim" : "") +
+        (semBusca ? " sem-busca" : "")
       }
     >
       <div className="container header-inner">
@@ -127,6 +142,7 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
           }
           onSubmit={(e) => {
             e.preventDefault();
+            setPesquisou(true);
             if (focada) confirmar();
             else onBuscar();
           }}
@@ -149,6 +165,16 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
             onChange={(e) => onBusca(e.target.value)}
             onFocus={abrirBusca}
           />
+          {onFiltros && pesquisou && (
+            <button
+              type="button"
+              className={"busca-filtros" + (filtrosAtivos ? " ativo" : "")}
+              onClick={onFiltros}
+              aria-label="Filtros"
+            >
+              <TuneIcon sx={{ fontSize: 19 }} />
+            </button>
+          )}
           <button className="search-btn" type="submit">
             <span className="search-icon">⌕</span>Buscar
           </button>
