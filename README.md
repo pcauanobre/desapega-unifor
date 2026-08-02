@@ -241,6 +241,18 @@ requisição só baixava a agenda inteira do site. Hoje o contato sai um por
 vez, por uma função do banco. O teste completo está em
 [docs/seguranca.md](docs/seguranca.md).
 
+### Compartilhamento de histórico
+
+[Conversa pública sobre a arquitetura do projeto](https://claude.ai/share/96fe365c-a52e-4c9b-a218-52113ab90a42)
+
+Nessa conversa eu levei a arquitetura que já estava de pé pra ser atacada, e
+pedi o contra de cada decisão em vez de concordância. Passamos por onde a API
+mora, quem guarda a regra de autorização quando não existe um backend próprio
+guardando ela, o que acontece de verdade se cada tipo de chave vazar, o que
+precisa ter dentro de uma função `SECURITY DEFINER` pra ela não virar o novo
+buraco, e onde o meu rate limit em memória não segura. Saíram apontamentos
+que eu não tinha visto e que foram direto pra minha lista.
+
 ### Reflexão crítica
 
 **Erro 1. A IA me disse que o email tinha sido enviado, e não tinha.**
