@@ -171,13 +171,19 @@ async function paraWebp(arquivo) {
         "select 1 from public.anuncios where titulo = $1 limit 1",
         [titulo],
       );
-      if (existe.length > 0) {
-        console.log(`  pula (já existe): ${titulo}`);
-        continue;
-      }
       const urls = await subirFotos(base);
       if (urls.length === 0) {
         semFoto.push(base);
+        continue;
+      }
+      // Já existe? Não duplica: só atualiza a foto dele.
+      if (existe.length > 0) {
+        await pg.query(
+          "update public.anuncios set imagem_url = $1, fotos = $2 where titulo = $3",
+          [urls[0], urls, titulo],
+        );
+        trocadas++;
+        console.log(`  troca: ${titulo}`);
         continue;
       }
       // reaproveita a identidade do autor demo (curso, contato e id)
