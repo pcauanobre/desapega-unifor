@@ -46,6 +46,9 @@ export default function PaginaProduto() {
       .catch((e: Error) => setErro(e.message));
   }, [id]);
 
+  /* Item encerrado: some o contato e entra o selo de vendido/doado. */
+  const vendido = Boolean(anuncio?.vendido_em);
+
   const fotos = anuncio
     ? (anuncio.fotos?.length ? anuncio.fotos : [anuncio.imagem_url].filter(Boolean) as string[])
     : [];
@@ -101,6 +104,11 @@ export default function PaginaProduto() {
               ) : (
                 <span className="pd-preco">{brl(anuncio.preco)}</span>
               )}
+              {vendido && (
+                <span className="pd-selo-vendido">
+                  {anuncio.is_doacao ? "JÁ FOI DOADO" : "JÁ FOI VENDIDO"}
+                </span>
+              )}
             </div>
 
             <p className="pd-desc">{anuncio.descricao}</p>
@@ -141,7 +149,12 @@ export default function PaginaProduto() {
                 </span>
               </Link>
 
-              {anuncio.contato ? (
+              {/* item encerrado não expõe contato: não há mais negócio */}
+              {vendido ? (
+                <span className="pd-lock">
+                  Produto já foi {anuncio.is_doacao ? "doado" : "vendido"}
+                </span>
+              ) : anuncio.contato ? (
                 <a
                   className="btn btn-zap"
                   href={linkWhatsApp(anuncio.contato)}

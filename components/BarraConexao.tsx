@@ -3,44 +3,68 @@
 import { useEffect, useState } from "react";
 
 /**
- * O QUE: a linha de conexão no topo: vermelha enquanto estiver offline,
- *        verde com "Conectado novamente" na volta, sumindo após 2s.
- * POR QUE: com o cache offline o app continua funcionando sem internet;
- *          sem um aviso, a pessoa nem percebe que tá vendo dado guardado.
- * CHAMA: layout raiz, vale pro site e pro app instalado.
- * QUEBRA SE: nada; browsers sem os eventos online/offline só não mostram.
+ * O QUE: a faixa de conexão no topo da página (acima do header, empurrando
+ *        o conteúdo): vermelha sem internet, verde na volta, sumindo
+ *        depois de 2s. Entra e sai deslizando.
+ * POR QUE: com o cache offline o app continua de pé sem rede; sem aviso, a
+ *          pessoa não sabe que está vendo dado guardado.
+ * CHAMA: layout raiz, antes de tudo, pra ficar acima do header.
+ * QUEBRA SE: nada; navegador sem os eventos online/offline não mostra.
  */
 export function BarraConexao() {
   const [estado, setEstado] = useState<"off" | "voltou" | null>(null);
+  const [saindo, setSaindo] = useState(false);
 
   useEffect(() => {
+    let timerSumir: ReturnType<typeof setTimeout>;
+    let timerFim: ReturnType<typeof setTimeout>;
+
     function caiu() {
+      setSaindo(false);
       setEstado("off");
     }
     function voltou() {
+      setSaindo(false);
       setEstado("voltou");
-      setTimeout(() => {
-        setEstado((atual) => (atual === "voltou" ? null : atual));
-      }, 2000);
+      // 2s no verde, aí recolhe com animação antes de sumir de vez.
+      timerSumir = setTimeout(() => setSaindo(true), 2000);
+      timerFim = setTimeout(() => {
+        setEstado(null);
+        setSaindo(false);
+      }, 2320);
     }
+
     window.addEventListener("offline", caiu);
     window.addEventListener("online", voltou);
-    // Já abriu sem internet? A linha aparece de cara (fora do corpo do
-    // efeito pra não disparar render em cascata na montagem).
+    // Abriu já sem rede: a faixa aparece de cara (fora do corpo do efeito
+    // pra não disparar render em cascata na montagem).
     const inicial = setTimeout(() => {
       if (!navigator.onLine) setEstado("off");
     }, 0);
+
     return () => {
       window.removeEventListener("offline", caiu);
       window.removeEventListener("online", voltou);
       clearTimeout(inicial);
+      clearTimeout(timerSumir);
+      clearTimeout(timerFim);
     };
   }, []);
 
   if (!estado) return null;
+
   return (
-    <div className={"conexao " + (estado === "off" ? "conexao-off" : "conexao-on")}>
-      {estado === "off" ? "Sem conexão. Mostrando a última versão vista." : "Conectado novamente"}
+    <div
+      className={
+        "conexao " +
+        (estado === "off" ? "conexao-off" : "conexao-on") +
+        (saindo ? " is-saindo" : "")
+      }
+      role="status"
+    >
+      {estado === "off"
+        ? "Sem conexão disponível, mostrando dados limitados."
+        : "Conectado novamente"}
     </div>
   );
 }
