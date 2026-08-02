@@ -7,6 +7,9 @@ import PersonIcon from "@mui/icons-material/Person";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import LogoutIcon from "@mui/icons-material/Logout";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import PrivacyTipOutlinedIcon from "@mui/icons-material/PrivacyTipOutlined";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { createClient } from "@/lib/supabase/client";
 import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
@@ -44,6 +47,7 @@ export default function Conta() {
   const [erroApagar, setErroApagar] = useState<string | null>(null);
   const [paraCortar, setParaCortar] = useState<File | null>(null);
   const [contaApagada, setContaApagada] = useState(false);
+  const [privAberto, setPrivAberto] = useState(false);
   const { saindo, fecharCom } = useSaidaAnimada();
   const { saindo: saindoTchau, fecharCom: fecharTchauCom } = useSaidaAnimada();
 
@@ -189,17 +193,9 @@ export default function Conta() {
             <h1 className="info-title">Meu perfil</h1>
             <p className="info-sub">{email}</p>
           </div>
-          <div className="ct-topo-acoes">
-            {/* o mesmo perfil que os outros abrem pelo card do produto */}
-            {uid && (
-              <Link className="btn wiz-voltar" href={`/perfil/${uid}`}>
-                <VisibilityOutlinedIcon sx={{ fontSize: 16 }} /> Meu perfil público
-              </Link>
-            )}
-            <button className="btn wiz-voltar ct-sair" onClick={sair}>
-              <LogoutIcon sx={{ fontSize: 16 }} /> Sair
-            </button>
-          </div>
+          <button className="btn wiz-voltar ct-sair" onClick={sair}>
+            <LogoutIcon sx={{ fontSize: 16 }} /> Sair
+          </button>
         </div>
 
         {pronto && (
@@ -260,6 +256,40 @@ export default function Conta() {
             </button>
           </form>
         )}
+
+        {uid && (
+          <Link className="btn btn-outline btn-block ct-perfil-publico" href={`/perfil/${uid}`}>
+            <VisibilityOutlinedIcon sx={{ fontSize: 18 }} /> Ver meu perfil público
+          </Link>
+        )}
+
+        <div className={"ct-privacidade" + (privAberto ? " is-aberto" : "")}>
+          <button
+            type="button"
+            className="ct-priv-cabeca"
+            onClick={() => setPrivAberto(!privAberto)}
+            aria-expanded={privAberto}
+          >
+            <PrivacyTipOutlinedIcon sx={{ fontSize: 19 }} />
+            Privacidade e regras
+            <KeyboardArrowDownIcon className="ct-priv-chevron" sx={{ fontSize: 20 }} />
+          </button>
+          <div className="ct-priv-dobra">
+            <div className="ct-priv-lista">
+              {[
+                ["Política de privacidade", "/privacidade"],
+                ["Regras do desapego", "/regras"],
+                ["Segurança nas trocas", "/seguranca"],
+                ["Central de ajuda", "/ajuda"],
+              ].map(([rotulo, rota]) => (
+                <Link key={rota} href={rota}>
+                  <span>{rotulo}</span>
+                  <ChevronRightIcon sx={{ fontSize: 16 }} />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
 
         <div className="ct-perigo">
           <div>

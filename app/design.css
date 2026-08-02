@@ -479,10 +479,31 @@ body{background:var(--bg)}
 /* ---------- conta ---------- */
 .ct-topo{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;max-width:640px}
 .ct-sair{flex:none;gap:7px;font-size:13.5px}
-.ct-topo-acoes{display:flex;align-items:center;gap:8px;flex:none}
-.ct-topo-acoes .wiz-voltar{gap:7px;font-size:13.5px}
-.pagina-1280 a.wiz-voltar{color:var(--txt-2)}
-.pagina-1280 a.wiz-voltar:hover{color:var(--azul)}
+/* botão do perfil público: largo, embaixo do formulário (bom de dedo) */
+.ct-perfil-publico{max-width:640px;margin-top:16px;gap:9px;font-weight:600}
+
+/* box expansível de privacidade e regras */
+.ct-privacidade{max-width:640px;margin-top:14px;border:1px solid var(--borda);border-radius:12px;
+  background:#fff;transition:border-color 180ms ease,box-shadow 180ms ease}
+.ct-privacidade:hover{border-color:#CFDCF7}
+.ct-privacidade.is-aberto{box-shadow:0 10px 26px rgba(7,28,61,.08)}
+.ct-priv-cabeca{width:100%;display:flex;align-items:center;gap:10px;padding:15px 18px;border:none;
+  background:none;cursor:pointer;font-family:var(--sora);font-weight:600;font-size:14.5px;
+  color:var(--navy);text-align:left}
+.ct-priv-cabeca > svg:first-of-type{color:var(--azul)}
+.ct-priv-chevron{margin-left:auto;color:var(--txt-3);transition:transform 240ms var(--ease)}
+.is-aberto .ct-priv-chevron{transform:rotate(180deg)}
+.ct-priv-dobra{display:grid;grid-template-rows:0fr;transition:grid-template-rows 340ms var(--ease)}
+.is-aberto .ct-priv-dobra{grid-template-rows:1fr}
+.ct-priv-lista{min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:0 8px;
+  transition:padding-bottom 340ms var(--ease)}
+.is-aberto .ct-priv-lista{padding-bottom:8px}
+.ct-priv-lista a{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:11px 12px;border-radius:8px;font-size:13.5px;font-weight:600;
+  transition:background 140ms ease}
+.pagina-1280 .ct-priv-lista a{color:var(--txt)}
+.pagina-1280 .ct-priv-lista a:hover{background:#F2F6FF;color:var(--azul)}
+.ct-priv-lista svg{color:var(--txt-3);flex:none}
 .ct-grid{margin-top:16px}
 .ct-item{display:flex;flex-direction:column;gap:8px}
 .ct-excluir{background:#fff;border:1.5px solid #F1C7C7;color:#A33B3B;font-size:13px;padding:10px;gap:6px;flex:1}
@@ -803,6 +824,10 @@ body{background:var(--bg)}
 .pd-sk-l2{height:16px;width:45%;border-radius:6px;margin-top:14px}
 .pd-sk-l3{height:90px;border-radius:10px;margin-top:22px}
 .pd-voltar{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;margin-top:26px}
+/* versão <button> do voltar (quando o destino depende do histórico) */
+.pd-voltar-botao{border:none;background:none;cursor:pointer;padding:0;color:var(--azul);
+  transition:color 150ms ease}
+.pd-voltar-botao:hover{color:var(--azul-hover)}
 
 /* ---------- páginas informativas (ajuda, regras, segurança, doações) ---------- */
 .info-wrap{max-width:860px;padding-top:44px;padding-bottom:80px}
