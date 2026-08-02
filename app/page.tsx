@@ -86,11 +86,25 @@ export default function Home() {
         </Revelar>
         <div className="container">
           <div className="grid">
-            {(anuncios ?? []).slice(0, 4).map((a, i) => (
-              <Revelar key={a.id} atraso={i * 90}>
-                <CardAnuncio anuncio={a} />
-              </Revelar>
-            ))}
+            {/* enquanto a API não responde, o espaço não fica vazio: o
+                esqueleto já mostra onde os cards vão nascer */}
+            {anuncios === null
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <div className="sk" key={i}>
+                    <div className="sk-bar sk-photo" />
+                    <div className="sk-bar sk-line-1" />
+                    <div className="sk-bar sk-line-2" />
+                    <div className="sk-foot">
+                      <i />
+                      <i />
+                    </div>
+                  </div>
+                ))
+              : anuncios.slice(0, 4).map((a, i) => (
+                  <Revelar key={a.id} atraso={i * 90}>
+                    <CardAnuncio anuncio={a} />
+                  </Revelar>
+                ))}
           </div>
         </div>
       </section>
