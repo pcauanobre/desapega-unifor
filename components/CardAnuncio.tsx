@@ -62,6 +62,7 @@ export function CardAnuncio({
           </span>
         )}
         {anuncio.estado && <span className="card-cond">{anuncio.estado}</span>}
+        {anuncio.demo && <span className="card-demo mono">DEMO</span>}
         {fotos.length > 1 && (
           <>
             <button

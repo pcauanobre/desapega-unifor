@@ -143,6 +143,10 @@ body{background:var(--bg)}
 .card-photo-label{font-family:var(--mono);font-size:11px;color:var(--txt-3);padding:0 12px;text-align:center}
 .card-cond{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.94);color:#3D4A66;font-size:11px;
   font-weight:700;padding:5px 9px;border-radius:6px;white-space:nowrap}
+/* selo azul dos itens de demonstração, canto direito de cima */
+.card-demo{position:absolute;top:10px;right:10px;z-index:2;background:var(--azul);color:#fff;
+  font-size:9.5px;font-weight:700;letter-spacing:.09em;padding:5px 8px;border-radius:6px;
+  box-shadow:0 2px 8px rgba(7,28,61,.28)}
 .card-body{padding:14px 4px 4px}
 .card-cat{font-family:var(--mono);font-size:10.5px;color:var(--txt-3);letter-spacing:.06em}
 .card-title{font-family:var(--sora);font-weight:600;font-size:15.5px;line-height:1.32;color:var(--navy);
@@ -925,6 +929,7 @@ body{background:var(--bg)}
   .card-foot .card-price{margin-left:auto;font-size:18px}
   .card-foot .card-doacao-txt{margin-left:auto;font-size:14px}
   .card-cond{font-size:10px;padding:4px 7px;top:7px;left:7px}
+  .card-demo{top:7px;right:7px;font-size:9px;padding:4px 6px}
   .ma-icones{top:14px;right:14px}
   .ma-ico{width:32px;height:32px}
   .ma-selo{top:14px;left:14px;font-size:11px;padding:6px 11px}

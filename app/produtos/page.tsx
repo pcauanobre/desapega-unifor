@@ -105,6 +105,7 @@ export default function Produtos() {
     if (filtros) {
       const f = filtros;
       lista = lista.filter((a) => {
+        if (a.demo && !f.demos) return false;
         if (f.estados.length && (!a.estado || !f.estados.includes(a.estado))) {
           return false;
         }

@@ -5,8 +5,9 @@
 -- (?lock trava a mesma imagem em toda visita). Cobre as 10 categorias e as
 -- 4 tags da régua de conservação; 2 anúncios já nascem vendidos pra dar
 -- vida ao histórico do perfil.
--- Rodar DEPOIS da 010 (vendido_em), da 011_estados_coerentes (tags) e da
--- 011_novas_categorias (Odonto, Saúde e Esportes no CHECK).
+-- Rodar DEPOIS da 010 (vendido_em), da 011_estados_coerentes (tags), da
+-- 011_novas_categorias (Odonto, Saúde e Esportes no CHECK) e da 013
+-- (coluna demo, que aqui nasce true).
 -- Pode rodar de novo: limpa a rodada anterior e replanta.
 
 -- Limpa o seed antigo (pendurava tudo no primeiro usuário) e os demos.
@@ -57,7 +58,7 @@ criados as (
 insert into public.anuncios
   (titulo, descricao, categoria, preco, is_doacao, imagem_url, estado,
    autor_nome, autor_curso, bloco, contato, fotos, created_at, vendido_em,
-   autor_id)
+   autor_id, demo)
 select t.titulo, t.descricao, t.categoria, t.preco::numeric, t.is_doacao,
        'https://loremflickr.com/900/675/' || t.kw || '?lock=' || t.trava,
        t.estado,
@@ -69,7 +70,7 @@ select t.titulo, t.descricao, t.categoria, t.preco::numeric, t.is_doacao,
        now() - t.faz::interval,
        case when t.vendido_faz is null then null
             else now() - t.vendido_faz::interval end,
-       c.id
+       c.id, true
 from (values
   -- Livros
   ('marina@desapega.demo', 'Cálculo Vol. 1 — Guidorizzi (6ª ed.)',

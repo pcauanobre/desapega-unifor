@@ -52,8 +52,8 @@ export function AvisoLegal() {
         <p className="aviso-p">
           Apesar de ter nascido como exercício, a plataforma funciona de
           verdade: dá pra criar conta, anunciar itens e encontrar quem quer
-          comprar, vender ou doar dentro do campus. Os itens que já aparecem
-          na vitrine são de demonstração.
+          comprar, vender ou doar dentro do campus. Os itens de demonstração
+          estão marcados com a tag azul.
         </p>
         <p className="aviso-p">
           O nome, as cores e as referências à universidade aparecem pra dar

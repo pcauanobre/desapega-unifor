@@ -13,6 +13,7 @@ export type Filtros = {
   max: number;
   estados: EstadoDoItem[];
   doacoes: boolean;
+  demos: boolean;
 };
 
 type Props = {
@@ -34,10 +35,12 @@ export function FiltrosPopup({ teto, atual, onFechar, onAplicar }: Props) {
   const [max, setMax] = useState(atual?.max ?? teto);
   const [estados, setEstados] = useState<EstadoDoItem[]>(atual?.estados ?? []);
   const [doacoes, setDoacoes] = useState(atual?.doacoes ?? true);
+  const [demos, setDemos] = useState(atual?.demos ?? true);
   const { saindo, fecharCom } = useSaidaAnimada();
 
   const pct = (v: number) => `${(v / teto) * 100}%`;
-  const padrao = min === 0 && max === teto && estados.length === 0 && doacoes;
+  const padrao =
+    min === 0 && max === teto && estados.length === 0 && doacoes && demos;
 
   function alternarEstado(e: EstadoDoItem) {
     setEstados((atuais) =>
@@ -131,6 +134,15 @@ export function FiltrosPopup({ teto, atual, onFechar, onAplicar }: Props) {
           Mostrar doações junto
         </label>
 
+        <label className="fx-check">
+          <input
+            type="checkbox"
+            checked={demos}
+            onChange={(e) => setDemos(e.target.checked)}
+          />
+          Mostrar itens de demonstração
+        </label>
+
         <div className="wiz-acoes">
           <button
             className="btn wiz-voltar"
@@ -142,7 +154,7 @@ export function FiltrosPopup({ teto, atual, onFechar, onAplicar }: Props) {
             className="btn wiz-continuar"
             onClick={() =>
               fecharCom(() =>
-                onAplicar(padrao ? null : { min, max, estados, doacoes }),
+                onAplicar(padrao ? null : { min, max, estados, doacoes, demos }),
               )
             }
           >
