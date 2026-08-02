@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     "Marketplace de desapego entre estudantes do campus: anuncie o que você não usa mais e ache o que precisa, de aluno pra aluno.",
   manifest: "/manifest.json",
   icons: { icon: "/icone-192.png", apple: "/icone-192.png" },
-  appleWebApp: { capable: true, title: "Desapega Unifor" },
+  appleWebApp: { capable: true, title: "DesapegaUnifor" },
 };
 
 /* maximumScale/userScalable travam o pinch zoom (o iOS respeita isso no
