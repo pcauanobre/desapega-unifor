@@ -186,19 +186,25 @@ body{background:var(--bg)}
   font-size:9.5px;font-weight:700;letter-spacing:.09em;padding:5px 8px;border-radius:6px;
   box-shadow:0 2px 8px rgba(7,28,61,.28)}
 /* na foto grande do produto o selo cresce um ponto */
-.pd-foto .card-demo{top:14px;right:14px;font-size:11px;padding:6px 10px}
+/* na página do produto a lupa mora no canto: a tag DEMO recua pra
+   esquerda pra não ficar por baixo dela */
+.pd-foto .card-demo{top:14px;right:56px;font-size:11px;padding:6px 10px}
 .card-body{padding:14px 4px 4px}
 .card-cat{font-family:var(--mono);font-size:10.5px;color:var(--txt-3);letter-spacing:.06em}
 .card-title{font-family:var(--sora);font-weight:600;font-size:15.5px;line-height:1.32;color:var(--navy);
   margin:7px 0 0;min-height:41px;text-wrap:pretty}
 /* duas linhas fixas: local em cima, horário + preço embaixo. Isso deixa
    todo card com a mesma altura, tenha preço ou tag de doação. */
-.card-foot{display:flex;flex-direction:column;gap:7px;margin-top:14px;padding-top:13px;
-  border-top:1px solid #EEF1F7}
-.card-linha2{display:flex;align-items:center;justify-content:space-between;gap:10px}
+/* três linhas fixas: local, horário logo abaixo (bem juntinho, porque são
+   a mesma informação de contexto) e o preço sozinho na terceira, à
+   direita. Altura igual em todo card, tenha preço ou tag de doação. */
+.card-foot{display:flex;flex-direction:column;gap:3px;margin-top:14px;padding-top:13px;
+  border-top:1px solid #EEF1F7;min-width:0}
 .card-quando{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:500;
   color:var(--txt-3);white-space:nowrap}
 .card-quando svg{color:var(--txt-3);flex:none}
+.card-valor{display:flex;justify-content:flex-end;align-items:center;margin-top:7px;min-width:0}
+.card-valor > *{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .card-seller{display:flex;flex-direction:column;gap:2px}
 .card-seller b{font-size:12.5px;color:var(--txt-2);font-weight:600}
 .card-seller span{font-size:11.5px;color:var(--txt-4)}
@@ -378,6 +384,7 @@ body{background:var(--bg)}
 .visor-x:hover{background:rgba(255,255,255,.26)}
 
 .visor-palco{position:relative;min-height:0;margin:0;padding:0 16px;display:flex;
+  transition:transform 260ms var(--ease);touch-action:pan-y;
   align-items:center;justify-content:center}
 .visor-palco img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;
   border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.6);
