@@ -119,12 +119,6 @@ export function Vitrine(props: Props) {
             </p>
           </div>
           <div className="row gap-10">
-            <button
-              className={"fx-botao" + (filtros ? " ativo" : "")}
-              onClick={() => setFiltroAberto(true)}
-            >
-              <TuneIcon sx={{ fontSize: 17 }} /> Filtros
-            </button>
             <span className="shelf-sortlabel">Ordenar por</span>
             <Droplist
               rotuloAria="Ordenar por"
@@ -137,6 +131,12 @@ export function Vitrine(props: Props) {
                 { valor: "doacoes", rotulo: "Só doações" },
               ]}
             />
+            <button
+              className={"fx-botao" + (filtros ? " ativo" : "")}
+              onClick={() => setFiltroAberto(true)}
+            >
+              <TuneIcon sx={{ fontSize: 17 }} /> Filtros
+            </button>
           </div>
         </div>
         <div

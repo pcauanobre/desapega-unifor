@@ -11,7 +11,8 @@ const CSP = [
   // o ganho real da regra é bloquear script de domínio externo.
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://*.supabase.co",
+  // loremflickr e picsum servem as fotos dos itens de demonstração
+  "img-src 'self' data: blob: https://*.supabase.co https://loremflickr.com https://*.staticflickr.com https://picsum.photos https://*.picsum.photos https://fastly.picsum.photos",
   "font-src 'self' data:",
   "connect-src 'self' https://*.supabase.co",
   "frame-src https://www.google.com https://maps.google.com",

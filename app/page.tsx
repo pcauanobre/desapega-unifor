@@ -11,6 +11,7 @@ import { ComoFunciona } from "@/components/landing/ComoFunciona";
 import { Rodape } from "@/components/landing/Rodape";
 import { Revelar } from "@/components/Revelar";
 import { FaqSecao } from "@/components/landing/FaqSecao";
+import { AvisoLegal } from "@/components/AvisoLegal";
 
 /**
  * O QUE: a LP de apresentação (rota /): hero explicando a proposta,
@@ -36,6 +37,8 @@ export default function Home() {
 
   return (
     <div className="pagina-1280 flex-1">
+      {/* o aviso legal vive só aqui na landing (decisão do Pedro) */}
+      <AvisoLegal />
       <TopBar />
       <HeaderNav />
 
