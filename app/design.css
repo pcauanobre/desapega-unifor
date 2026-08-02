@@ -1067,7 +1067,10 @@ body{background:var(--bg)}
   .card-title{font-size:15px;line-height:1.3;min-height:40px;display:-webkit-box;
     -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .card-foot{margin-top:auto;padding-top:10px;flex-wrap:wrap;gap:7px}
-  .card-local{flex:1 1 100%;font-size:12.5px}
+  /* rodapé em 3 linhas: bloco à esquerda, horário à direita, preço por último */
+  .card-local{flex:1 1 100%;font-size:12.5px;flex-wrap:wrap}
+  .card-local .sep{display:none}
+  .card-local .quando{flex:1 1 100%;text-align:right}
   .card-foot .card-price{margin-left:auto;font-size:18px}
   .card-foot .card-doacao-txt{margin-left:auto;font-size:14px}
   .card-cond{font-size:10px;padding:4px 7px;top:7px;left:7px}
@@ -1080,6 +1083,8 @@ body{background:var(--bg)}
   /* página do produto: coluna única, foto grande, zap embaixo */
   .pd,.pd-sk{grid-template-columns:1fr;gap:20px;padding-top:14px;padding-bottom:32px}
   .pd-foto,.pd-sk-foto{height:300px;border-radius:14px}
+  .pd-seta-esq{left:4px}
+  .pd-seta-dir{right:4px}
   .pd-titulo{font-size:22px}
   .pd-preco{font-size:24px}
   .pd-desc{font-size:14px}

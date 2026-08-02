@@ -8,13 +8,14 @@ import type { NextConfig } from "next";
 const CSP = [
   "default-src 'self'",
   // 'unsafe-inline' segue necessário pros scripts de hidratação do Next;
-  // o ganho real da regra é bloquear script de domínio externo.
-  "script-src 'self' 'unsafe-inline'",
+  // o ganho real da regra é bloquear script de domínio externo. O
+  // va.vercel-scripts é o Analytics da própria hospedagem.
+  "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
   "style-src 'self' 'unsafe-inline'",
   // loremflickr e picsum servem as fotos dos itens de demonstração
   "img-src 'self' data: blob: https://*.supabase.co https://loremflickr.com https://*.staticflickr.com https://picsum.photos https://*.picsum.photos https://fastly.picsum.photos",
   "font-src 'self' data:",
-  "connect-src 'self' https://*.supabase.co",
+  "connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com",
   "frame-src https://www.google.com https://maps.google.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
