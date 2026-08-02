@@ -86,6 +86,13 @@ body{background:var(--bg)}
   animation:fadeIn 300ms ease both}
 .btn-instalar:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.6)}
 .btn-instalar svg{color:#9DC0FF}
+/* linha de conexão: vermelha offline, verde na volta (some em 2s) */
+.conexao{position:fixed;top:0;left:0;right:0;z-index:130;text-align:center;
+  color:#fff;font-size:11.5px;font-weight:700;letter-spacing:.04em;padding:5px 0;
+  animation:fadeDown 240ms var(--ease) both}
+.conexao-off{background:#C23B3B}
+.conexao-on{background:var(--verde)}
+
 /* saudação do app instalado: mesmo canto do botão de instalar */
 .saudacao-app{display:none}
 @media (max-width:760px){
