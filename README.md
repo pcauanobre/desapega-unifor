@@ -136,3 +136,132 @@ que valida cada camada, está em [docs/seguranca.md](docs/seguranca.md).
   push na `main`) com Supabase na nuvem pro banco, autenticação e storage
 - **Domínio:** registrado no Registro.br, DNS apontando pra Vercel, HTTPS
   emitido automaticamente
+
+## Diário de Bordo da IA
+
+### Ferramentas utilizadas
+
+- **Claude Code** no desenvolvimento inteiro: código, banco, migrations e
+  caça a bug
+- **Claude Design** na fase de design, antes de existir código, pra fechar
+  o desenho da landing
+- **ChatGPT** pra gerar imagens usadas na interface
+
+### Estratégia de engenharia de prompts
+
+Meu jeito de trabalhar foi sempre o mesmo. Descrevo o comportamento que eu
+quero como usuário, testo na hora no navegador e volto com print do que não
+ficou bom. O detalhe de implementação fica com a IA. O que entra, como fica
+e quando tá pronto é decisão minha. Três prompts que destravaram partes
+grandes do projeto:
+
+**1. O design da landing, antes de existir código** (Claude Design)
+
+> preciso do design da landing desktop de um marketplace de desapego entre
+> alunos da unifor, chama Desapega Unifor. o aluno anuncia o que não usa
+> mais (livro de calculo, calculadora, jaleco, arduino, movel) pra vender
+> barato ou doar, e outro aluno acha. economia circular no campus, publico
+> jovem, tudo em portugues.
+>
+> a marca é um D azul com uma casinha dentro e a paleta nasce de dois azuis,
+> um vivo e um bem escuro. to mandando as logos e um print de referencia,
+> segue esse estilo de barra azul no topo com busca e seletor de categoria
+> acoplado, mas com cara de marketplace moderno e não de sistema academico.
+>
+> precisa ter header com os botoes de anunciar e buscar, hero, faixa de
+> estatistica com numero ficticio, chips de categoria, vitrine dos ultimos
+> itens (card com foto, titulo, categoria e preço, ou tag verde de DOAÇÃO),
+> como funciona em 3 passos e footer.
+>
+> e não monta essa lista em cima só pra me obedecer, pensa o layout tambem.
+> se faltar alguma seção ou tiver coisa na ordem errada, muda e me diz o que
+> mudou. tipografia, espaçamento e animação por tua conta, me surpreende.
+
+Foi o único prompt longo do projeto e foi de propósito, porque eu queria o
+desenho fechado antes de escrever a primeira linha. O trecho que mais rendeu
+foi o último, mandando ela pensar o layout e mudar a ordem das seções se
+achasse melhor. O mockup que saiu de lá virou a referência visual que o
+código deste repositório segue.
+
+**2. O PWA com service worker e cache offline** (Claude Code)
+
+> faça agora o pwa com o icone da unifor e um botao que ja pede pra
+> instalar, com cache offline (manifest completo e service worker). pode
+> olhar o pwa daquele meu outro projeto aqui na desktop como referencia, mas
+> la é vite com plugin e aqui é next, então adapta em vez de copiar, o
+> service worker escreve à mão. quero que o app abra offline com o que ja
+> foi visto, e no fim me explica quais estrategias de cache vc usou e por
+> que, porque isso eu vou ter que defender depois.
+
+Eu já tinha feito PWA num projeto anterior, então mandei usar aquele como
+ponto de partida, avisando que a arquitetura era outra. Saiu o
+`public/sw.js` com as três estratégias que estão nele hoje: o casco do app
+pré-cacheado na instalação, arquivo estático servido do cache primeiro, e
+navegação e API indo na rede primeiro com o cache de reserva quando a rede
+falha. A explicação de cada escolha eu pedi junto, porque eu ia ter que
+defender isso depois.
+
+**3. A auditoria de segurança** (Claude Code)
+
+> preciso de uma verificação completa de segurança antes de botar isso no
+> ar. ve se tem coisa exposta que não devia (chave, dado de usuario,
+> telefone), poe rate limit na api, e testa se um invasor logado numa conta
+> consegue pegar ou alterar dado de outra. e não me responde só que ta
+> seguro, quero prova: cria duas contas de verdade, ataca uma pela outra,
+> roda a mesma bateria como visitante deslogado e me mostra o resultado de
+> cada tentativa. o que passar, corrige e roda de novo.
+
+Aqui eu pedi prova em vez de código. Saiu um script que cria duas contas de
+verdade e ataca uma pela outra (editar anúncio alheio, apagar, forjar o
+autor, ler tabela que não devia), repetindo a bateria inteira como visitante
+deslogado. As 19 tentativas voltaram negadas pelo banco. Entrou rate limit
+por IP e os headers de segurança, e apareceu um furo que eu não tinha visto:
+o telefone dos anunciantes era coluna pública da tabela, então uma
+requisição só baixava a agenda inteira do site. Hoje o contato sai um por
+vez, por uma função do banco. O teste completo está em
+[docs/seguranca.md](docs/seguranca.md).
+
+### Reflexão crítica
+
+**A IA me disse que o email tinha sido enviado, e não tinha.**
+
+Depois de montar a recuperação de senha por código, ela testou e me avisou
+que estava funcionando. Esperei, olhei a caixa de entrada e o spam, e nada
+chegou. Voltei com o que eu tinha visto:
+
+> o email não chegou. testei com o meu proprio email, esperei uns minutos e
+> olhei spam e lixeira, não veio nada. so que a tela mostrou a mensagem
+> verde de enviado normal, então a rota ta respondendo sucesso sem o email
+> sair. da uma olhada no log do servidor em vez de olhar so o status da
+> resposta, quero saber o que o serviço de email devolveu de verdade
+
+O log tinha a resposta. O serviço de email recusava com 401 porque minha
+conta lá bloqueia envio partindo de IP desconhecido, e o erro da IA foi a
+rota engolir essa falha e responder 200 do mesmo jeito. Liberei o IP no
+painel e a rota passou a devolver erro de verdade quando o envio falha. Se
+eu tivesse aceitado o "testei e passou", o fluxo ia pro ar quebrado e quem
+esquecesse a senha ficava sem conta.
+
+**O cache offline guardou tudo menos as fotos.**
+
+Com o service worker pronto eu liguei o modo avião pra testar, e a vitrine
+abriu offline com todos os quadros de imagem vazios. Descrevi o que apareceu
+e o que não apareceu:
+
+> o cache offline funcionou mas guardou só uma parte. liguei o modo aviao
+> depois de navegar e a vitrine abriu certinho com os textos, so que todos
+> os quadros de foto ficaram vazios. as fotos ficam no storage do supabase,
+> que é outro dominio, então ve se o service worker ta jogando fora a
+> resposta delas na hora de guardar
+
+A causa era um detalhe do service worker que eu não conhecia. Foto que vem
+de outro domínio chega como resposta "opaca", com o campo `ok` valendo
+`false` mesmo estando perfeita, porque o navegador esconde o conteúdo dela
+por segurança. O código só guardava no cache resposta com `ok` verdadeiro,
+então descartava justo as fotos. Passou a aceitar resposta opaca também, e o
+offline ficou completo.
+
+Nem sempre eu percebo lendo o código. Percebo rodando, porque eu sei o que o
+sistema tem que fazer e vejo na hora quando ele não faz. Aí eu isolo onde
+quebrou e volto descrevendo o comportamento errado, em vez de só mandar
+consertar.
