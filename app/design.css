@@ -1125,13 +1125,17 @@ body{background:var(--bg)}
   .login{min-height:100vh}
   .login-cardwrap{padding:36px 16px;justify-content:center}
   .login-card,.login-body .login-card{width:100%;padding:26px 20px}
-  /* wizard no celular: cabe inteiro entre o header e a bottom nav, sem
-     scroll de página. Passo grande rola DENTRO do card, com os botões
-     sempre visíveis embaixo. */
-  .wiz-fundo{padding:10px 12px;height:calc(100dvh - 78px - env(safe-area-inset-bottom));
-    min-height:0;align-items:stretch;overflow:hidden}
-  .wiz-card{padding:18px 16px;width:100%;max-height:100%;display:flex;flex-direction:column;
+  /* wizard no celular: a página inteira vira uma coluna de 100dvh, então
+     o card fica com EXATAMENTE o que sobra depois do header e da bottom
+     nav (sem chutar altura). Passo grande rola dentro do card. */
+  .pagina-wizard{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+  .pagina-wizard .wiz-fundo{flex:1;min-height:0;height:auto}
+  .wiz-fundo{padding:10px 12px;align-items:stretch;overflow:hidden}
+  .wiz-card{padding:16px 15px;width:100%;max-height:100%;display:flex;flex-direction:column;
     overflow:hidden}
+  .wiz-topo{margin-bottom:8px}
+  .wiz-passo{padding-top:2px}
+  .wiz-corpo{margin-top:12px;gap:12px}
   .wiz-card .wiz-passo{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
   .wiz-card .wiz-acoes{margin-top:14px;flex:none}
   .wiz-titulo{font-size:20px}
