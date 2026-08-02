@@ -44,7 +44,6 @@ export function HeaderBusca({
      PRA SEMPRE: se ela voltasse, o header inteiro refazia o fade ao fechar. */
   const [jaAbriu, setJaAbriu] = useState(false);
   const [voltando, setVoltando] = useState(false);
-  const [pesquisou, setPesquisou] = useState(false);
   const [tagEscolhida, setTagEscolhida] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
   const { saindo, fecharCom } = useSaidaAnimada();
@@ -55,14 +54,6 @@ export function HeaderBusca({
       .auth.getSession()
       .then(({ data }) => setLogado(Boolean(data.session)));
   }, []);
-
-  /* Pesquisou uma vez (chip, tag, texto ou filtro)? O ícone de filtros
-     fica de vez, mesmo voltando pra "Todos". */
-  useEffect(() => {
-    if (categoria !== "" || busca.trim() !== "" || filtrosAtivos) {
-      setPesquisou(true);
-    }
-  }, [categoria, busca, filtrosAtivos]);
 
   /* FLIP: mede onde a barra está no header, fixa ela no meio da tela e
      anima a viagem entre os dois pontos (a barra literalmente se move). */
@@ -102,7 +93,6 @@ export function HeaderBusca({
 
   /* Tag só marca; quem dispara a busca é o Confirmar (ou o Enter). */
   function confirmar() {
-    setPesquisou(true);
     onCategoria(tagEscolhida);
     onBuscar(tagEscolhida);
     fecharBusca();
@@ -150,7 +140,6 @@ export function HeaderBusca({
           }
           onSubmit={(e) => {
             e.preventDefault();
-            setPesquisou(true);
             if (focada) confirmar();
             else onBuscar();
           }}
@@ -173,7 +162,7 @@ export function HeaderBusca({
             onChange={(e) => onBusca(e.target.value)}
             onFocus={abrirBusca}
           />
-          {onFiltros && pesquisou && (
+          {onFiltros && (
             <button
               type="button"
               className={"busca-filtros" + (filtrosAtivos ? " ativo" : "")}
