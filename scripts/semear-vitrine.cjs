@@ -89,11 +89,51 @@ const NOVOS = [
   ["outros-cafeteira", "Cafeteira francesa 350ml", "Vidro sem trinca e filtro novo. Café de madrugada garantido.", "Outros", "Como novo", null, true, "Cantina central", "Sofia Duarte"],
 ];
 
-async function paraWebp(arquivo) {
-  return sharp(arquivo)
-    .resize(1280, 960, { fit: "cover", position: "attention" })
-    .webp({ quality: 82 })
-    .toBuffer();
+/* Gera 3 enquadramentos da MESMA foto do produto: aberta, aproximada e
+   um corte lateral. Anúncio de verdade tem várias fotos do item, e assim
+   o carrossel e o visualizador têm o que mostrar sem inventar produto. */
+async function variacoes(arquivo) {
+  const base = sharp(arquivo).rotate();
+  const { width = 1280, height = 960 } = await base.metadata();
+  const lado = Math.min(width, height);
+
+  const cortes = [
+    null, // 1: foto inteira
+    // 2: aproximada no centro (75% da área)
+    {
+      left: Math.round((width - lado * 0.75) / 2),
+      top: Math.round((height - lado * 0.75) / 2),
+      width: Math.round(lado * 0.75),
+      height: Math.round(lado * 0.75),
+    },
+    // 3: recorte deslocado, como quem fotografa de outro ângulo
+    {
+      left: Math.round((width - lado * 0.82) * 0.72),
+      top: Math.round((height - lado * 0.82) * 0.35),
+      width: Math.round(lado * 0.82),
+      height: Math.round(lado * 0.82),
+    },
+  ];
+
+  const saidas = [];
+  for (const corte of cortes) {
+    let img = sharp(arquivo).rotate();
+    if (corte && corte.width > 80 && corte.height > 80) {
+      img = img.extract({
+        left: Math.max(0, corte.left),
+        top: Math.max(0, corte.top),
+        width: Math.min(corte.width, width),
+        height: Math.min(corte.height, height),
+      });
+    }
+    saidas.push(
+      await img
+        .resize(1280, 960, { fit: "cover", position: "attention" })
+        .webp({ quality: 82 })
+        .toBuffer(),
+    );
+  }
+  return saidas;
 }
 
 (async () => {
@@ -132,29 +172,50 @@ async function paraWebp(arquivo) {
     /* sobe todas as fotos de um item (-1, -2, -3) e devolve as URLs */
     async function subirFotos(base) {
       const urls = [];
+      // A foto -1 é a de verdade; dela saem os 3 enquadramentos. Se o
+      // Pedro salvar -2 e -3 na pasta, elas entram no lugar das geradas.
+      const original = ["jpg", "jpeg", "png", "webp"]
+        .map((ext) => path.join(PASTA, `${base}-1.${ext}`))
+        .find((p) => fs.existsSync(p));
+      if (!original) return urls;
+      const geradas = await variacoes(original);
+
       for (const n of [1, 2, 3]) {
-        const achado = ["jpg", "jpeg", "png", "webp"]
+        const proprio = ["jpg", "jpeg", "png", "webp"]
           .map((ext) => path.join(PASTA, `${base}-${n}.${ext}`))
           .find((p) => fs.existsSync(p));
-        if (!achado) continue;
-        const buf = await paraWebp(achado);
+        const buf =
+          n === 1 || !proprio
+            ? geradas[n - 1]
+            : (await variacoes(proprio))[0];
         // A versão entra no NOME do arquivo: trocar a foto gera uma URL
         // nova, e o cache do navegador (e do service worker, que guarda
         // imagem com estratégia cache-primeiro) não entrega a antiga.
         const versao = crypto.createHash("sha1").update(buf).digest("hex").slice(0, 8);
         const caminho = `${uid}/demo/${base}-${n}-${versao}.webp`;
         // Limpa versões anteriores desta mesma foto, pra não virar lixo.
+        // limit alto de propósito: o padrão do list é 100 e a pasta já
+        // passa disso, o que fazia a versão antiga escapar da limpeza.
         const { data: existentes } = await sb.storage
           .from("fotos")
-          .list(`${uid}/demo`, { search: `${base}-${n}-` });
+          .list(`${uid}/demo`, { limit: 1000 });
         const velhas = (existentes ?? [])
+          .filter((f) => f.name.startsWith(`${base}-${n}-`))
           .map((f) => `${uid}/demo/${f.name}`)
           .filter((c) => c !== caminho);
         if (velhas.length) await sb.storage.from("fotos").remove(velhas);
-        const { error } = await sb.storage
-          .from("fotos")
-          .upload(caminho, buf, { contentType: "image/webp" });
-        if (error) throw new Error(`upload ${base}-${n}: ${error.message}`);
+
+        // Mesmo conteúdo gera a mesma assinatura: se o arquivo já está lá,
+        // não há o que subir (e subir de novo daria "resource exists").
+        const jaEsta = (existentes ?? []).some(
+          (f) => `${uid}/demo/${f.name}` === caminho,
+        );
+        if (!jaEsta) {
+          const { error } = await sb.storage
+            .from("fotos")
+            .upload(caminho, buf, { contentType: "image/webp" });
+          if (error) throw new Error(`upload ${base}-${n}: ${error.message}`);
+        }
         urls.push(sb.storage.from("fotos").getPublicUrl(caminho).data.publicUrl);
       }
       return urls;

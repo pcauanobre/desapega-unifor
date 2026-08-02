@@ -28,13 +28,6 @@ type Props = {
 export function FotoTelaCheia({ fotos, titulo, inicial, onFechar }: Props) {
   const [atual, setAtual] = useState(inicial);
   const toqueX = useRef<number | null>(null);
-  /* O portal precisa do document, que não existe no servidor: só depois
-     que o efeito rodou (ou seja, já no navegador) é que ele monta. */
-  const [destino, setDestino] = useState<HTMLElement | null>(null);
-
-  useEffect(() => {
-    setDestino(document.body);
-  }, []);
 
   useEffect(() => {
     function tecla(e: KeyboardEvent) {
@@ -46,7 +39,10 @@ export function FotoTelaCheia({ fotos, titulo, inicial, onFechar }: Props) {
     return () => document.removeEventListener("keydown", tecla);
   }, [fotos.length, onFechar]);
 
-  if (!destino) return null;
+  /* O portal precisa do document, que não existe na renderização do
+     servidor. Na prática o componente só monta depois de um clique, mas
+     a checagem mantém a renderização no servidor segura. */
+  if (typeof document === "undefined") return null;
 
   const anterior = () => setAtual((i) => (i - 1 + fotos.length) % fotos.length);
   const proxima = () => setAtual((i) => (i + 1) % fotos.length);
@@ -117,6 +113,6 @@ export function FotoTelaCheia({ fotos, titulo, inicial, onFechar }: Props) {
         <footer className="visor-tiras" />
       )}
     </div>,
-    destino,
+    document.body,
   );
 }
