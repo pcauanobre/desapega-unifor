@@ -354,12 +354,16 @@ body{background:var(--bg)}
   background:rgba(8,14,30,.42);color:#fff;display:flex;align-items:center;justify-content:center;
   backdrop-filter:blur(4px);opacity:0;transition:opacity 180ms ease}
 .pd-foto-abre:hover .pd-lupa,.pd-foto-abre:focus-visible .pd-lupa{opacity:1}
-.fs-overlay{position:fixed;inset:0;z-index:140;background:rgba(4,9,20,.94);display:flex;
-  align-items:center;justify-content:center;padding:64px 20px 108px;
+/* Espaço IGUAL em cima e embaixo: a foto fica no centro exato da tela
+   (as miniaturas flutuam dentro da faixa de baixo, sem empurrar nada). */
+.fs-overlay{position:fixed;inset:0;z-index:140;background:rgba(2,5,12,.97);
+  backdrop-filter:blur(6px);display:grid;place-items:center;padding:92px 20px;
   animation:fadeIn 200ms ease both}
-.fs-palco{max-width:min(1100px,100%);max-height:100%;display:flex;align-items:center;justify-content:center}
+.fs-palco{max-width:min(1150px,100%);max-height:100%;display:flex;align-items:center;
+  justify-content:center;animation:fsEntra 300ms var(--ease) both}
 .fs-palco img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;
-  border-radius:10px;animation:fadeIn 240ms ease both}
+  border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+@keyframes fsEntra{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
 .fs-fechar{position:absolute;top:16px;right:16px;z-index:2;width:44px;height:44px;border-radius:50%;
   border:none;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;
   justify-content:center;cursor:pointer;transition:background 160ms ease}
@@ -1193,12 +1197,12 @@ body{background:var(--bg)}
   .wiz-card{padding:16px 15px;width:100%;max-height:100%;display:flex;flex-direction:column;
     overflow:hidden}
   /* tela cheia no celular: setas menores, miniaturas mais baixas */
-  .fs-overlay{padding:56px 8px 88px}
+  .fs-overlay{padding:76px 10px}
   .fs-seta{width:40px;height:40px}
   .fs-esq{left:6px}
   .fs-dir{right:6px}
   .fs-thumb{width:50px;height:40px}
-  .fs-thumbs{justify-content:flex-start;bottom:16px}
+  .fs-thumbs{justify-content:flex-start;bottom:calc(14px + env(safe-area-inset-bottom))}
   .pd-lupa,.card-lupa{opacity:1}
 
   .wiz-topo{margin-bottom:8px}
