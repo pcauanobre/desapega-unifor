@@ -53,6 +53,7 @@ export default function Entrar() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [senha2, setSenha2] = useState("");
   const [verSenha, setVerSenha] = useState(false);
   const [aceite, setAceite] = useState(false);
   const [enviando, setEnviando] = useState(false);
@@ -74,6 +75,7 @@ export default function Entrar() {
     setSucesso(null);
     setCodigo("");
     setSenha("");
+    setSenha2("");
     setEtapaRec("email");
     setModo("recuperar");
   }
@@ -84,6 +86,7 @@ export default function Entrar() {
     setSucesso(null);
     setCodigo("");
     setSenha("");
+    setSenha2("");
     setModo("login");
   }
 
@@ -175,6 +178,7 @@ export default function Entrar() {
 
       const problema = problemaDaSenha(senha);
       if (problema) return setErro(problema);
+      if (senha !== senha2) return setErro("As senhas não conferem.");
       setEnviando(true);
       const r = await fetch("/api/senha/confirmar", {
         method: "POST",
@@ -205,6 +209,7 @@ export default function Entrar() {
       // Senha nova segue a régua do projeto (8+, letra e número).
       const problema = problemaDaSenha(senha);
       if (problema) return setErro(problema);
+      if (senha !== senha2) return setErro("As senhas não conferem.");
       if (!aceite) return setErro("Precisa aceitar as regras do desapego.");
 
       // A conta só nasce depois do código: prova de posse do email.
@@ -395,6 +400,14 @@ export default function Entrar() {
                     </label>
                   )}
 
+                  {etapaRec === "senha" && (
+                    <label className="field">
+                      <span className="field-label">Confirmar nova senha</span>
+                      <input type={verSenha ? "text" : "password"} placeholder="Repita a senha"
+                        value={senha2} onChange={(e) => setSenha2(e.target.value)} />
+                    </label>
+                  )}
+
                   {erro && <p className="login-erro">{erro}</p>}
 
                   <button className="btn btn-primary btn-block" type="submit">
@@ -444,6 +457,12 @@ export default function Entrar() {
                   </button>
                 </span>
                 {modo === "register" && <MedidorSenha senha={senha} />}
+              </label>
+
+              <label className="field only-register">
+                <span className="field-label">Confirmar senha</span>
+                <input type={verSenha ? "text" : "password"} placeholder="Repita a senha"
+                  value={senha2} onChange={(e) => setSenha2(e.target.value)} />
               </label>
 
               <label className="check only-register">

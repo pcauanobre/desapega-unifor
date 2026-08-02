@@ -41,8 +41,8 @@ export function PopupCodigo({
       <div className="aviso-card" style={{ textAlign: "center" }}>
         <h2 className="aviso-titulo">Digite o código</h2>
         <p className="aviso-p" style={{ textAlign: "center" }}>
-          Enviamos um código de 6 dígitos pra <b>{email}</b>. Cola ele aqui
-          que o resto é com a gente.
+          Enviamos um código de 6 dígitos para <b>{email}</b>. Informe o
+          código abaixo para continuar.
         </p>
         <input
           className="otp-input"
