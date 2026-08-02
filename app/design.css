@@ -343,6 +343,13 @@ body{background:var(--bg)}
 
 /* ---------- foto em tela cheia (lightbox do produto) ---------- */
 .pd-foto-abre{cursor:zoom-in;outline:none}
+/* lupa do card: abre a foto em tela cheia sem sair da vitrine */
+.card-lupa{position:absolute;top:10px;right:10px;z-index:4;width:30px;height:30px;border-radius:50%;
+  border:none;background:rgba(8,14,30,.42);color:#fff;display:flex;align-items:center;
+  justify-content:center;cursor:zoom-in;backdrop-filter:blur(4px);
+  opacity:0;transition:opacity 180ms ease,background 160ms ease}
+.card:hover .card-lupa,.card-lupa:focus-visible{opacity:1}
+.card-lupa:hover{background:rgba(8,14,30,.72)}
 .pd-lupa{position:absolute;top:12px;right:12px;z-index:3;width:34px;height:34px;border-radius:50%;
   background:rgba(8,14,30,.42);color:#fff;display:flex;align-items:center;justify-content:center;
   backdrop-filter:blur(4px);opacity:0;transition:opacity 180ms ease}
@@ -1192,7 +1199,7 @@ body{background:var(--bg)}
   .fs-dir{right:6px}
   .fs-thumb{width:50px;height:40px}
   .fs-thumbs{justify-content:flex-start;bottom:16px}
-  .pd-lupa{opacity:1}
+  .pd-lupa,.card-lupa{opacity:1}
 
   .wiz-topo{margin-bottom:8px}
   .wiz-passo{padding-top:2px}
