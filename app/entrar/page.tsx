@@ -37,6 +37,15 @@ const TEXTOS = {
 /* Só aluno da Unifor cria conta: o cadastro exige o email institucional. */
 const DOMINIO_UNIFOR = "@edu.unifor.br";
 
+/* Perfis oficiais da universidade (rodapé de unifor.br). */
+const REDES_UNIFOR = [
+  { nome: "Facebook", url: "https://www.facebook.com/uniforoficial/", Icone: FacebookIcon, tamanho: 20 },
+  { nome: "Instagram", url: "https://www.instagram.com/uniforcomunica/", Icone: InstagramIcon, tamanho: 20 },
+  { nome: "YouTube", url: "https://www.youtube.com/user/uniforcomunica", Icone: YouTubeIcon, tamanho: 22 },
+  { nome: "X", url: "https://twitter.com/uniforoficial", Icone: XIcon, tamanho: 17 },
+  { nome: "LinkedIn", url: "https://pt.linkedin.com/school/university-of-fortaleza/", Icone: LinkedInIcon, tamanho: 20 },
+];
+
 /**
  * O QUE: a tela de acesso no layout do design (foto do campus + card),
  *        com login e cadastro REAIS no Supabase Auth por email. O cadastro
@@ -340,15 +349,14 @@ export default function Entrar() {
               </a>
             </div>
             <div className="login-social">
+              {/* perfis oficiais, tirados do rodapé do site da Unifor */}
               <span className="icones">
-                <span className="ico"><FacebookIcon sx={{ fontSize: 20 }} /></span>
-                <a className="ico" href="https://www.instagram.com/unifor"
-                  target="_blank" rel="noopener noreferrer" title="Instagram da Unifor">
-                  <InstagramIcon sx={{ fontSize: 20 }} />
-                </a>
-                <span className="ico"><YouTubeIcon sx={{ fontSize: 22 }} /></span>
-                <span className="ico"><XIcon sx={{ fontSize: 17 }} /></span>
-                <span className="ico"><LinkedInIcon sx={{ fontSize: 20 }} /></span>
+                {REDES_UNIFOR.map(({ nome, url, Icone, tamanho }) => (
+                  <a key={nome} className="ico" href={url} title={`${nome} da Unifor`}
+                    target="_blank" rel="noopener noreferrer" aria-label={nome}>
+                    <Icone sx={{ fontSize: tamanho }} />
+                  </a>
+                ))}
               </span>
               <span>Projeto Desapega Unifor | Universidade de Fortaleza</span>
             </div>
