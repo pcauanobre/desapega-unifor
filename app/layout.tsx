@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   title: "Desapega Unifor",
   description:
     "Marketplace de desapego entre estudantes do campus: anuncie o que você não usa mais e ache o que precisa, de aluno pra aluno.",
-  manifest: "/manifest.webmanifest",
+  manifest: "/manifest.json",
   icons: { icon: "/icone-192.png", apple: "/icone-192.png" },
   appleWebApp: { capable: true, title: "Desapega Unifor" },
 };

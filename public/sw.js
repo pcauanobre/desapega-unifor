@@ -14,11 +14,11 @@
  * A versão participa do nome do cache: mudar a versão descarta os caches
  * antigos no activate, sem sobrar lixo de deploy passado.
  */
-const VERSAO = "desapega-v1";
+const VERSAO = "desapega-v2";
 const CASCO = [
   "/",
   "/produtos",
-  "/manifest.webmanifest",
+  "/manifest.json",
   "/icone-192.png",
   "/icone-512.png",
   "/mark-blue.svg",
