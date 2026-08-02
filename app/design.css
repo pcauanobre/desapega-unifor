@@ -303,6 +303,17 @@ body{background:var(--bg)}
 .dl-op.marcada{color:var(--azul)}
 .dl-op svg{color:var(--azul)}
 
+/* ---------- medidor de força da senha ---------- */
+.ms{display:flex;align-items:center;gap:10px;margin-top:9px}
+.ms-barras{display:flex;gap:4px;flex:1}
+.ms-barras i{height:4px;flex:1;border-radius:99px;background:#E4EAF4;transition:background 220ms ease}
+.ms-rotulo{font-size:11.5px;font-weight:700;flex:none}
+.ms-0 .ms-barras i.on,.ms-0 .ms-rotulo{background:#D64545;color:#D64545}
+.ms-1 .ms-barras i.on,.ms-1 .ms-rotulo{background:#E8A13C;color:#E8A13C}
+.ms-2 .ms-barras i.on,.ms-2 .ms-rotulo{background:#2E9E6B;color:#2E9E6B}
+.ms-3 .ms-barras i.on,.ms-3 .ms-rotulo{background:var(--verde);color:var(--verde)}
+.ms .ms-rotulo{background:none}
+
 /* ---------- estado vazio dos meus anúncios ---------- */
 .ma-vazio{margin-top:28px;border:1.5px dashed var(--borda-input);border-radius:18px;background:#fff;
   padding:52px 28px 46px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;

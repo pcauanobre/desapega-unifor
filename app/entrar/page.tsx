@@ -11,6 +11,8 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import XIcon from "@mui/icons-material/X";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { createClient } from "@/lib/supabase/client";
+import { problemaDaSenha } from "@/lib/senha";
+import { MedidorSenha } from "@/components/MedidorSenha";
 
 const TEXTOS = {
   login: {
@@ -54,8 +56,9 @@ export default function Entrar() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [sucesso, setSucesso] = useState<string | null>(null);
-  /* Recuperação em duas etapas: pede o email, depois código + nova senha. */
-  const [etapaRec, setEtapaRec] = useState<"email" | "codigo">("email");
+  /* Recuperação em TRÊS etapas (estrutura do AgenHub): email → código →
+     e só quem confirma o código chega na tela de nova senha. */
+  const [etapaRec, setEtapaRec] = useState<"email" | "codigo" | "senha">("email");
   const [codigo, setCodigo] = useState("");
   const t = TEXTOS[modo];
 
@@ -104,8 +107,25 @@ export default function Entrar() {
         setEtapaRec("codigo");
         return;
       }
-      if (!/^\d{6}$/.test(codigo)) return setErro("Digite o código de 6 dígitos do email.");
-      if (senha.length < 6) return setErro("A nova senha precisa ter pelo menos 6 caracteres.");
+
+      if (etapaRec === "codigo") {
+        if (!/^\d{6}$/.test(codigo)) return setErro("Digite o código de 6 dígitos do email.");
+        setEnviando(true);
+        const r = await fetch("/api/senha/conferir", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email.trim(), otp: codigo }),
+        });
+        const corpo = await r.json();
+        setEnviando(false);
+        if (!r.ok) return setErro(corpo.erro ?? "Não deu pra conferir agora.");
+        setSucesso("Código confirmado! Agora escolha a nova senha.");
+        setEtapaRec("senha");
+        return;
+      }
+
+      const problema = problemaDaSenha(senha);
+      if (problema) return setErro(problema);
       setEnviando(true);
       const r = await fetch("/api/senha/confirmar", {
         method: "POST",
@@ -133,6 +153,9 @@ export default function Entrar() {
           `Só dá pra criar conta com o email institucional da Unifor (nome${DOMINIO_UNIFOR}).`,
         );
       }
+      // Senha nova segue a régua do projeto (8+, letra e número).
+      const problema = problemaDaSenha(senha);
+      if (problema) return setErro(problema);
       if (!aceite) return setErro("Precisa aceitar as regras do desapego.");
     }
 
@@ -233,35 +256,40 @@ export default function Entrar() {
             <div className="login-fields">
               {modo === "recuperar" ? (
                 <>
-                  <label className="field">
-                    <span className="field-label">Email</span>
-                    <input type="email" value={email} placeholder="Email da sua conta"
-                      disabled={etapaRec === "codigo"}
-                      onChange={(e) => setEmail(e.target.value)} />
-                  </label>
+                  {etapaRec !== "senha" && (
+                    <label className="field">
+                      <span className="field-label">Email</span>
+                      <input type="email" value={email} placeholder="Email da sua conta"
+                        disabled={etapaRec === "codigo"}
+                        onChange={(e) => setEmail(e.target.value)} />
+                    </label>
+                  )}
 
                   {etapaRec === "codigo" && (
-                    <>
-                      <label className="field">
-                        <span className="field-label">Código do email</span>
-                        <input type="text" inputMode="numeric" maxLength={6}
-                          placeholder="000000" value={codigo}
-                          onChange={(e) => setCodigo(e.target.value.replace(/\D/g, ""))} />
-                      </label>
-                      <label className="field">
-                        <span className="field-label">Nova senha</span>
-                        <span className="field-pwd">
-                          <input type={verSenha ? "text" : "password"} placeholder="Nova senha"
-                            value={senha} onChange={(e) => setSenha(e.target.value)} />
-                          <button type="button" className="pwd-toggle" title="Mostrar senha"
-                            onClick={() => setVerSenha(!verSenha)}>
-                            {verSenha
-                              ? <VisibilityOffIcon sx={{ fontSize: 19 }} />
-                              : <VisibilityIcon sx={{ fontSize: 19 }} />}
-                          </button>
-                        </span>
-                      </label>
-                    </>
+                    <label className="field">
+                      <span className="field-label">Código do email</span>
+                      <input type="text" inputMode="numeric" maxLength={6}
+                        placeholder="000000" value={codigo} autoFocus
+                        onChange={(e) => setCodigo(e.target.value.replace(/\D/g, ""))} />
+                    </label>
+                  )}
+
+                  {etapaRec === "senha" && (
+                    <label className="field">
+                      <span className="field-label">Nova senha</span>
+                      <span className="field-pwd">
+                        <input type={verSenha ? "text" : "password"} autoFocus
+                          placeholder="Mínimo 8, com letra e número"
+                          value={senha} onChange={(e) => setSenha(e.target.value)} />
+                        <button type="button" className="pwd-toggle" title="Mostrar senha"
+                          onClick={() => setVerSenha(!verSenha)}>
+                          {verSenha
+                            ? <VisibilityOffIcon sx={{ fontSize: 19 }} />
+                            : <VisibilityIcon sx={{ fontSize: 19 }} />}
+                        </button>
+                      </span>
+                      <MedidorSenha senha={senha} />
+                    </label>
                   )}
 
                   {erro && <p className="login-erro">{erro}</p>}
@@ -273,7 +301,9 @@ export default function Entrar() {
                         ? "Enviando…"
                         : etapaRec === "email"
                           ? "Enviar código"
-                          : "Redefinir senha"}
+                          : etapaRec === "codigo"
+                            ? "Confirmar código"
+                            : "Redefinir senha"}
                     </span>
                   </button>
 
@@ -316,7 +346,8 @@ export default function Entrar() {
               <label className="field">
                 <span className="field-label">Senha</span>
                 <span className="field-pwd">
-                  <input type={verSenha ? "text" : "password"} placeholder="Senha"
+                  <input type={verSenha ? "text" : "password"}
+                    placeholder={modo === "register" ? "Mínimo 8, com letra e número" : "Senha"}
                     value={senha} onChange={(e) => setSenha(e.target.value)} />
                   <button type="button" className="pwd-toggle" title="Mostrar senha"
                     onClick={() => setVerSenha(!verSenha)}>
@@ -325,6 +356,7 @@ export default function Entrar() {
                       : <VisibilityIcon sx={{ fontSize: 19 }} />}
                   </button>
                 </span>
+                {modo === "register" && <MedidorSenha senha={senha} />}
               </label>
 
               <label className="check only-register">

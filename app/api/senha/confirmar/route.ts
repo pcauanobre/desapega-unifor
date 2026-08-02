@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { problemaDaSenha } from "@/lib/senha";
 
 /**
  * O QUE: recebe { email, otp, senha } e, se o código bater, troca a senha
@@ -28,11 +29,9 @@ export async function POST(req: NextRequest) {
   if (!/.+@.+\..+/.test(email) || !/^\d{6}$/.test(otp)) {
     return NextResponse.json({ erro: ERRO_GENERICO }, { status: 400 });
   }
-  if (senha.length < 6 || senha.length > 72) {
-    return NextResponse.json(
-      { erro: "A nova senha precisa ter pelo menos 6 caracteres." },
-      { status: 400 },
-    );
+  const problema = problemaDaSenha(senha);
+  if (problema) {
+    return NextResponse.json({ erro: problema }, { status: 400 });
   }
 
   const pg = db();
