@@ -143,8 +143,8 @@ que valida cada camada, está em [docs/seguranca.md](docs/seguranca.md).
 
 - **Claude Code** no desenvolvimento inteiro: código, banco, migrations e
   caça a bug
-- **Claude no navegador** na fase de design, antes de existir código, pra
-  fechar o desenho da landing
+- **Claude Design** na fase de design, antes de existir código, pra fechar
+  o desenho da landing
 - **ChatGPT** pra gerar imagens usadas na interface
 
 ### Estratégia de engenharia de prompts
@@ -155,7 +155,7 @@ ficou bom. O detalhe de implementação fica com a IA. O que entra, como fica
 e quando tá pronto é decisão minha. Três prompts que destravaram partes
 grandes do projeto:
 
-**1. O design da landing, antes de existir código** (Claude no navegador)
+**1. O design da landing, antes de existir código** (Claude Design)
 
 > preciso do design da landing desktop de um marketplace de desapego entre
 > alunos da unifor, chama Desapega Unifor. o aluno anuncia o que não usa
