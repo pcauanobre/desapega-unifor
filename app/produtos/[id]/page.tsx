@@ -76,7 +76,7 @@ export default function PaginaProduto() {
       {!erro && anuncio && (
         <main className="container pd">
           <div>
-            <Carrossel fotos={fotos} titulo={anuncio.titulo} />
+            <Carrossel fotos={fotos} titulo={anuncio.titulo} demo={anuncio.demo} />
           </div>
 
           <div>

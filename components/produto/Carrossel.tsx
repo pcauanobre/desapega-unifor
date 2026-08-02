@@ -12,7 +12,15 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
  * CHAMA: /produtos/[id].
  * QUEBRA SE: lista de fotos vazia (aí nem renderiza).
  */
-export function Carrossel({ fotos, titulo }: { fotos: string[]; titulo: string }) {
+export function Carrossel({
+  fotos,
+  titulo,
+  demo = false,
+}: {
+  fotos: string[];
+  titulo: string;
+  demo?: boolean;
+}) {
   const [atual, setAtual] = useState(0);
   if (fotos.length === 0) return null;
 
@@ -24,6 +32,7 @@ export function Carrossel({ fotos, titulo }: { fotos: string[]; titulo: string }
       <div className="pd-foto">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img key={atual} src={fotos[atual]} alt={`${titulo}, foto ${atual + 1}`} />
+        {demo && <span className="card-demo mono">DEMO</span>}
         {fotos.length > 1 && (
           <>
             <button className="pd-seta pd-seta-esq" onClick={anterior} aria-label="Foto anterior">

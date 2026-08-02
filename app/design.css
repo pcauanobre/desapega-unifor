@@ -147,6 +147,8 @@ body{background:var(--bg)}
 .card-demo{position:absolute;top:10px;right:10px;z-index:2;background:var(--azul);color:#fff;
   font-size:9.5px;font-weight:700;letter-spacing:.09em;padding:5px 8px;border-radius:6px;
   box-shadow:0 2px 8px rgba(7,28,61,.28)}
+/* na foto grande do produto o selo cresce um ponto */
+.pd-foto .card-demo{top:14px;right:14px;font-size:11px;padding:6px 10px}
 .card-body{padding:14px 4px 4px}
 .card-cat{font-family:var(--mono);font-size:10.5px;color:var(--txt-3);letter-spacing:.06em}
 .card-title{font-family:var(--sora);font-weight:600;font-size:15.5px;line-height:1.32;color:var(--navy);
