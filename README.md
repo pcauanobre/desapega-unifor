@@ -179,19 +179,24 @@ grandes do projeto:
 > segue esse estilo de barra azul no topo com busca e seletor de categoria
 > acoplado, mas com cara de marketplace moderno e não de sistema academico.
 >
-> precisa ter header com os botoes de anunciar e buscar, hero, faixa de
-> estatistica com numero ficticio, chips de categoria, vitrine dos ultimos
-> itens (card com foto, titulo, categoria e preço, ou tag verde de DOAÇÃO),
-> como funciona em 3 passos e footer.
+> o minimo que não pode faltar é header com os botoes de anunciar e buscar,
+> hero, faixa de estatistica com numero ficticio, chips de categoria,
+> vitrine dos ultimos itens (card com foto, titulo, categoria e preço, ou
+> tag verde de DOAÇÃO), como funciona em 3 passos e footer.
 >
-> e não monta essa lista em cima só pra me obedecer, pensa o layout tambem.
-> se faltar alguma seção ou tiver coisa na ordem errada, muda e me diz o que
-> mudou. tipografia, espaçamento e animação por tua conta, me surpreende.
+> mas não quero que vc pegue essa lista e monte ela em cima só pra me
+> obedecer, quero o teu olhar de design em cima dela. pensa a pagina inteira
+> comigo: se faltar seção pra ela fazer sentido, se a ordem estiver errada,
+> se tiver jeito melhor de mostrar a vitrine, muda e me diz o que mudou e
+> por que. tipografia, espaçamento, hierarquia e animação são teus. me
+> surpreende.
 
 Foi o único prompt longo do projeto e foi de propósito, porque eu queria o
-desenho fechado antes de escrever a primeira linha. O trecho que mais rendeu
-foi o último, mandando ela pensar o layout e mudar a ordem das seções se
-achasse melhor. O mockup que saiu de lá virou a referência visual que o
+desenho fechado antes de escrever a primeira linha. Montei ele visando fazer
+a IA do Claude Design pensar, sem mandar um texto extremamente limitado com
+tudo mastigado, então a lista de seções entrou como o mínimo e o resto do
+prompt dá liberdade pra ela mudar o que achar melhor, com a obrigação de me
+dizer o que mudou e por que. O mockup que saiu de lá virou a referência visual que o
 código deste repositório segue.
 
 **2. O PWA com service worker e cache offline** (Claude Code)
@@ -234,43 +239,49 @@ vez, por uma função do banco. O teste completo está em
 
 ### Reflexão crítica
 
-**A IA me disse que o email tinha sido enviado, e não tinha.**
+**Erro 1. A IA me disse que o email tinha sido enviado, e não tinha.**
 
-Depois de montar a recuperação de senha por código, ela testou e me avisou
-que estava funcionando. Esperei, olhei a caixa de entrada e o spam, e nada
-chegou. Voltei com o que eu tinha visto:
+1. **O que ela fez:** montou a recuperação de senha por código, testou e me
+   avisou que estava funcionando. A tela mostrava a confirmação verde e a
+   rota respondia sucesso mesmo quando o envio falhava.
+2. **Como percebi:** esperei, olhei a caixa de entrada e o spam, e nada
+   chegou. Voltei com o que eu tinha visto, sem chutar a causa:
 
-> o email não chegou. testei com o meu proprio email, esperei uns minutos e
-> olhei spam e lixeira, não veio nada. so que a tela mostrou a mensagem
-> verde de enviado normal, então a rota ta respondendo sucesso sem o email
-> sair. da uma olhada no log do servidor em vez de olhar so o status da
-> resposta, quero saber o que o serviço de email devolveu de verdade
+   > o email não chegou. testei com o meu proprio email, esperei uns minutos
+   > e olhei spam e lixeira, não veio nada. so que a tela mostrou a mensagem
+   > verde de enviado normal, então a rota ta respondendo sucesso sem o
+   > email sair. da uma olhada no log do servidor em vez de olhar so o
+   > status da resposta, quero saber o que o serviço de email devolveu de
+   > verdade
 
-O log tinha a resposta. O serviço de email recusava com 401 porque minha
-conta lá bloqueia envio partindo de IP desconhecido, e o erro da IA foi a
-rota engolir essa falha e responder 200 do mesmo jeito. Liberei o IP no
-painel e a rota passou a devolver erro de verdade quando o envio falha. Se
-eu tivesse aceitado o "testei e passou", o fluxo ia pro ar quebrado e quem
-esquecesse a senha ficava sem conta.
+3. **Como guiei:** o log tinha a resposta. O serviço de email recusava com
+   401, porque minha conta lá bloqueia envio partindo de IP desconhecido, e
+   o erro da IA foi a rota engolir essa falha e responder 200 do mesmo
+   jeito. Liberei o IP no painel e a rota passou a devolver erro de verdade
+   quando o envio falha. Se eu tivesse aceitado o "testei e passou", o fluxo
+   ia pro ar quebrado e quem esquecesse a senha ficava sem conta.
 
-**O cache offline guardou tudo menos as fotos.**
+**Erro 2. O cache offline guardou tudo menos as fotos.**
 
-Com o service worker pronto eu liguei o modo avião pra testar, e a vitrine
-abriu offline com todos os quadros de imagem vazios. Descrevi o que apareceu
-e o que não apareceu:
+1. **O que ela fez:** entregou o service worker com o cache offline
+   funcionando. Ele guardava a página e os textos, e descartava todas as
+   fotos dos anúncios sem avisar.
+2. **Como percebi:** liguei o modo avião pra testar e a vitrine abriu
+   offline com todos os quadros de imagem vazios. Descrevi o que apareceu e
+   o que não apareceu:
 
-> o cache offline funcionou mas guardou só uma parte. liguei o modo aviao
-> depois de navegar e a vitrine abriu certinho com os textos, so que todos
-> os quadros de foto ficaram vazios. as fotos ficam no storage do supabase,
-> que é outro dominio, então ve se o service worker ta jogando fora a
-> resposta delas na hora de guardar
+   > o cache offline funcionou mas guardou só uma parte. liguei o modo aviao
+   > depois de navegar e a vitrine abriu certinho com os textos, so que
+   > todos os quadros de foto ficaram vazios. as fotos ficam no storage do
+   > supabase, que é outro dominio, então ve se o service worker ta jogando
+   > fora a resposta delas na hora de guardar
 
-A causa era um detalhe do service worker que eu não conhecia. Foto que vem
-de outro domínio chega como resposta "opaca", com o campo `ok` valendo
-`false` mesmo estando perfeita, porque o navegador esconde o conteúdo dela
-por segurança. O código só guardava no cache resposta com `ok` verdadeiro,
-então descartava justo as fotos. Passou a aceitar resposta opaca também, e o
-offline ficou completo.
+3. **Como guiei:** a causa era um detalhe do service worker que eu não
+   conhecia. Foto que vem de outro domínio chega como resposta "opaca", com
+   o campo `ok` valendo `false` mesmo estando perfeita, porque o navegador
+   esconde o conteúdo dela por segurança. O código só guardava resposta com
+   `ok` verdadeiro, então descartava justo as fotos. Passou a aceitar
+   resposta opaca também, e o offline ficou completo.
 
 Nem sempre eu percebo lendo o código. Percebo rodando, porque eu sei o que o
 sistema tem que fazer e vejo na hora quando ele não faz. Aí eu isolo onde
