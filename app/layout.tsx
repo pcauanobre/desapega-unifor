@@ -4,6 +4,7 @@ import "./globals.css";
 import "./design.css";
 import { BottomNav } from "@/components/BottomNav";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { PwaRegistro } from "@/components/PwaRegistro";
 import { BarraConexao } from "@/components/BarraConexao";
 
@@ -77,8 +78,9 @@ export default function RootLayout({
         <BarraConexao />
         {children}
         <BottomNav />
-        {/* audiência da Vercel: sem cookie e sem dado pessoal */}
+        {/* audiência e velocidade real de quem usa: sem cookie, sem PII */}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
