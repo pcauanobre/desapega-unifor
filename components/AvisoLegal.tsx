@@ -10,22 +10,20 @@ import { useSaidaAnimada } from "@/components/useSaidaAnimada";
  *        fictícios, e remoção de marca sob solicitação.
  * POR QUE: o site usa nome e referências da Unifor como contexto do
  *          exercício; o aviso deixa a natureza do projeto explícita.
- * CHAMA: layout raiz: toda visita vê o aviso, em qualquer página de
- *        entrada, uma vez por sessão do navegador (sessionStorage).
- * QUEBRA SE: nada; sem sessionStorage ele só aparece de novo.
+ * CHAMA: layout raiz: TODO carregamento de página mostra o aviso, em
+ *        qualquer rota (fechar vale só até o próximo F5).
+ * QUEBRA SE: nada; é estático por decisão.
  */
 export function AvisoLegal() {
   const [aberto, setAberto] = useState(false);
   const { saindo, fecharCom } = useSaidaAnimada();
 
   useEffect(() => {
-    if (sessionStorage.getItem("desapega-aviso-visto")) return;
     const id = requestAnimationFrame(() => setAberto(true));
     return () => cancelAnimationFrame(id);
   }, []);
 
   function fechar() {
-    sessionStorage.setItem("desapega-aviso-visto", "1");
     fecharCom(() => setAberto(false));
   }
 
