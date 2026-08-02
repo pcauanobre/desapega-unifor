@@ -35,7 +35,9 @@ export type Anuncio = {
   autor_id: string;
   bloco: string | null;
   fotos: string[] | null;
-  contato: string | null;
+  /* Não vem no SELECT: telefone sai um por vez pela função do banco
+     (migration 017), pra ninguém varrer o contato de todo mundo. */
+  contato?: string | null;
   cliques: number;
   vendido_em: string | null;
   demo: boolean;
@@ -71,4 +73,4 @@ export type PerfilPublico = {
  */
 export const COLUNAS_PUBLICAS =
   "id,titulo,descricao,categoria,preco,is_doacao,imagem_url,estado," +
-  "autor_nome,autor_curso,autor_id,created_at,bloco,fotos,contato,cliques,vendido_em,demo";
+  "autor_nome,autor_curso,autor_id,created_at,bloco,fotos,cliques,vendido_em,demo";
