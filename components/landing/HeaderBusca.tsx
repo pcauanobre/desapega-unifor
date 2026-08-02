@@ -34,6 +34,7 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
   // junto com o primeiro paint do header, sem piscar nem sumir botão.
   const [logado, setLogado] = useState(false);
   const [focada, setFocada] = useState(false);
+  const [voltando, setVoltando] = useState(false);
   const [tagEscolhida, setTagEscolhida] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
   const { saindo, fecharCom } = useSaidaAnimada();
@@ -74,6 +75,9 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
         el.style.transition = "";
       }
       setFocada(false);
+      /* a barra reaparece no topo com um fade in curto */
+      setVoltando(true);
+      setTimeout(() => setVoltando(false), 360);
     });
   }
 
@@ -95,7 +99,7 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
   }, [focada]);
 
   return (
-    <header className="header">
+    <header className={"header" + (focada ? " busca-aberta" : "")}>
       <div className="container header-inner">
         <Brand />
 
@@ -107,7 +111,12 @@ export function HeaderBusca({ categoria, busca, onCategoria, onBusca, onBuscar }
         )}
         <form
           ref={formRef}
-          className={"search" + (focada ? " focada" : "") + (saindo ? " is-saindo" : "")}
+          className={
+            "search" +
+            (focada ? " focada" : "") +
+            (saindo ? " is-saindo" : "") +
+            (voltando ? " voltando" : "")
+          }
           onSubmit={(e) => {
             e.preventDefault();
             if (focada) confirmar();
