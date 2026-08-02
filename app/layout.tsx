@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Sora, Plus_Jakarta_Sans, JetBrains_Mono, Open_Sans } from "next/font/google";
 import "./globals.css";
 import "./design.css";
-import { AvisoLegal } from "@/components/AvisoLegal";
 import { BottomNav } from "@/components/BottomNav";
 import { PwaRegistro } from "@/components/PwaRegistro";
 import { BarraConexao } from "@/components/BarraConexao";
@@ -65,7 +64,6 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <PwaRegistro />
         <BarraConexao />
-        <AvisoLegal />
         {children}
         <BottomNav />
       </body>
