@@ -846,6 +846,8 @@ body{background:var(--bg)}
     background:#fff;color:var(--navy);cursor:pointer;border-left:1px solid var(--borda-2);
     border-radius:0 var(--r-sm) var(--r-sm) 0;animation:fadeIn 240ms ease both}
   .busca-filtros.ativo{color:var(--azul)}
+  /* na busca imersiva quem manda é o card de categorias: o filtro fica */
+  .search.focada .busca-filtros{display:none}
 
   /* busca imersiva: sem botão, o Enter busca; focar escurece o fundo,
      sobe o campo e mostra as categorias como tags de vidro */
