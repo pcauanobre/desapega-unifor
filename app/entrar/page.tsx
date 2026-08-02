@@ -23,6 +23,11 @@ const TEXTOS = {
     sub: "Apenas para alunos Unifor",
     submit: "Criar conta", altHint: "Já tem conta?", altLink: "Entrar",
   },
+  recuperar: {
+    title: "Recupere seu acesso",
+    sub: "A gente envia um código de 6 dígitos pro email da sua conta",
+    submit: "Enviar código", altHint: "Lembrou a senha?", altLink: "Entrar",
+  },
 };
 
 /* Só aluno da Unifor cria conta: o cadastro exige o email institucional. */
@@ -40,7 +45,7 @@ const DOMINIO_UNIFOR = "@edu.unifor.br";
  */
 export default function Entrar() {
   const router = useRouter();
-  const [modo, setModo] = useState<"login" | "register">("login");
+  const [modo, setModo] = useState<"login" | "register" | "recuperar">("login");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -49,7 +54,29 @@ export default function Entrar() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [sucesso, setSucesso] = useState<string | null>(null);
+  /* Recuperação em duas etapas: pede o email, depois código + nova senha. */
+  const [etapaRec, setEtapaRec] = useState<"email" | "codigo">("email");
+  const [codigo, setCodigo] = useState("");
   const t = TEXTOS[modo];
+
+  function irPraRecuperar(e: React.MouseEvent) {
+    e.preventDefault();
+    setErro(null);
+    setSucesso(null);
+    setCodigo("");
+    setSenha("");
+    setEtapaRec("email");
+    setModo("recuperar");
+  }
+
+  function voltarPraLogin(e: React.MouseEvent) {
+    e.preventDefault();
+    setErro(null);
+    setSucesso(null);
+    setCodigo("");
+    setSenha("");
+    setModo("login");
+  }
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
@@ -59,6 +86,40 @@ export default function Entrar() {
 
     if (!/.+@.+\..+/.test(email.trim())) {
       setErro("Escreve um email válido.");
+      return;
+    }
+
+    if (modo === "recuperar") {
+      if (etapaRec === "email") {
+        setEnviando(true);
+        const r = await fetch("/api/senha/enviar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email.trim() }),
+        });
+        const corpo = await r.json();
+        setEnviando(false);
+        if (!r.ok) return setErro(corpo.erro ?? "Não deu pra enviar o código agora.");
+        setSucesso("Se esse email tiver conta, o código chegou na caixa de entrada.");
+        setEtapaRec("codigo");
+        return;
+      }
+      if (!/^\d{6}$/.test(codigo)) return setErro("Digite o código de 6 dígitos do email.");
+      if (senha.length < 6) return setErro("A nova senha precisa ter pelo menos 6 caracteres.");
+      setEnviando(true);
+      const r = await fetch("/api/senha/confirmar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), otp: codigo, senha }),
+      });
+      const corpo = await r.json();
+      setEnviando(false);
+      if (!r.ok) return setErro(corpo.erro ?? "Não deu pra redefinir agora.");
+      setCodigo("");
+      setSenha("");
+      setEtapaRec("email");
+      setModo("login");
+      setSucesso("Senha redefinida! Entre com a nova senha.");
       return;
     }
     if (senha.length < 6) {
@@ -170,6 +231,73 @@ export default function Entrar() {
             {sucesso && <p className="login-ok">{sucesso}</p>}
 
             <div className="login-fields">
+              {modo === "recuperar" ? (
+                <>
+                  <label className="field">
+                    <span className="field-label">Email</span>
+                    <input type="email" value={email} placeholder="Email da sua conta"
+                      disabled={etapaRec === "codigo"}
+                      onChange={(e) => setEmail(e.target.value)} />
+                  </label>
+
+                  {etapaRec === "codigo" && (
+                    <>
+                      <label className="field">
+                        <span className="field-label">Código do email</span>
+                        <input type="text" inputMode="numeric" maxLength={6}
+                          placeholder="000000" value={codigo}
+                          onChange={(e) => setCodigo(e.target.value.replace(/\D/g, ""))} />
+                      </label>
+                      <label className="field">
+                        <span className="field-label">Nova senha</span>
+                        <span className="field-pwd">
+                          <input type={verSenha ? "text" : "password"} placeholder="Nova senha"
+                            value={senha} onChange={(e) => setSenha(e.target.value)} />
+                          <button type="button" className="pwd-toggle" title="Mostrar senha"
+                            onClick={() => setVerSenha(!verSenha)}>
+                            {verSenha
+                              ? <VisibilityOffIcon sx={{ fontSize: 19 }} />
+                              : <VisibilityIcon sx={{ fontSize: 19 }} />}
+                          </button>
+                        </span>
+                      </label>
+                    </>
+                  )}
+
+                  {erro && <p className="login-erro">{erro}</p>}
+
+                  <button className="btn btn-primary btn-block" type="submit">
+                    {enviando && <span className="spinner" />}
+                    <span>
+                      {enviando
+                        ? "Enviando…"
+                        : etapaRec === "email"
+                          ? "Enviar código"
+                          : "Redefinir senha"}
+                    </span>
+                  </button>
+
+                  {etapaRec === "codigo" && (
+                    <p className="login-alt">
+                      <span>Não chegou?</span>{" "}
+                      <a href="#" onClick={(e) => {
+                        e.preventDefault();
+                        setErro(null);
+                        setSucesso(null);
+                        setCodigo("");
+                        setEtapaRec("email");
+                      }}>
+                        Enviar de novo
+                      </a>
+                    </p>
+                  )}
+                  <p className="login-alt">
+                    <span>{t.altHint}</span>{" "}
+                    <a href="#" onClick={voltarPraLogin}>{t.altLink}</a>
+                  </p>
+                </>
+              ) : (
+                <>
               <label className="field only-register">
                 <span className="field-label">Nome completo</span>
                 <input type="text" placeholder="Nome completo" value={nome}
@@ -217,7 +345,7 @@ export default function Entrar() {
 
               <div className="login-row only-login">
                 <label className="check inline"><input type="checkbox" /><span>Continuar conectado</span></label>
-                <a href="#">Esqueci minha senha</a>
+                <a href="#" onClick={irPraRecuperar}>Esqueci minha senha</a>
               </div>
 
               {erro && <p className="login-erro">{erro}</p>}
@@ -233,6 +361,8 @@ export default function Entrar() {
                   {t.altLink}
                 </a>
               </p>
+                </>
+              )}
             </div>
           </form>
         </div>
