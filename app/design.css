@@ -832,12 +832,13 @@ body{background:var(--bg)}
   /* busca imersiva: sem botão, o Enter busca; focar escurece o fundo,
      sobe o campo e mostra as categorias como tags de vidro */
   .search-btn{display:none}
-  /* com a busca aberta o header sobe de camada: o véu passa a cobrir a
-     página INTEIRA, bottom nav incluída */
-  .header.busca-aberta{z-index:90}
+  /* com a busca aberta o header sobe de camada E perde a animação de
+     entrada: o transform dela prendia o véu fixed dentro da caixa do
+     header; sem ele, o escurecimento cobre a página INTEIRA */
+  .header.busca-aberta{z-index:90;animation:none}
   .search.voltando{animation:fadeIn 320ms ease both}
-  .busca-veu{display:block;position:fixed;inset:0;z-index:75;background:rgba(5,15,36,.66);
-    backdrop-filter:blur(4px);animation:fadeIn 240ms ease both}
+  .busca-veu{display:block;position:fixed;inset:0;z-index:75;background:rgba(5,15,36,.74);
+    animation:fadeIn 240ms ease both}
   .busca-veu.is-saindo{animation:fadeOut 220ms ease both}
   /* o input voa pro MEIO da tela e as tags moram num card branco embaixo,
      com chips claros: tudo legível por cima do fundo escurecido */
