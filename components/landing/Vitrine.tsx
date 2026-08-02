@@ -64,18 +64,19 @@ export function Vitrine(props: Props) {
       if (!alvo || alvo.scrollWidth <= alvo.clientWidth || alvo.scrollLeft > 1) return;
       animandoDica.current = true;
       alvo.style.scrollSnapType = "none";
-      alvo.scrollTo({ left: 52, behavior: "smooth" });
-      setTimeout(() => alvo.scrollTo({ left: 0, behavior: "smooth" }), 700);
+      // easing manual: mais lento e fluido que o smooth nativo do navegador
+      rolarSuave(alvo, 52, 700);
+      setTimeout(() => rolarSuave(alvo, 0, 700), 1050);
       setTimeout(() => {
         alvo.style.scrollSnapType = "";
         animandoDica.current = false;
-      }, 1600);
+      }, 2000);
     }
 
     let intervalo: ReturnType<typeof setInterval> | undefined;
     const inicial = setTimeout(() => {
       espiar();
-      intervalo = setInterval(espiar, 3200);
+      intervalo = setInterval(espiar, 4200);
     }, 1200);
 
     return () => {
@@ -141,10 +142,6 @@ export function Vitrine(props: Props) {
         <div
           ref={chipsRef}
           className="chips"
-          onScroll={(e) => {
-            // deslocou? liga o fade da esquerda (a tag derrete, não corta)
-            e.currentTarget.classList.toggle("rolado", e.currentTarget.scrollLeft > 2);
-          }}
           /* a dica só morre com gesto REAL (dedo/roda); evento de scroll
              não conta, porque a própria espiadinha e o snap disparam ele */
           onPointerDown={() => setDicaRolagem(false)}
@@ -226,6 +223,20 @@ export function Vitrine(props: Props) {
       )}
     </main>
   );
+}
+
+/* Rolagem animada com easeInOutQuad: o smooth nativo é rápido e sem
+   controle de duração; aqui a espiadinha define o próprio ritmo. */
+function rolarSuave(el: HTMLElement, ate: number, ms: number) {
+  const de = el.scrollLeft;
+  const inicio = performance.now();
+  function passo(agora: number) {
+    const t = Math.min(1, (agora - inicio) / ms);
+    const suave = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    el.scrollLeft = de + (ate - de) * suave;
+    if (t < 1) requestAnimationFrame(passo);
+  }
+  requestAnimationFrame(passo);
 }
 
 /* Cards de skeleton com shimmer (8 na carga inicial, 4 no "carregar mais"). */
