@@ -254,7 +254,9 @@ export default function NovoAnuncio() {
   );
 
   return (
-    <div className="pagina-1280 flex-1">
+    /* no modo wizard a página vira uma coluna de altura fixa: o card
+       ocupa o que sobra entre o header e a bottom nav, sem scroll */
+    <div className={"pagina-1280 flex-1" + (editandoId ? "" : " pagina-wizard")}>
       <TopBar />
       <HeaderNav />
 
