@@ -5,6 +5,7 @@ import "./design.css";
 import { AvisoLegal } from "@/components/AvisoLegal";
 import { BottomNav } from "@/components/BottomNav";
 import { PwaRegistro } from "@/components/PwaRegistro";
+import { BarraConexao } from "@/components/BarraConexao";
 
 // As três fontes do código fonte do design: Sora (títulos, preços, marca),
 // Plus Jakarta Sans (corpo) e JetBrains Mono (microlabels).
@@ -63,6 +64,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <PwaRegistro />
+        <BarraConexao />
         <AvisoLegal />
         {children}
         <BottomNav />

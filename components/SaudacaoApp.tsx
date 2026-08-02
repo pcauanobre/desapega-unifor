@@ -16,15 +16,18 @@ export function SaudacaoApp() {
 
   useEffect(() => {
     if (!window.matchMedia("(display-mode: standalone)").matches) return;
+    // Madrugada é boa noite (1h da manhã não é "bom dia" pra ninguém).
     const hora = new Date().getHours();
-    const saudacao = hora < 12 ? "Bom dia" : hora < 18 ? "Boa tarde" : "Boa noite";
+    const saudacao =
+      hora >= 5 && hora < 12 ? "Bom dia" : hora >= 12 && hora < 18 ? "Boa tarde" : "Boa noite";
     createClient()
       .auth.getSession()
       .then(({ data }) => {
-        const nome = (data.session?.user.user_metadata?.nome as string | undefined)
-          ?.trim()
-          .split(" ")[0];
-        setTexto(`${saudacao}${nome ? `, ${nome}` : ""}!`);
+        const nome =
+          (data.session?.user.user_metadata?.nome as string | undefined)
+            ?.trim()
+            .split(" ")[0] ?? "Usuário";
+        setTexto(`${saudacao}, ${nome}!`);
       });
   }, []);
 
