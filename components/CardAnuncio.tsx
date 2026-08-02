@@ -5,8 +5,6 @@ import Link from "next/link";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import PlaceIcon from "@mui/icons-material/Place";
-import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
-import { FotoTelaCheia } from "@/components/produto/FotoTelaCheia";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import type { Anuncio } from "@/lib/tipos";
 import { quandoPublicado } from "@/lib/tempo";
@@ -42,15 +40,6 @@ export function CardAnuncio({
   }
 
   const vendido = Boolean(anuncio.vendido_em);
-  const [cheia, setCheia] = useState(false);
-
-  /* A lupa abre a foto em tela cheia sem sair da vitrine; o resto do card
-     continua levando pro anúncio. */
-  function abrirCheia(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    setCheia(true);
-  }
 
   return (
     <Link
@@ -63,16 +52,6 @@ export function CardAnuncio({
           <span className="card-vendido">
             {anuncio.is_doacao ? "DOADO" : "VENDIDO"}
           </span>
-        )}
-        {fotos.length > 0 && (
-          <button
-            type="button"
-            className="card-lupa"
-            onClick={abrirCheia}
-            aria-label="Ver foto em tela cheia"
-          >
-            <ZoomOutMapIcon sx={{ fontSize: 16 }} />
-          </button>
         )}
         {fotos.length > 0 ? (
           <div
@@ -140,15 +119,6 @@ export function CardAnuncio({
           )}
         </div>
       </div>
-
-      {cheia && (
-        <FotoTelaCheia
-          fotos={fotos}
-          titulo={anuncio.titulo}
-          inicial={atual}
-          onFechar={() => setCheia(false)}
-        />
-      )}
     </Link>
   );
 }

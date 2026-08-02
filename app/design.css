@@ -347,14 +347,15 @@ body{background:var(--bg)}
    nele). Três faixas em grid: topo fixo, foto no meio, miniaturas embaixo,
    e a do meio é a única que cresce, o que centraliza a foto sozinha. */
 .pd-foto-abre{cursor:zoom-in;outline:none}
-/* lupa do card e da foto do produto */
-.card-lupa,.pd-lupa{position:absolute;top:10px;right:10px;z-index:4;width:30px;height:30px;
+/* lupa: só na foto grande da página do produto (no card da vitrine o
+   clique é pra abrir o anúncio, sem concorrência) */
+.pd-lupa{position:absolute;top:10px;right:10px;z-index:4;width:30px;height:30px;
   border-radius:50%;border:none;background:rgba(8,14,30,.42);color:#fff;display:flex;
   align-items:center;justify-content:center;cursor:zoom-in;backdrop-filter:blur(4px);
   opacity:0;transition:opacity 180ms ease,background 160ms ease}
-.card:hover .card-lupa,.card-lupa:focus-visible,
+
 .pd-foto-abre:hover .pd-lupa,.pd-foto-abre:focus-visible .pd-lupa{opacity:1}
-.card-lupa:hover,.pd-lupa:hover{background:rgba(8,14,30,.72)}
+.pd-lupa:hover{background:rgba(8,14,30,.72)}
 
 .visor{position:fixed;inset:0;z-index:200;background:rgba(2,5,12,.97);backdrop-filter:blur(8px);
   display:grid;grid-template-rows:auto minmax(0,1fr) auto;animation:fadeIn 200ms ease both}
@@ -1209,7 +1210,7 @@ body{background:var(--bg)}
     padding-bottom:calc(12px + env(safe-area-inset-bottom))}
   .visor-tira{width:52px;height:40px}
   .visor-titulo{font-size:13px}
-  .pd-lupa,.card-lupa{opacity:1}
+  .pd-lupa{opacity:1}
 
   .wiz-topo{margin-bottom:8px}
   .wiz-passo{padding-top:2px}
