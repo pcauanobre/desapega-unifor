@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -14,41 +15,49 @@ type Props = {
 };
 
 /**
- * O QUE: visualizador de foto em tela cheia: fundo escuro, foto inteira,
- *        setas e miniaturas pra passar, contador, fechar no X, no Esc ou
- *        clicando no fundo. No celular passa arrastando o dedo.
- * POR QUE: no card a foto é pequena e cortada; quem vai comprar quer ver
- *          o item de perto antes de chamar no WhatsApp.
- * CHAMA: Carrossel, ao clicar na foto grande ou numa miniatura.
- * QUEBRA SE: nada; sem foto o componente nem é montado.
+ * O QUE: visualizador de foto em tela cheia: fundo escuro, foto no centro,
+ *        setas, miniaturas, teclado e swipe. Fecha no X, no Esc ou no fundo.
+ * POR QUE: no card a foto é pequena e cortada; quem vai comprar quer ver o
+ *          item de perto antes de chamar no WhatsApp.
+ * CHAMA: CardAnuncio (lupa) e Carrossel (foto grande do produto).
+ * QUEBRA SE: nada. Detalhe importante: o conteúdo é montado por PORTAL no
+ *            body. Sem isso, `position: fixed` se ancora no ancestral que
+ *            tem transform (o card tem animação de entrada) e o overlay
+ *            fica presoo dentro do card em vez de cobrir a tela.
  */
 export function FotoTelaCheia({ fotos, titulo, inicial, onFechar }: Props) {
   const [atual, setAtual] = useState(inicial);
   const toqueX = useRef<number | null>(null);
+  /* O portal precisa do document, que não existe no servidor: só depois
+     que o efeito rodou (ou seja, já no navegador) é que ele monta. */
+  const [destino, setDestino] = useState<HTMLElement | null>(null);
 
-  const anterior = () => setAtual((i) => (i - 1 + fotos.length) % fotos.length);
-  const proxima = () => setAtual((i) => (i + 1) % fotos.length);
+  useEffect(() => {
+    setDestino(document.body);
+  }, []);
 
   useEffect(() => {
     function tecla(e: KeyboardEvent) {
       if (e.key === "Escape") onFechar();
-      if (e.key === "ArrowLeft") anterior();
-      if (e.key === "ArrowRight") proxima();
+      if (e.key === "ArrowLeft") setAtual((i) => (i - 1 + fotos.length) % fotos.length);
+      if (e.key === "ArrowRight") setAtual((i) => (i + 1) % fotos.length);
     }
     document.addEventListener("keydown", tecla);
     return () => document.removeEventListener("keydown", tecla);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fotos.length]);
+  }, [fotos.length, onFechar]);
 
-  return (
+  if (!destino) return null;
+
+  const anterior = () => setAtual((i) => (i - 1 + fotos.length) % fotos.length);
+  const proxima = () => setAtual((i) => (i + 1) % fotos.length);
+
+  return createPortal(
     <div
-      className="fs-overlay"
+      className="visor"
       role="dialog"
       aria-modal="true"
       aria-label={`Fotos de ${titulo}`}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onFechar();
-      }}
+      onClick={onFechar}
       onTouchStart={(e) => {
         toqueX.current = e.touches[0].clientX;
       }}
@@ -61,43 +70,53 @@ export function FotoTelaCheia({ fotos, titulo, inicial, onFechar }: Props) {
     >
       <BloquearScroll />
 
-      <button className="fs-fechar" onClick={onFechar} aria-label="Fechar">
-        <CloseIcon sx={{ fontSize: 24 }} />
-      </button>
-      {fotos.length > 1 && (
-        <span className="fs-conta mono">
-          {atual + 1}/{fotos.length}
+      <header className="visor-topo" onClick={(e) => e.stopPropagation()}>
+        <span className="visor-titulo">{titulo}</span>
+        <span className="visor-direita">
+          {fotos.length > 1 && (
+            <span className="visor-conta mono">
+              {atual + 1} / {fotos.length}
+            </span>
+          )}
+          <button className="visor-x" onClick={onFechar} aria-label="Fechar">
+            <CloseIcon sx={{ fontSize: 22 }} />
+          </button>
         </span>
-      )}
+      </header>
 
-      <div className="fs-palco" onClick={(e) => e.stopPropagation()}>
+      <figure className="visor-palco" onClick={(e) => e.stopPropagation()}>
+        {fotos.length > 1 && (
+          <button className="visor-seta esq" onClick={anterior} aria-label="Foto anterior">
+            <ChevronLeftIcon sx={{ fontSize: 28 }} />
+          </button>
+        )}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img key={atual} src={fotos[atual]} alt={`${titulo}, foto ${atual + 1}`} />
-      </div>
+        {fotos.length > 1 && (
+          <button className="visor-seta dir" onClick={proxima} aria-label="Próxima foto">
+            <ChevronRightIcon sx={{ fontSize: 28 }} />
+          </button>
+        )}
+      </figure>
 
-      {fotos.length > 1 && (
-        <>
-          <button className="fs-seta fs-esq" onClick={anterior} aria-label="Foto anterior">
-            <ChevronLeftIcon sx={{ fontSize: 30 }} />
-          </button>
-          <button className="fs-seta fs-dir" onClick={proxima} aria-label="Próxima foto">
-            <ChevronRightIcon sx={{ fontSize: 30 }} />
-          </button>
-          <div className="fs-thumbs" onClick={(e) => e.stopPropagation()}>
-            {fotos.map((foto, i) => (
-              <button
-                key={i}
-                className={"fs-thumb" + (i === atual ? " is-active" : "")}
-                onClick={() => setAtual(i)}
-                aria-label={`Ver foto ${i + 1}`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={foto} alt="" />
-              </button>
-            ))}
-          </div>
-        </>
+      {fotos.length > 1 ? (
+        <footer className="visor-tiras" onClick={(e) => e.stopPropagation()}>
+          {fotos.map((foto, i) => (
+            <button
+              key={i}
+              className={"visor-tira" + (i === atual ? " on" : "")}
+              onClick={() => setAtual(i)}
+              aria-label={`Ver foto ${i + 1}`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={foto} alt="" />
+            </button>
+          ))}
+        </footer>
+      ) : (
+        <footer className="visor-tiras" />
       )}
-    </div>
+    </div>,
+    destino,
   );
 }
