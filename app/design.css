@@ -808,7 +808,7 @@ body{background:var(--bg)}
    só: até 760px o site vira o app de bolso, com bottom nav fixa, grid de
    2 colunas, chips roláveis e popup subindo como sheet.
    ========================================================================= */
-.bnav,.bnav-espaco{display:none}
+.bnav,.bnav-espaco,.busca-veu,.busca-tags{display:none}
 
 @media (max-width:760px){
   /* base */
@@ -827,7 +827,27 @@ body{background:var(--bg)}
   .header-actions{display:none}
   .search{flex:1 1 100%;order:3;max-width:none}
   .search .dl{display:none}
-  .search-input{border-top-left-radius:var(--r-sm);border-bottom-left-radius:var(--r-sm)}
+  .search-input{border-radius:var(--r-sm)}
+
+  /* busca imersiva: sem botão, o Enter busca; focar escurece o fundo,
+     sobe o campo e mostra as categorias como tags de vidro */
+  .search-btn{display:none}
+  .busca-veu{display:block;position:fixed;inset:0;z-index:75;background:rgba(5,15,36,.66);
+    backdrop-filter:blur(4px);animation:fadeIn 240ms ease both}
+  .busca-veu.is-saindo{animation:fadeOut 220ms ease both}
+  .search.focada{position:fixed;z-index:76;left:16px;right:16px;top:16vh;order:0;flex:none;
+    box-shadow:0 22px 54px rgba(0,0,0,.35);animation:buscaSobe 340ms var(--ease) both}
+  .search.focada.is-saindo{animation:fadeOut 220ms ease both}
+  .busca-tags{display:block;position:fixed;z-index:76;left:16px;right:16px;top:calc(16vh + 62px);
+    animation:fadeUp 380ms 70ms var(--ease) both}
+  .busca-tags.is-saindo{animation:fadeOut 220ms ease both}
+  .busca-tags-t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--azul-claro);
+    font-weight:700;margin:0 0 10px}
+  .busca-tags-lista{display:flex;flex-wrap:wrap;gap:8px}
+  .busca-tag{border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.14);color:#fff;
+    font-size:13px;font-weight:600;padding:9px 15px;border-radius:99px;cursor:pointer;
+    backdrop-filter:blur(2px);transition:background 160ms ease,color 160ms ease}
+  .busca-tag:active{background:#fff;color:var(--navy)}
 
   /* faixa de números */
   .statsbar-inner{flex-wrap:wrap;gap:8px 18px;font-size:12px;padding-top:11px;padding-bottom:11px}
@@ -959,3 +979,4 @@ body{background:var(--bg)}
 }
 @keyframes sheetIn{from{transform:translateY(100%)}to{transform:none}}
 @keyframes sheetOut{to{transform:translateY(100%)}}
+@keyframes buscaSobe{from{opacity:.5;transform:translateY(20px) scale(.98)}to{opacity:1;transform:none}}

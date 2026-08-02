@@ -80,8 +80,10 @@ export default function Produtos() {
   }
 
   /* Botão Buscar: só aqui a seleção pendente do dropdown passa a valer. */
-  function aplicarBusca() {
-    comSkeleton(DELAY.filtro, () => setCategoria(categoriaHeader));
+  function aplicarBusca(categoriaEscolhida?: string) {
+    const alvo = categoriaEscolhida ?? categoriaHeader;
+    if (categoriaEscolhida !== undefined) setCategoriaHeader(categoriaEscolhida);
+    comSkeleton(DELAY.filtro, () => setCategoria(alvo));
     document.getElementById("vitrine")?.scrollIntoView({ behavior: "smooth" });
   }
 

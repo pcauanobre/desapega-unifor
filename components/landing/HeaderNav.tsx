@@ -18,9 +18,10 @@ export function HeaderNav() {
   const [categoria, setCategoria] = useState("");
   const [busca, setBusca] = useState("");
 
-  function irPraBusca() {
+  function irPraBusca(categoriaEscolhida?: string) {
+    const cat = categoriaEscolhida ?? categoria;
     const params = new URLSearchParams();
-    if (categoria) params.set("categoria", categoria);
+    if (cat) params.set("categoria", cat);
     if (busca.trim()) params.set("q", busca.trim());
     const query = params.toString();
     router.push(query ? `/produtos?${query}` : "/produtos");
