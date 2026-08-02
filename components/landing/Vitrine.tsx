@@ -64,19 +64,19 @@ export function Vitrine(props: Props) {
       if (!alvo || alvo.scrollWidth <= alvo.clientWidth || alvo.scrollLeft > 1) return;
       animandoDica.current = true;
       alvo.style.scrollSnapType = "none";
-      // easing manual: mais lento e fluido que o smooth nativo do navegador
-      rolarSuave(alvo, 52, 700);
-      setTimeout(() => rolarSuave(alvo, 0, 700), 1050);
+      // easing manual: fluido e no ritmo próprio (o smooth nativo é seco)
+      rolarSuave(alvo, 52, 540);
+      setTimeout(() => rolarSuave(alvo, 0, 540), 820);
       setTimeout(() => {
         alvo.style.scrollSnapType = "";
         animandoDica.current = false;
-      }, 2000);
+      }, 1600);
     }
 
     let intervalo: ReturnType<typeof setInterval> | undefined;
     const inicial = setTimeout(() => {
       espiar();
-      intervalo = setInterval(espiar, 4200);
+      intervalo = setInterval(espiar, 3800);
     }, 1200);
 
     return () => {
