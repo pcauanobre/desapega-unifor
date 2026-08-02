@@ -13,7 +13,7 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { createClient } from "@/lib/supabase/client";
 import { problemaDaSenha } from "@/lib/senha";
 import { MedidorSenha } from "@/components/MedidorSenha";
-import { BloquearScroll } from "@/components/BloquearScroll";
+import { PopupCodigo } from "@/components/PopupCodigo";
 import { useSaidaAnimada } from "@/components/useSaidaAnimada";
 
 const TEXTOS = {
@@ -63,6 +63,9 @@ export default function Entrar() {
   const [etapaRec, setEtapaRec] = useState<"email" | "codigo" | "senha">("email");
   const [codigo, setCodigo] = useState("");
   const { saindo: saindoOtp, fecharCom: fecharOtpCom } = useSaidaAnimada();
+  /* Cadastro também confirma o email por código, no mesmo popup. */
+  const [confirmandoCadastro, setConfirmandoCadastro] = useState(false);
+  const { saindo: saindoCad, fecharCom: fecharCadCom } = useSaidaAnimada();
   const t = TEXTOS[modo];
 
   function irPraRecuperar(e: React.MouseEvent) {
@@ -203,6 +206,20 @@ export default function Entrar() {
       const problema = problemaDaSenha(senha);
       if (problema) return setErro(problema);
       if (!aceite) return setErro("Precisa aceitar as regras do desapego.");
+
+      // A conta só nasce depois do código: prova de posse do email.
+      setEnviando(true);
+      const r = await fetch("/api/cadastro/enviar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), nome: nome.trim() }),
+      });
+      const corpo = await r.json();
+      setEnviando(false);
+      if (!r.ok) return setErro(corpo.erro ?? "Não deu pra enviar o código agora.");
+      setCodigo("");
+      setConfirmandoCadastro(true);
+      return;
     }
 
     setEnviando(true);
@@ -229,7 +246,12 @@ export default function Entrar() {
       return;
     }
 
-    const { data, error } = await supabase.auth.signUp({
+  }
+
+  /* Só roda depois do código confirmado: cria a conta de verdade. */
+  async function criarConta() {
+    setEnviando(true);
+    const { data, error } = await createClient().auth.signUp({
       email: email.trim(),
       password: senha,
       options: { data: { nome: nome.trim() } },
@@ -248,6 +270,51 @@ export default function Entrar() {
       setModo("login");
       setSucesso("Conta criada! Entre com seu email e senha.");
     }
+  }
+
+  async function concluirCadastro(valor: string) {
+    if (enviando) return;
+    setErro(null);
+    setSucesso(null);
+    if (!/^\d{6}$/.test(valor)) return setErro("Digite o código de 6 dígitos do email.");
+    setEnviando(true);
+    const r = await fetch("/api/cadastro/conferir", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.trim(), otp: valor }),
+    });
+    const corpo = await r.json();
+    if (!r.ok) {
+      setEnviando(false);
+      return setErro(corpo.erro ?? "Não deu pra conferir agora.");
+    }
+    fecharCadCom(() => setConfirmandoCadastro(false));
+    await criarConta();
+  }
+
+  function fecharPopupCadastro() {
+    fecharCadCom(() => {
+      setConfirmandoCadastro(false);
+      setCodigo("");
+      setErro(null);
+    });
+  }
+
+  async function reenviarCadastro(e: React.MouseEvent) {
+    e.preventDefault();
+    if (enviando) return;
+    setErro(null);
+    setEnviando(true);
+    const r = await fetch("/api/cadastro/enviar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.trim(), nome: nome.trim() }),
+    });
+    const corpo = await r.json();
+    setEnviando(false);
+    if (!r.ok) return setErro(corpo.erro ?? "Não deu pra reenviar agora.");
+    setCodigo("");
+    setSucesso("Código novo enviado!");
   }
 
   return (
@@ -420,65 +487,38 @@ export default function Entrar() {
         </div>
       </div>
 
-      {/* Popup do código: uma tela só, com Ctrl+V confirmando sozinho. */}
+      {/* Popup do código: uma tela só, com Ctrl+V confirmando sozinho.
+          O mesmo componente serve a recuperação e o cadastro. */}
       {modo === "recuperar" && etapaRec === "codigo" && (
-        <div
-          className={"aviso-overlay" + (saindoOtp ? " is-saindo" : "")}
-          role="dialog"
-          aria-modal="true"
-          onClick={(e) => {
-            if (e.target === e.currentTarget && !enviando) fecharPopupCodigo();
-          }}
-        >
-          <BloquearScroll />
-          <div className="aviso-card" style={{ textAlign: "center" }}>
-            <h2 className="aviso-titulo">Digite o código</h2>
-            <p className="aviso-p" style={{ textAlign: "center" }}>
-              Enviamos um código de 6 dígitos pra <b>{email.trim()}</b>.
-              Cola ele aqui que o resto é com a gente.
-            </p>
-            <input
-              className="otp-input"
-              type="text"
-              inputMode="numeric"
-              maxLength={6}
-              placeholder="000000"
-              value={codigo}
-              autoFocus
-              onChange={(e) => setCodigo(e.target.value.replace(/\D/g, ""))}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") conferirCodigo(codigo);
-              }}
-              onPaste={(e) => {
-                const dig = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
-                if (dig.length === 6) {
-                  e.preventDefault();
-                  setCodigo(dig);
-                  conferirCodigo(dig);
-                }
-              }}
-            />
-            {erro && <p className="login-erro">{erro}</p>}
-            {sucesso && <p className="login-ok">{sucesso}</p>}
-            <button
-              className="btn btn-primary btn-block"
-              type="button"
-              onClick={() => conferirCodigo(codigo)}
-            >
-              {enviando && <span className="spinner" />}
-              <span>{enviando ? "Conferindo…" : "Confirmar código"}</span>
-            </button>
-            <p className="login-alt" style={{ marginTop: 14 }}>
-              <span>Não chegou?</span>{" "}
-              <a href="#" onClick={reenviarCodigo}>Enviar de novo</a>
-            </p>
-            <p className="login-alt">
-              <a href="#" onClick={(e) => { e.preventDefault(); fecharPopupCodigo(); }}>
-                Trocar o email
-              </a>
-            </p>
-          </div>
-        </div>
+        <PopupCodigo
+          email={email.trim()}
+          codigo={codigo}
+          onCodigo={setCodigo}
+          onConfirmar={conferirCodigo}
+          onReenviar={reenviarCodigo}
+          onFechar={fecharPopupCodigo}
+          rotuloFechar="Trocar o email"
+          enviando={enviando}
+          erro={erro}
+          sucesso={sucesso}
+          saindo={saindoOtp}
+        />
+      )}
+
+      {confirmandoCadastro && (
+        <PopupCodigo
+          email={email.trim()}
+          codigo={codigo}
+          onCodigo={setCodigo}
+          onConfirmar={concluirCadastro}
+          onReenviar={reenviarCadastro}
+          onFechar={fecharPopupCadastro}
+          rotuloFechar="Corrigir email"
+          enviando={enviando}
+          erro={erro}
+          sucesso={sucesso}
+          saindo={saindoCad}
+        />
       )}
     </div>
   );

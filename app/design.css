@@ -274,6 +274,9 @@ body{background:var(--bg)}
 
 /* droplist customizado */
 .dl{position:relative}
+/* aberto, o droplist inteiro sobe de camada: o painel nunca fica por
+   baixo de vizinho com contexto próprio (ex: chips com mask no mobile) */
+.dl.aberto{z-index:60}
 .search .dl{display:flex;align-items:stretch}
 .dl-gatilho{border:1.5px solid var(--borda-2);background:#fff;color:var(--txt);font-size:13.5px;font-weight:600;
   padding:9px 12px;border-radius:var(--r-sm);cursor:pointer;display:inline-flex;align-items:center;gap:8px;
