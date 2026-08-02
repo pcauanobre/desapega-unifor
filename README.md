@@ -1,7 +1,6 @@
 # Desapega Unifor
 
 **No ar em [www.desapegaunifor.com.br](https://www.desapegaunifor.com.br)**
-(espelho: [desapega-unifor-alpha.vercel.app](https://desapega-unifor-alpha.vercel.app))
 
 Marketplace de economia circular do campus, feito pro desafio técnico do
 Laboratório VORTEX 2026.2. Um aluno anuncia o que não usa mais (livro de
