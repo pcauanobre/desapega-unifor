@@ -69,6 +69,20 @@ device do DevTools (ou no celular), a experiência de app com bottom nav.
 
 A API responde em `http://localhost:3000/api/anuncios` pra testar direto.
 
+### Conta pronta pra testar
+
+O cadastro manda um código de confirmação por email. Pra entrar sem esperar
+email nenhum, tem uma conta pronta que funciona tanto no site em produção
+quanto rodando local:
+
+- email: `avaliacao@edu.unifor.br`
+- senha: `Desapega@2026`
+
+Com ela dá pra anunciar, editar, marcar como vendido e ver a lista de "meus
+anúncios". Se preferir criar a sua, o fluxo por código funciona normal no
+site. Rodando local sem a `BREVO_API_KEY`, o código aparece no terminal do
+`npm run dev` em vez de ir por email, então o cadastro fecha do mesmo jeito.
+
 ### Rodando como PWA (instalação e modo offline)
 
 O service worker fica desligado no modo dev de propósito (cache atrapalha o
