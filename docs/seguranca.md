@@ -63,6 +63,6 @@ servidor e não aparecem no bundle.
 Um script de ataque cria duas contas e, logado na primeira, tenta:
 alterar, apagar e forjar anúncio da segunda; ler as tabelas de códigos;
 baixar a lista de telefones; alcançar `auth.users`. Também roda tudo de
-novo como visitante anônimo. **Todas as tentativas são negadas pelo banco**,
+novo como visitante anônimo. **As 19 tentativas são negadas pelo banco**,
 e o fluxo legítimo (publicar o próprio anúncio, ver um contato, contar
 clique) continua funcionando.

@@ -36,7 +36,7 @@ desktop que vira app de bolso no celular, instalável como PWA.
 - `pg` pra conexão direta do servidor nos fluxos que a anon key não alcança
 - Brevo pro email transacional do "esqueci minha senha"
 - PWA com `manifest.json` e `public/sw.js` escritos à mão, sem lib
-- MUI Icons, react-easy-crop e Tailwind na base de estilos
+- MUI Icons e react-easy-crop no front, com Tailwind na base de estilos
 
 ## Como rodar localmente
 
@@ -95,7 +95,9 @@ components/     componentes de interface
 lib/            utilidades puras (tipos, validação, regras de senha...)
 public/         manifest.json, sw.js, ícones e imagens
 sql/            migrations numeradas do banco (com RLS e grants)
-scripts/        aplicar migrations pelo terminal
+scripts/        aplicar migrations e semear os dados de demonstração
+docs/           documentação do modelo de segurança
+middleware.ts   rate limit por IP na borda da API
 ```
 
 ## Rotas da API
@@ -109,6 +111,8 @@ scripts/        aplicar migrations pelo terminal
 | PATCH | `/api/anuncios/[id]` | Marca como vendido (vira histórico) |
 | DELETE | `/api/anuncios/[id]` | Exclui (só o dono) |
 | GET | `/api/perfil/[id]` | Perfil público do vendedor com estatísticas |
+| POST | `/api/cadastro/enviar` | Envia o código de confirmação do cadastro |
+| POST | `/api/cadastro/conferir` | Confere o código e libera a conta |
 | POST | `/api/senha/enviar` | Envia código de redefinição por email |
 | POST | `/api/senha/conferir` | Confere o código sem queimar ele |
 | POST | `/api/senha/confirmar` | Troca a senha com o código válido |
