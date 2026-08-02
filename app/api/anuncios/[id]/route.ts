@@ -48,7 +48,13 @@ export async function GET(
   // Cada visita à página do produto conta um clique (função no banco,
   // visitante não tem UPDATE direto na tabela).
   await supabase.rpc("registrar_clique", { p_id: id });
-  return NextResponse.json({ anuncio: data });
+
+  // O telefone não está no SELECT: vem um por vez, por função do banco,
+  // pra ninguém baixar o contato da base inteira numa requisição só.
+  const { data: contato } = await supabase.rpc("contato_do_anuncio", { p_id: id });
+  return NextResponse.json({
+    anuncio: { ...(data as unknown as Record<string, unknown>), contato: contato ?? null },
+  });
 }
 
 /**
