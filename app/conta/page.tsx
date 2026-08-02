@@ -18,6 +18,7 @@ import { Droplist } from "@/components/Droplist";
 import { CURSOS, SEMESTRES, formatarCelular } from "@/components/wizard/EtapaCampos";
 import { BloquearScroll } from "@/components/BloquearScroll";
 import { EditorFoto } from "@/components/EditorFoto";
+import { prepararFoto } from "@/lib/otimizar-foto";
 import { useSaidaAnimada } from "@/components/useSaidaAnimada";
 
 /**
@@ -90,7 +91,8 @@ export default function Conta() {
   /* Foto escolhida abre o editor; o upload acontece só depois do corte. */
   function receberFoto(arquivo: File) {
     setErro(null);
-    setParaCortar(arquivo);
+    // foto grande do celular encolhe antes de abrir o editor
+    prepararFoto(arquivo).then(setParaCortar);
   }
 
   async function subirFotoCortada(blob: Blob) {

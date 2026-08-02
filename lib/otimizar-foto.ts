@@ -38,6 +38,45 @@ export async function recortarFoto(arquivo: File, area: AreaCorte): Promise<Blob
   });
 }
 
+/**
+ * O QUE: prepara a foto ANTES do editor de corte: encolhe pra no máximo
+ *        2000px no lado maior e devolve um File leve.
+ * POR QUE: foto de celular vem com 12MP (4000x3000). Jogar isso direto no
+ *          editor come memória, trava o arrasto e em aparelho mais fraco o
+ *          navegador desiste no meio. Encolhendo antes, foto grande passa
+ *          a ser aceita numa boa e o corte fica fluido.
+ * CHAMA: quem recebe arquivo do usuário (anunciar, conta, wizard).
+ * QUEBRA SE: nada; se o navegador não conseguir decodificar, devolve o
+ *            arquivo original e o editor tenta do jeito que veio.
+ */
+export async function prepararFoto(arquivo: File): Promise<File> {
+  const MAX = 2000;
+  try {
+    const bitmap = await createImageBitmap(arquivo);
+    const maior = Math.max(bitmap.width, bitmap.height);
+    if (maior <= MAX) {
+      bitmap.close();
+      return arquivo;
+    }
+    const escala = MAX / maior;
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * escala);
+    canvas.height = Math.round(bitmap.height * escala);
+    canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+
+    const blob = await new Promise<Blob | null>((r) =>
+      canvas.toBlob(r, "image/jpeg", 0.92),
+    );
+    if (!blob) return arquivo;
+    return new File([blob], arquivo.name.replace(/\.\w+$/, "") + ".jpg", {
+      type: "image/jpeg",
+    });
+  } catch {
+    return arquivo;
+  }
+}
+
 export async function otimizarFoto(arquivo: File): Promise<Blob> {
   const bitmap = await createImageBitmap(arquivo);
   const MAX = 1280;
