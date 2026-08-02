@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { BloquearScroll } from "@/components/BloquearScroll";
 import { EditorFoto } from "@/components/EditorFoto";
+import { prepararFoto } from "@/lib/otimizar-foto";
 import { EtapaCampos, type Perfil } from "@/components/wizard/EtapaCampos";
 
 const ETAPAS = [
@@ -54,7 +55,8 @@ export default function BemVindo() {
   /* Foto chegou (galeria ou Ctrl+V): abre o editor de corte primeiro. */
   function receberFoto(arquivo: File) {
     setErro(null);
-    setParaCortar(arquivo);
+    // foto grande do celular encolhe antes de abrir o editor
+    prepararFoto(arquivo).then(setParaCortar);
   }
 
   async function subirFotoCortada(blob: Blob) {

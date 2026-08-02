@@ -546,6 +546,31 @@ body{background:var(--bg)}
 /* ---------- setup wizard (/bem-vindo) ---------- */
 .wiz-fundo{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 24px;
   background:#EAF3FE url("/bg-shapes.png") right center/cover no-repeat}
+/* "Tirar foto" só existe no celular; no desktop fica o botão único */
+.so-mobile{display:none}
+
+/* etapa do wizard entrando pelo lado certo (avança da direita, volta da
+   esquerda), e o selo de concluído com o check pulsando antes do texto */
+.wiz-passo{animation:passoDireita 340ms var(--ease) both}
+.wiz-passo.voltando{animation:passoEsquerda 340ms var(--ease) both}
+@keyframes passoDireita{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+@keyframes passoEsquerda{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+
+.ok-selo{width:66px;height:66px;border-radius:50%;background:var(--verde-bg);color:var(--verde);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 6px;
+  animation:seloEntra 460ms var(--ease) both}
+@keyframes seloEntra{0%{opacity:0;transform:scale(.4)}60%{opacity:1;transform:scale(1.12)}
+  100%{opacity:1;transform:scale(1)}}
+.ok-entra{animation:fadeUp 380ms 260ms var(--ease) both}
+.ok-atraso-1{animation-delay:360ms}
+.ok-atraso-2{animation-delay:460ms}
+
+/* item vendido continua na vitrine por alguns dias, apagado e com selo */
+.card.is-vendido .card-photo{filter:grayscale(.85) brightness(.96)}
+.card.is-vendido .card-title,.card.is-vendido .card-price{color:var(--txt-3)}
+.card-vendido{position:absolute;top:10px;left:10px;z-index:3;font-family:var(--sora);font-weight:700;
+  font-size:10.5px;letter-spacing:.1em;color:#fff;background:rgba(7,28,61,.88);
+  padding:5px 10px;border-radius:7px}
 .wiz-card{width:540px;max-width:100%;background:#fff;border-radius:16px;
   box-shadow:0 22px 54px rgba(7,28,61,.16);padding:34px 38px;animation:popIn 360ms var(--ease) both}
 .wiz-topo{display:flex;align-items:center;justify-content:space-between}
@@ -749,8 +774,8 @@ body{background:var(--bg)}
   justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(7,28,61,.18);
   transition:transform 160ms ease,background 160ms ease}
 .pd-seta:hover{background:#fff;transform:translateY(-50%) scale(1.08)}
-.pd-seta-esq{left:14px}
-.pd-seta-dir{right:14px}
+.pd-seta-esq{left:8px}
+.pd-seta-dir{right:8px}
 .pd-conta{position:absolute;right:14px;bottom:12px;background:rgba(7,28,61,.72);color:#fff;
   font-size:11px;padding:4px 9px;border-radius:6px}
 .pd-thumbs{display:flex;gap:10px;margin-top:12px}
@@ -1042,7 +1067,10 @@ body{background:var(--bg)}
   .card-title{font-size:15px;line-height:1.3;min-height:40px;display:-webkit-box;
     -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .card-foot{margin-top:auto;padding-top:10px;flex-wrap:wrap;gap:7px}
-  .card-local{flex:1 1 100%;font-size:12.5px}
+  /* rodapé em 3 linhas: bloco à esquerda, horário à direita, preço por último */
+  .card-local{flex:1 1 100%;font-size:12.5px;flex-wrap:wrap}
+  .card-local .sep{display:none}
+  .card-local .quando{flex:1 1 100%;text-align:right}
   .card-foot .card-price{margin-left:auto;font-size:18px}
   .card-foot .card-doacao-txt{margin-left:auto;font-size:14px}
   .card-cond{font-size:10px;padding:4px 7px;top:7px;left:7px}
@@ -1055,6 +1083,8 @@ body{background:var(--bg)}
   /* página do produto: coluna única, foto grande, zap embaixo */
   .pd,.pd-sk{grid-template-columns:1fr;gap:20px;padding-top:14px;padding-bottom:32px}
   .pd-foto,.pd-sk-foto{height:300px;border-radius:14px}
+  .pd-seta-esq{left:4px}
+  .pd-seta-dir{right:4px}
   .pd-titulo{font-size:22px}
   .pd-preco{font-size:24px}
   .pd-desc{font-size:14px}
@@ -1095,8 +1125,17 @@ body{background:var(--bg)}
   .login{min-height:100vh}
   .login-cardwrap{padding:36px 16px;justify-content:center}
   .login-card,.login-body .login-card{width:100%;padding:26px 20px}
-  .wiz-fundo{padding:24px 14px}
-  .wiz-card{padding:24px 20px}
+  /* wizard no celular: ocupa a tela entre header e bottom nav, centrado,
+     sem sobra que gere scroll (o conteúdo rola dentro do card se precisar) */
+  .wiz-fundo{padding:14px;min-height:calc(100dvh - 78px - env(safe-area-inset-bottom));
+    align-items:center;overflow:hidden}
+  .wiz-card{padding:22px 18px;max-height:calc(100dvh - 110px);overflow-y:auto}
+  /* o wizard de anunciar entra por baixo do header do app */
+  .wiz-card-anuncio{margin-top:0}
+
+  /* dois caminhos pra foto no celular: câmera e galeria */
+  .so-desktop{display:none!important}
+  .so-mobile{display:flex}
 
   /* no app de bolso o rodapé institucional sai de cena; a bottom nav é
      quem navega, e o aviso legal continua no popup */

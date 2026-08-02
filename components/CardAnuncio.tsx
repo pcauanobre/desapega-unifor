@@ -39,13 +39,20 @@ export function CardAnuncio({
     setAtual((atual + delta + fotos.length) % fotos.length);
   }
 
+  const vendido = Boolean(anuncio.vendido_em);
+
   return (
     <Link
-      className="card"
+      className={"card" + (vendido ? " is-vendido" : "")}
       href={`/produtos/${anuncio.id}`}
       style={atraso > 0 ? { animationDelay: `${atraso}ms` } : undefined}
     >
       <div className="card-photo">
+        {vendido && (
+          <span className="card-vendido">
+            {anuncio.is_doacao ? "DOADO" : "VENDIDO"}
+          </span>
+        )}
         {fotos.length > 0 ? (
           <div
             className="mini-trilho"

@@ -2,6 +2,8 @@
 
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import CloseIcon from "@mui/icons-material/Close";
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import CollectionsIcon from "@mui/icons-material/Collections";
 
 type Props = {
   previews: string[];
@@ -37,20 +39,39 @@ export function FotosUpload({ previews, onEscolher, onRemover }: Props) {
           </span>
         ))}
         {previews.length < 5 && (
-          <label className="an-foto-add">
-            <AddAPhotoIcon sx={{ fontSize: 22 }} />
-            <span>Adicionar</span>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              hidden
-              onChange={(e) => {
-                onEscolher(e.target.files);
-                e.target.value = "";
-              }}
-            />
-          </label>
+          <>
+            {/* desktop: um botão só (lá não existe câmera do celular) */}
+            <label className="an-foto-add so-desktop">
+              <AddAPhotoIcon sx={{ fontSize: 22 }} />
+              <span>Adicionar</span>
+              <input type="file" accept="image/*" multiple hidden
+                onChange={(e) => {
+                  onEscolher(e.target.files);
+                  e.target.value = "";
+                }} />
+            </label>
+
+            {/* celular: capture="environment" abre a câmera traseira
+                direto, e o próprio sistema pede a permissão */}
+            <label className="an-foto-add so-mobile">
+              <PhotoCameraIcon sx={{ fontSize: 22 }} />
+              <span>Tirar foto</span>
+              <input type="file" accept="image/*" capture="environment" hidden
+                onChange={(e) => {
+                  onEscolher(e.target.files);
+                  e.target.value = "";
+                }} />
+            </label>
+            <label className="an-foto-add so-mobile">
+              <CollectionsIcon sx={{ fontSize: 22 }} />
+              <span>Galeria</span>
+              <input type="file" accept="image/*" multiple hidden
+                onChange={(e) => {
+                  onEscolher(e.target.files);
+                  e.target.value = "";
+                }} />
+            </label>
+          </>
         )}
       </div>
       <p className="wiz-sub">A primeira foto vira a capa.</p>

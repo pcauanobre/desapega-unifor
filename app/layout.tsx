@@ -3,6 +3,7 @@ import { Sora, Plus_Jakarta_Sans, JetBrains_Mono, Open_Sans } from "next/font/go
 import "./globals.css";
 import "./design.css";
 import { BottomNav } from "@/components/BottomNav";
+import { Analytics } from "@vercel/analytics/next";
 import { PwaRegistro } from "@/components/PwaRegistro";
 import { BarraConexao } from "@/components/BarraConexao";
 
@@ -76,6 +77,8 @@ export default function RootLayout({
         <BarraConexao />
         {children}
         <BottomNav />
+        {/* audiência da Vercel: sem cookie e sem dado pessoal */}
+        <Analytics />
       </body>
     </html>
   );

@@ -14,6 +14,8 @@ import { Droplist } from "@/components/Droplist";
 import { FotosUpload } from "@/components/anunciar/FotosUpload";
 import { BloquearScroll } from "@/components/BloquearScroll";
 import { EditorFoto } from "@/components/EditorFoto";
+import { prepararFoto } from "@/lib/otimizar-foto";
+import CheckIcon from "@mui/icons-material/Check";
 
 /* As etapas do wizard de anunciar (o mesmo clima do setup de conta). */
 const ETAPAS_AN = [
@@ -35,6 +37,9 @@ export default function NovoAnuncio() {
   const router = useRouter();
   const [editandoId, setEditandoId] = useState<string | null>(null);
   const [etapa, setEtapa] = useState(0);
+  /* Direção da troca de etapa: o passo entra do lado certo (avançando
+     vem da direita, voltando vem da esquerda). */
+  const [voltandoEtapa, setVoltandoEtapa] = useState(false);
   const [fotosExistentes, setFotosExistentes] = useState<string[]>([]);
   const [arquivos, setArquivos] = useState<Blob[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -99,7 +104,11 @@ export default function NovoAnuncio() {
     if (!lista) return;
     const espaco = 5 - previewsTotais.length - filaCorte.length;
     if (espaco <= 0) return;
-    setFilaCorte((fila) => [...fila, ...Array.from(lista).slice(0, espaco)]);
+    // Encolhe antes de entrar na fila: foto de 12MP do celular trava o
+    // editor de corte, e assim foto grande passa a ser bem-vinda.
+    Promise.all(Array.from(lista).slice(0, espaco).map(prepararFoto)).then((prontas) =>
+      setFilaCorte((fila) => [...fila, ...prontas]),
+    );
   }
 
   function fotoCortada(blob: Blob) {
@@ -129,7 +138,10 @@ export default function NovoAnuncio() {
       if (descricao.trim().length < 10) return setErro("Descreva um pouco mais o item.");
     }
     if (etapa === 2 && !categoria) return setErro("Escolha a categoria.");
-    if (etapa < ETAPAS_AN.length - 1) return setEtapa(etapa + 1);
+    if (etapa < ETAPAS_AN.length - 1) {
+      setVoltandoEtapa(false);
+      return setEtapa(etapa + 1);
+    }
     publicar();
   }
 
@@ -271,7 +283,10 @@ export default function NovoAnuncio() {
               <i style={{ width: `${((etapa + 1) / ETAPAS_AN.length) * 100}%` }} />
             </div>
 
-            <div className="wiz-passo" key={etapa}>
+            <div
+              className={"wiz-passo" + (voltandoEtapa ? " voltando" : "")}
+              key={etapa}
+            >
               <h1 className="wiz-titulo">{ETAPAS_AN[etapa].titulo}</h1>
               <p className="wiz-sub">{ETAPAS_AN[etapa].sub}</p>
               <div className="wiz-corpo">
@@ -307,6 +322,7 @@ export default function NovoAnuncio() {
                   className="btn wiz-voltar"
                   onClick={() => {
                     setErro(null);
+                    setVoltandoEtapa(true);
                     setEtapa(etapa - 1);
                   }}
                 >
@@ -372,17 +388,23 @@ export default function NovoAnuncio() {
         <div className="aviso-overlay" role="dialog" aria-modal="true">
           <BloquearScroll />
           <div className="aviso-card" style={{ textAlign: "center" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/mark-blue.svg" alt="" style={{ height: 44 }} />
-            <h2 className="aviso-titulo">
+            {/* o check dá o "deu certo" antes do texto, e o resto entra
+                logo atrás, escalonado */}
+            <span className="ok-selo">
+              <CheckIcon sx={{ fontSize: 34 }} />
+            </span>
+            <h2 className="aviso-titulo ok-entra">
               {editandoId ? "Anúncio atualizado!" : "Anúncio publicado!"}
             </h2>
-            <p className="aviso-p">
+            <p className="aviso-p ok-entra ok-atraso-1">
               {editandoId
                 ? "As mudanças já estão na vitrine."
                 : "Seu item já tá na vitrine pra todo mundo ver. Boa sorte no desapego!"}
             </p>
-            <Link className="btn btn-primary btn-block" href={`/produtos/${publicadoId}`}>
+            <Link
+              className="btn btn-primary btn-block ok-entra ok-atraso-2"
+              href={`/produtos/${publicadoId}`}
+            >
               Ver meu anúncio
             </Link>
           </div>

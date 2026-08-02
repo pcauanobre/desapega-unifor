@@ -32,15 +32,18 @@ export async function GET(req: NextRequest) {
     .select(COLUNAS_PUBLICAS)
     .limit(30);
 
-  // Vitrine mostra só o que tá no ar; o histórico (?vendidos=1) é por
-  // autor, pro perfil público.
+  // Vitrine mostra o que tá no ar MAIS o que foi vendido nos últimos 3
+  // dias (marcado como vendido no card): a pessoa vê que o item saiu, em
+  // vez dele sumir do nada. Depois disso some sozinho. O histórico
+  // completo (?vendidos=1) é por autor, pro perfil público.
   if (vendidos) {
     query = query
       .not("vendido_em", "is", null)
       .order("vendido_em", { ascending: false });
   } else {
+    const corte = new Date(Date.now() - 3 * 24 * 60 * 60_000).toISOString();
     query = query
-      .is("vendido_em", null)
+      .or(`vendido_em.is.null,vendido_em.gte.${corte}`)
       .order("created_at", { ascending: false });
   }
 
