@@ -907,7 +907,7 @@ body{background:var(--bg)}
   /* hero da LP: no celular a foto vira uma banda cheia em cima, sem texto
      por cima, e o texto desce pra uma seção clara logo abaixo */
   .hero{display:block;height:auto;min-height:0;padding:0 0 40px;background:#fff}
-  .hero::before{content:"";display:block;height:300px;
+  .hero::before{content:"";display:block;height:380px;
     background:linear-gradient(180deg,rgba(5,15,36,.16),rgba(5,15,36,0) 45%),
       url("/hero-campus.jpg") center 45%/cover no-repeat}
   .hero-inner{padding-top:26px}
