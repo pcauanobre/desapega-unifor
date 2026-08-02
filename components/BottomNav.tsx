@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
@@ -24,7 +24,9 @@ const SEM_NAV = ["/entrar", "/bem-vindo"];
  */
 export function BottomNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const [uid, setUid] = useState<string | null>(null);
+  const [puloFab, setPuloFab] = useState(false);
 
   useEffect(() => {
     createClient()
@@ -54,7 +56,22 @@ export function BottomNav() {
           Vitrine
         </Link>
         <span className="bnav-fab">
-          <Link className="bnav-btn" href={logado("/anunciar/novo")} aria-label="Anunciar">
+          {/* o toque toca a animação inteira; a navegação espera ela acabar */}
+          <Link
+            className={"bnav-btn" + (puloFab ? " is-pulo" : "")}
+            href={logado("/anunciar/novo")}
+            aria-label="Anunciar"
+            onClick={(e) => {
+              e.preventDefault();
+              if (puloFab) return;
+              setPuloFab(true);
+              const destino = logado("/anunciar/novo");
+              setTimeout(() => {
+                router.push(destino);
+                setPuloFab(false);
+              }, 260);
+            }}
+          >
             <AddIcon sx={{ fontSize: 28 }} />
           </Link>
           <i>Anunciar</i>
