@@ -19,8 +19,10 @@ const ABRIR_MS = 950; // espera a linha varrer o endereço antes de abrir
 const ENDERECO = "Av. Washington Soares, 1321 - Edson Queiroz";
 const MAPS_URL =
   "https://www.google.com/maps/search/?api=1&query=Universidade+de+Fortaleza";
+/* Embed oficial (Compartilhar → Incorporar um mapa, no Google Maps);
+   o formato antigo com output=embed vinha abrindo em branco. */
 const EMBED_URL =
-  "https://maps.google.com/maps?q=Universidade+de+Fortaleza&z=16&output=embed";
+  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3981.190114015718!2d-38.48064128830158!3d-3.7687699433653936!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x7c745fe9c03245d%3A0xd435fd5a6bfbbe44!2sUNIFOR%20-%20Universidade%20de%20Fortaleza!5e0!3m2!1spt-BR!2sbr!4v1785645243877!5m2!1spt-BR!2sbr";
 
 export function LocalizacaoMapa({ children }: { children?: ReactNode }) {
   const [aberto, setAberto] = useState(false);
