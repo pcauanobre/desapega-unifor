@@ -34,6 +34,9 @@ export default function BemVindo() {
   const [concluido, setConcluido] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [paraCortar, setParaCortar] = useState<File | null>(null);
+  /* Aba que a pessoa tentou abrir antes de ter conta; o fim do setup
+     leva ela pra lá em vez de despejar na vitrine. */
+  const [destino, setDestino] = useState("/produtos");
   const uid = useRef<string | null>(null);
 
   useEffect(() => {
@@ -45,6 +48,9 @@ export default function BemVindo() {
       }
       uid.current = user.id;
       setNome(((user.user_metadata?.nome as string) ?? "").split(" ")[0]);
+      // Só caminho interno vira destino (o parâmetro é do usuário).
+      const bruto = new URLSearchParams(window.location.search).get("voltar") ?? "";
+      if (/^\/[a-z0-9/-]*$/i.test(bruto) && bruto) setDestino(bruto);
     });
   }, [router]);
 
@@ -159,8 +165,8 @@ export default function BemVindo() {
               Seu cadastro tá pronto e o botão de anunciar já tá liberado.
               Agora é desapegar do que tá parado e garimpar o que você precisa.
             </p>
-            <Link className="btn btn-primary btn-block" href="/produtos">
-              Ir pra vitrine
+            <Link className="btn btn-primary btn-block" href={destino}>
+              {destino === "/produtos" ? "Ir pra vitrine" : "Continuar"}
             </Link>
           </div>
         </div>

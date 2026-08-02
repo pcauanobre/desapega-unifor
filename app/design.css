@@ -1125,11 +1125,19 @@ body{background:var(--bg)}
   .login{min-height:100vh}
   .login-cardwrap{padding:36px 16px;justify-content:center}
   .login-card,.login-body .login-card{width:100%;padding:26px 20px}
-  /* wizard no celular: ocupa a tela entre header e bottom nav, centrado,
-     sem sobra que gere scroll (o conteúdo rola dentro do card se precisar) */
-  .wiz-fundo{padding:14px;min-height:calc(100dvh - 78px - env(safe-area-inset-bottom));
-    align-items:center;overflow:hidden}
-  .wiz-card{padding:22px 18px;max-height:calc(100dvh - 110px);overflow-y:auto}
+  /* wizard no celular: cabe inteiro entre o header e a bottom nav, sem
+     scroll de página. Passo grande rola DENTRO do card, com os botões
+     sempre visíveis embaixo. */
+  .wiz-fundo{padding:10px 12px;height:calc(100dvh - 78px - env(safe-area-inset-bottom));
+    min-height:0;align-items:stretch;overflow:hidden}
+  .wiz-card{padding:18px 16px;width:100%;max-height:100%;display:flex;flex-direction:column;
+    overflow:hidden}
+  .wiz-card .wiz-passo{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .wiz-card .wiz-acoes{margin-top:14px;flex:none}
+  .wiz-titulo{font-size:20px}
+  .wiz-sub{font-size:13px}
+  .an-fotos{gap:8px}
+  .an-foto,.an-foto-add{width:92px;height:76px}
   /* o wizard de anunciar entra por baixo do header do app */
   .wiz-card-anuncio{margin-top:0}
 
