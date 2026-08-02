@@ -20,6 +20,7 @@ const PASTA = "C:/Users/Pedro Cauã/Desktop/fotos-desapega";
 const sharp = require(RAIZ + "/node_modules/sharp");
 const { Client } = require(RAIZ + "/node_modules/pg");
 const { createClient } = require(RAIZ + "/node_modules/@supabase/supabase-js");
+const crypto = require("crypto");
 
 for (const linha of fs.readFileSync(RAIZ + "/.env.local", "utf8").split(/\r?\n/)) {
   const m = linha.match(/^([A-Z_]+)=(.+)$/);
@@ -137,10 +138,19 @@ async function paraWebp(arquivo) {
           .find((p) => fs.existsSync(p));
         if (!achado) continue;
         const buf = await paraWebp(achado);
-        const caminho = `${uid}/demo/${base}-${n}.webp`;
-        // Apaga antes de subir: o bucket tem política de INSERT e DELETE,
-        // não de UPDATE, então upsert em arquivo existente seria negado.
-        await sb.storage.from("fotos").remove([caminho]);
+        // A versão entra no NOME do arquivo: trocar a foto gera uma URL
+        // nova, e o cache do navegador (e do service worker, que guarda
+        // imagem com estratégia cache-primeiro) não entrega a antiga.
+        const versao = crypto.createHash("sha1").update(buf).digest("hex").slice(0, 8);
+        const caminho = `${uid}/demo/${base}-${n}-${versao}.webp`;
+        // Limpa versões anteriores desta mesma foto, pra não virar lixo.
+        const { data: existentes } = await sb.storage
+          .from("fotos")
+          .list(`${uid}/demo`, { search: `${base}-${n}-` });
+        const velhas = (existentes ?? [])
+          .map((f) => `${uid}/demo/${f.name}`)
+          .filter((c) => c !== caminho);
+        if (velhas.length) await sb.storage.from("fotos").remove(velhas);
         const { error } = await sb.storage
           .from("fotos")
           .upload(caminho, buf, { contentType: "image/webp" });
