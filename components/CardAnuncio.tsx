@@ -5,6 +5,7 @@ import Link from "next/link";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import PlaceIcon from "@mui/icons-material/Place";
+import ScheduleIcon from "@mui/icons-material/Schedule";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import type { Anuncio } from "@/lib/tipos";
 import { quandoPublicado } from "@/lib/tempo";
@@ -100,23 +101,28 @@ export function CardAnuncio({
       <div className="card-body">
         <div className="card-cat">{anuncio.categoria.toUpperCase()}</div>
         <h3 className="card-title">{anuncio.titulo}</h3>
+        {/* rodapé em duas linhas fixas: local em cima, e embaixo o horário
+            à esquerda com o preço (ou doação) à direita. Altura igual em
+            todos os cards, com ou sem preço. */}
         <div className="card-foot">
           <span className="card-local">
             <PlaceIcon sx={{ fontSize: 16 }} />
-            <span className="card-bloco">
-              <span className="card-bloco-nome">{encurtarLocal(anuncio.bloco)}</span>
-              <span className="sep">|</span>
-            </span>
-            <span className="quando">{quandoPublicado(anuncio.created_at)}</span>
+            <span className="card-bloco-nome">{encurtarLocal(anuncio.bloco)}</span>
           </span>
-          {anuncio.is_doacao ? (
-            <span className="card-doacao-txt">
-              <VolunteerActivismIcon sx={{ fontSize: 15 }} />
-              Doação
+          <div className="card-linha2">
+            <span className="card-quando">
+              <ScheduleIcon sx={{ fontSize: 15 }} />
+              {quandoPublicado(anuncio.created_at)}
             </span>
-          ) : (
-            <span className="card-price">{brl(anuncio.preco)}</span>
-          )}
+            {anuncio.is_doacao ? (
+              <span className="card-doacao-txt">
+                <VolunteerActivismIcon sx={{ fontSize: 15 }} />
+                Doação
+              </span>
+            ) : (
+              <span className="card-price">{brl(anuncio.preco)}</span>
+            )}
+          </div>
         </div>
       </div>
     </Link>

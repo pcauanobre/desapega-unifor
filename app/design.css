@@ -191,7 +191,14 @@ body{background:var(--bg)}
 .card-cat{font-family:var(--mono);font-size:10.5px;color:var(--txt-3);letter-spacing:.06em}
 .card-title{font-family:var(--sora);font-weight:600;font-size:15.5px;line-height:1.32;color:var(--navy);
   margin:7px 0 0;min-height:41px;text-wrap:pretty}
-.card-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:13px;border-top:1px solid #EEF1F7}
+/* duas linhas fixas: local em cima, horário + preço embaixo. Isso deixa
+   todo card com a mesma altura, tenha preço ou tag de doação. */
+.card-foot{display:flex;flex-direction:column;gap:7px;margin-top:14px;padding-top:13px;
+  border-top:1px solid #EEF1F7}
+.card-linha2{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card-quando{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:500;
+  color:var(--txt-3);white-space:nowrap}
+.card-quando svg{color:var(--txt-3);flex:none}
 .card-seller{display:flex;flex-direction:column;gap:2px}
 .card-seller b{font-size:12.5px;color:var(--txt-2);font-weight:600}
 .card-seller span{font-size:11.5px;color:var(--txt-4)}
@@ -371,15 +378,21 @@ body{background:var(--bg)}
 .visor-x:hover{background:rgba(255,255,255,.26)}
 
 .visor-palco{position:relative;min-height:0;margin:0;padding:0 16px;display:flex;
-  align-items:center;justify-content:center;gap:12px}
+  align-items:center;justify-content:center}
 .visor-palco img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;
   border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.6);
   animation:visorEntra 300ms var(--ease) both}
 @keyframes visorEntra{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
-.visor-seta{flex:none;width:46px;height:46px;border-radius:50%;border:none;
-  background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;
-  justify-content:center;cursor:pointer;transition:background 160ms ease}
-.visor-seta:hover{background:rgba(255,255,255,.26)}
+/* setas por cima da foto, nas laterais: sempre visíveis, sem disputar
+   espaço com a imagem (que pode ocupar a largura inteira) */
+.visor-seta{position:absolute;top:50%;transform:translateY(-50%);z-index:2;
+  width:48px;height:48px;border-radius:50%;border:none;background:rgba(255,255,255,.14);
+  color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  backdrop-filter:blur(6px);transition:background 160ms ease,transform 160ms ease}
+.visor-seta:hover{background:rgba(255,255,255,.3)}
+.visor-seta:active{transform:translateY(-50%) scale(.92)}
+.visor-seta.esq{left:14px}
+.visor-seta.dir{right:14px}
 
 .visor-tiras{display:flex;justify-content:center;gap:8px;padding:16px;min-height:76px;
   overflow-x:auto;scrollbar-width:none}
@@ -471,14 +484,9 @@ body{background:var(--bg)}
   box-shadow:0 1px 3px rgba(7,28,61,.3);transition:background 160ms ease}
 .mini-ponto.ativo{background:#fff}
 .card-local{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--txt-2);
-  flex:1;min-width:0;flex-wrap:nowrap}
+  min-width:0}
 .card-local svg{color:var(--txt-3);flex:none}
-/* Tudo numa linha só: nome de local comprido corta com reticências;
-   horário e preço ficam inteiros (o | acompanha o nome) */
-.card-local .card-bloco{display:inline-flex;align-items:center;flex:0 1 auto;min-width:0}
 .card-bloco-nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.card-local .quando{white-space:nowrap;flex:none}
-.card-local .sep{margin:0 1px 0 6px;color:#D3DAE8;flex:none}
 .card-foot .card-price,.card-foot .card-doacao-txt{white-space:nowrap;flex:none}
 .card-doacao-txt{font-family:var(--sora);font-weight:700;font-size:14px;color:var(--verde);
   letter-spacing:-.01em;display:inline-flex;align-items:center;gap:5px}
@@ -1131,11 +1139,9 @@ body{background:var(--bg)}
   .card-cat{font-size:10px}
   .card-title{font-size:15px;line-height:1.3;min-height:40px;display:-webkit-box;
     -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .card-foot{margin-top:auto;padding-top:10px;flex-wrap:wrap;gap:7px}
-  /* rodapé em 3 linhas: bloco à esquerda, horário à direita, preço por último */
-  .card-local{flex:1 1 100%;font-size:12.5px;flex-wrap:wrap}
-  .card-local .sep{display:none}
-  .card-local .quando{flex:1 1 100%;text-align:right}
+  .card-foot{margin-top:auto;padding-top:10px;gap:6px}
+  .card-local{font-size:12.5px}
+  .card-quando{font-size:12px}
   .card-foot .card-price{margin-left:auto;font-size:18px}
   .card-foot .card-doacao-txt{margin-left:auto;font-size:14px}
   .card-cond{font-size:10px;padding:4px 7px;top:7px;left:7px}
@@ -1204,8 +1210,10 @@ body{background:var(--bg)}
   .wiz-card{padding:16px 15px;width:100%;max-height:100%;display:flex;flex-direction:column;
     overflow:hidden}
   /* visualizador no celular: setas menores e miniaturas rentes à borda */
-  .visor-palco{padding:0 6px;gap:6px}
-  .visor-seta{width:38px;height:38px}
+  .visor-palco{padding:0 6px}
+  .visor-seta{width:42px;height:42px}
+  .visor-seta.esq{left:8px}
+  .visor-seta.dir{right:8px}
   .visor-tiras{justify-content:flex-start;padding:12px;min-height:66px;
     padding-bottom:calc(12px + env(safe-area-inset-bottom))}
   .visor-tira{width:52px;height:40px}
