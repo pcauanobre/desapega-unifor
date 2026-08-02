@@ -3,6 +3,8 @@
 import { useState } from "react";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
+import { FotoTelaCheia } from "@/components/produto/FotoTelaCheia";
 
 /**
  * O QUE: carrossel de fotos do produto: foto grande com setas, contador
@@ -22,6 +24,7 @@ export function Carrossel({
   demo?: boolean;
 }) {
   const [atual, setAtual] = useState(0);
+  const [cheia, setCheia] = useState(false);
   if (fotos.length === 0) return null;
 
   const anterior = () => setAtual((atual - 1 + fotos.length) % fotos.length);
@@ -29,9 +32,22 @@ export function Carrossel({
 
   return (
     <div>
-      <div className="pd-foto">
+      {/* a foto grande abre em tela cheia (clique ou Enter) */}
+      <div
+        className="pd-foto pd-foto-abre"
+        role="button"
+        tabIndex={0}
+        aria-label="Ver foto em tela cheia"
+        onClick={() => setCheia(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") setCheia(true);
+        }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img key={atual} src={fotos[atual]} alt={`${titulo}, foto ${atual + 1}`} />
+        <span className="pd-lupa">
+          <ZoomOutMapIcon sx={{ fontSize: 18 }} />
+        </span>
         {demo && <span className="card-demo mono">DEMO</span>}
         {fotos.length > 1 && (
           <>
@@ -61,6 +77,15 @@ export function Carrossel({
             </button>
           ))}
         </div>
+      )}
+
+      {cheia && (
+        <FotoTelaCheia
+          fotos={fotos}
+          titulo={titulo}
+          inicial={atual}
+          onFechar={() => setCheia(false)}
+        />
       )}
     </div>
   );
