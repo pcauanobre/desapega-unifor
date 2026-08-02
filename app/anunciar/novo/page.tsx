@@ -56,6 +56,7 @@ export default function NovoAnuncio() {
   const [publicadoId, setPublicadoId] = useState<string | null>(null);
   const [pronto, setPronto] = useState(false);
   const [carregandoEdicao, setCarregandoEdicao] = useState(false);
+  const [progressoFoto, setProgressoFoto] = useState({ atual: 0, total: 0 });
   const usuario = useRef<string | null>(null);
 
   useEffect(() => {
@@ -161,6 +162,9 @@ export default function NovoAnuncio() {
       const supabase = createClient();
       const novasUrls: string[] = [];
       for (const [i, blob] of arquivos.entries()) {
+        // Subir 5 fotos leva tempo: o botão conta o progresso em vez de
+        // ficar mudo dizendo só "Publicando…".
+        setProgressoFoto({ atual: i + 1, total: arquivos.length });
         // Já saiu do editor cortada e otimizada; é só subir.
         const caminho = `${usuario.current}/${Date.now()}-${i}.webp`;
         const { error } = await supabase.storage
@@ -192,6 +196,7 @@ export default function NovoAnuncio() {
     } catch (excecao) {
       setErro((excecao as Error).message);
       setEnviando(false);
+      setProgressoFoto({ atual: 0, total: 0 });
     }
   }
 
@@ -334,7 +339,11 @@ export default function NovoAnuncio() {
               <button className="btn wiz-continuar" onClick={avancar}>
                 {enviando && <span className="spinner" />}
                 {etapa === ETAPAS_AN.length - 1
-                  ? enviando ? "Publicando…" : "Publicar anúncio"
+                  ? enviando
+                    ? progressoFoto.total > 0
+                      ? `Enviando foto ${progressoFoto.atual} de ${progressoFoto.total}…`
+                      : "Publicando…"
+                    : "Publicar anúncio"
                   : "Continuar"}
               </button>
             </div>
@@ -369,7 +378,11 @@ export default function NovoAnuncio() {
 
             <button className="btn btn-primary btn-block" type="submit">
               {enviando && <span className="spinner" />}
-              {enviando ? "Salvando…" : "Salvar alterações"}
+              {enviando
+                ? progressoFoto.total > 0
+                  ? `Enviando foto ${progressoFoto.atual} de ${progressoFoto.total}…`
+                  : "Salvando…"
+                : "Salvar alterações"}
             </button>
           </form>
         </main>
