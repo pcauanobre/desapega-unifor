@@ -15,16 +15,26 @@ import { FotosUpload } from "@/components/anunciar/FotosUpload";
 import { BloquearScroll } from "@/components/BloquearScroll";
 import { EditorFoto } from "@/components/EditorFoto";
 
+/* As etapas do wizard de anunciar (o mesmo clima do setup de conta). */
+const ETAPAS_AN = [
+  { titulo: "Mostre seu item", sub: "Até 5 fotos; a primeira vira a capa na vitrine." },
+  { titulo: "Conte o que é", sub: "Título direto e descrição honesta acham dono mais rápido." },
+  { titulo: "Onde ele se encaixa", sub: "Categoria, estado de conservação e o ponto de retirada." },
+  { titulo: "Feche o anúncio", sub: "Defina o preço ou marque como doação e publique." },
+];
+
 /**
- * O QUE: o formulário de anúncio, nos dois modos: criar (POST) e editar
- *        (?editar=id, PUT, tudo pré-preenchido, fotos antigas incluídas).
- * POR QUE: um formulário só pros dois fluxos, sem duplicar tela.
+ * O QUE: anunciar em dois modos: CRIAR vira um wizard de 4 etapas com
+ *        barra de progresso (fotos → o que é → encaixe → preço), e EDITAR
+ *        (?editar=id, PUT) mantém o formulário completo pré-preenchido.
+ * POR QUE: criar pede mão na roda passo a passo; editar pede visão geral.
  * CHAMA: central de anúncios (novo) e meus anúncios (editar).
  * QUEBRA SE: o bucket "fotos" não existir no Storage (migration 006).
  */
 export default function NovoAnuncio() {
   const router = useRouter();
   const [editandoId, setEditandoId] = useState<string | null>(null);
+  const [etapa, setEtapa] = useState(0);
   const [fotosExistentes, setFotosExistentes] = useState<string[]>([]);
   const [arquivos, setArquivos] = useState<Blob[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -108,8 +118,23 @@ export default function NovoAnuncio() {
     setPreviews(previews.filter((_, j) => j !== idx));
   }
 
-  async function publicar(e: React.FormEvent) {
-    e.preventDefault();
+  /* No wizard cada etapa valida só a parte dela antes de seguir. */
+  function avancar() {
+    setErro(null);
+    if (etapa === 0 && previewsTotais.length === 0) {
+      return setErro("Coloque pelo menos uma foto.");
+    }
+    if (etapa === 1) {
+      if (titulo.trim().length < 3) return setErro("Capriche no título (mínimo 3 letras).");
+      if (descricao.trim().length < 10) return setErro("Descreva um pouco mais o item.");
+    }
+    if (etapa === 2 && !categoria) return setErro("Escolha a categoria.");
+    if (etapa < ETAPAS_AN.length - 1) return setEtapa(etapa + 1);
+    publicar();
+  }
+
+  async function publicar(e?: React.FormEvent) {
+    e?.preventDefault();
     if (enviando) return;
     setErro(null);
 
@@ -158,103 +183,181 @@ export default function NovoAnuncio() {
     }
   }
 
+  /* Campos compartilhados entre o wizard (uma etapa por vez) e a edição. */
+  const campoTitulo = (
+    <label className="field">
+      <span className="field-label">Título</span>
+      <input type="text" placeholder="Ex: Calculadora HP 12C Platinum" maxLength={80}
+        value={titulo} onChange={(e) => setTitulo(e.target.value)} />
+    </label>
+  );
+  const campoDescricao = (
+    <label className="field">
+      <span className="field-label">Descrição</span>
+      <textarea className="an-textarea" placeholder="Estado real, tempo de uso, o que acompanha..."
+        maxLength={500} rows={4} value={descricao}
+        onChange={(e) => setDescricao(e.target.value)} />
+    </label>
+  );
+  const campoCategoria = (
+    <div className="wiz-dl">
+      <span className="field-label">Categoria</span>
+      <Droplist rotuloAria="Categoria" valor={categoria} onMudar={setCategoria}
+        opcoes={[{ valor: "", rotulo: "Escolha a categoria" },
+          ...CATEGORIAS.map((c) => ({ valor: c, rotulo: c }))]} />
+    </div>
+  );
+  const campoEstado = (
+    <div className="wiz-dl">
+      <span className="field-label">Estado do item</span>
+      <Droplist rotuloAria="Estado do item" valor={estado} onMudar={setEstado}
+        opcoes={[{ valor: "", rotulo: "Como ele está?" },
+          ...ESTADOS.map((s) => ({ valor: s, rotulo: s }))]} />
+    </div>
+  );
+  const campoLocal = (
+    <div className="wiz-dl">
+      <span className="field-label">Local de retirada</span>
+      <Droplist rotuloAria="Local de retirada" valor={bloco} onMudar={setBloco}
+        opcoes={[{ valor: "", rotulo: "Onde encontrar?" },
+          ...LOCAIS.map((l) => ({ valor: l, rotulo: l }))]} />
+    </div>
+  );
+  const campoPreco = (
+    <div className="an-linha">
+      <label className="field">
+        <span className="field-label">Preço (R$)</span>
+        <input type="number" min="1" step="1" placeholder="Ex: 45" disabled={doacao}
+          value={doacao ? "" : preco} onChange={(e) => setPreco(e.target.value)} />
+      </label>
+      <label className="an-switch">
+        <input type="checkbox" checked={doacao} onChange={(e) => setDoacao(e.target.checked)} />
+        <span className="an-switch-pista"><span className="an-switch-bola" /></span>
+        É doação
+      </label>
+    </div>
+  );
+  const campoFotos = (
+    <FotosUpload previews={previewsTotais} onEscolher={escolherFotos} onRemover={removerFoto} />
+  );
+
   return (
     <div className="pagina-1280 flex-1">
       <TopBar />
       <HeaderNav />
-      <main className="container info-wrap">
-        {(!pronto || carregandoEdicao) && (
+
+      {(!pronto || carregandoEdicao) && (
+        <main className="container info-wrap">
           <div>
             <div className="sk-bar pd-sk-l2" />
             <div className="sk-bar pd-sk-l1" style={{ width: "55%" }} />
             <div className="sk-bar pd-sk-l3" style={{ height: 300 }} />
           </div>
-        )}
-        {pronto && !carregandoEdicao && (
-        <>
-        <div>
-          <Link className="pd-voltar" style={{ marginTop: 0 }}
-            href={editandoId ? "/meus-anuncios" : "/anunciar"}>
-            ← Voltar
-          </Link>
+        </main>
+      )}
+
+      {/* CRIAR: wizard de etapas, mesmo clima do setup de conta */}
+      {pronto && !carregandoEdicao && !editandoId && (
+        <div className="wiz-fundo">
+          <div className="wiz-card wiz-card-anuncio">
+            <div className="wiz-topo">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/mark-blue.svg" alt="Desapega Unifor" className="wiz-marca" />
+              <span className="wiz-conta">
+                {etapa + 1} / {ETAPAS_AN.length}
+              </span>
+            </div>
+            <div className="wiz-barra">
+              <i style={{ width: `${((etapa + 1) / ETAPAS_AN.length) * 100}%` }} />
+            </div>
+
+            <div className="wiz-passo" key={etapa}>
+              <h1 className="wiz-titulo">{ETAPAS_AN[etapa].titulo}</h1>
+              <p className="wiz-sub">{ETAPAS_AN[etapa].sub}</p>
+              <div className="wiz-corpo">
+                {etapa === 0 && campoFotos}
+                {etapa === 1 && (
+                  <>
+                    {campoTitulo}
+                    {campoDescricao}
+                  </>
+                )}
+                {etapa === 2 && (
+                  <>
+                    <div className="an-linha">
+                      {campoCategoria}
+                      {campoEstado}
+                    </div>
+                    {campoLocal}
+                  </>
+                )}
+                {etapa === 3 && campoPreco}
+              </div>
+            </div>
+
+            {erro && <p className="login-erro">{erro}</p>}
+
+            <div className="wiz-acoes">
+              {etapa === 0 ? (
+                <Link className="btn wiz-voltar" href="/anunciar">
+                  Cancelar
+                </Link>
+              ) : (
+                <button
+                  className="btn wiz-voltar"
+                  onClick={() => {
+                    setErro(null);
+                    setEtapa(etapa - 1);
+                  }}
+                >
+                  Voltar
+                </button>
+              )}
+              <button className="btn wiz-continuar" onClick={avancar}>
+                {enviando && <span className="spinner" />}
+                {etapa === ETAPAS_AN.length - 1
+                  ? enviando ? "Publicando…" : "Publicar anúncio"
+                  : "Continuar"}
+              </button>
+            </div>
+          </div>
         </div>
-        <span className="info-kicker">
-          {editandoId ? "EDITAR ANÚNCIO" : "NOVO ANÚNCIO"}
-        </span>
-        <h1 className="info-title">
-          {editandoId ? "Ajuste e salve" : "Bora desapegar"}
-        </h1>
-        <p className="info-sub">
-          {editandoId
-            ? "Mude o que precisar; a vitrine atualiza na hora."
-            : "Anúncio completo acha dono novo muito mais rápido."}
-        </p>
+      )}
 
-        <form className="an-form" onSubmit={publicar}>
-          <FotosUpload previews={previewsTotais} onEscolher={escolherFotos} onRemover={removerFoto} />
+      {/* EDITAR: formulário completo, visão geral de tudo */}
+      {pronto && !carregandoEdicao && editandoId && (
+        <main className="container info-wrap">
+          <div>
+            <Link className="pd-voltar" style={{ marginTop: 0 }} href="/meus-anuncios">
+              ← Voltar
+            </Link>
+          </div>
+          <span className="info-kicker">EDITAR ANÚNCIO</span>
+          <h1 className="info-title">Ajuste e salve</h1>
+          <p className="info-sub">Mude o que precisar; a vitrine atualiza na hora.</p>
 
-          <label className="field">
-            <span className="field-label">Título</span>
-            <input type="text" placeholder="Ex: Calculadora HP 12C Platinum" maxLength={80}
-              value={titulo} onChange={(e) => setTitulo(e.target.value)} />
-          </label>
-
-          <label className="field">
-            <span className="field-label">Descrição</span>
-            <textarea className="an-textarea" placeholder="Estado real, tempo de uso, o que acompanha..."
-              maxLength={500} rows={4} value={descricao}
-              onChange={(e) => setDescricao(e.target.value)} />
-          </label>
-
-          <div className="an-linha">
-            <div className="wiz-dl">
-              <span className="field-label">Categoria</span>
-              <Droplist rotuloAria="Categoria" valor={categoria} onMudar={setCategoria}
-                opcoes={[{ valor: "", rotulo: "Escolha a categoria" },
-                  ...CATEGORIAS.map((c) => ({ valor: c, rotulo: c }))]} />
+          <form className="an-form" onSubmit={publicar}>
+            {campoFotos}
+            {campoTitulo}
+            {campoDescricao}
+            <div className="an-linha">
+              {campoCategoria}
+              {campoEstado}
             </div>
-            <div className="wiz-dl">
-              <span className="field-label">Estado do item</span>
-              <Droplist rotuloAria="Estado do item" valor={estado} onMudar={setEstado}
-                opcoes={[{ valor: "", rotulo: "Como ele está?" },
-                  ...ESTADOS.map((s) => ({ valor: s, rotulo: s }))]} />
-            </div>
-          </div>
+            {campoPreco}
+            {campoLocal}
 
-          <div className="an-linha">
-            <label className="field">
-              <span className="field-label">Preço (R$)</span>
-              <input type="number" min="1" step="1" placeholder="Ex: 45" disabled={doacao}
-                value={doacao ? "" : preco} onChange={(e) => setPreco(e.target.value)} />
-            </label>
-            <label className="an-switch">
-              <input type="checkbox" checked={doacao} onChange={(e) => setDoacao(e.target.checked)} />
-              <span className="an-switch-pista"><span className="an-switch-bola" /></span>
-              É doação
-            </label>
-          </div>
+            {erro && <p className="login-erro">{erro}</p>}
 
-          {/* o WhatsApp não é pedido aqui: sai do celular do perfil */}
-          <div className="wiz-dl">
-            <span className="field-label">Local de retirada</span>
-            <Droplist rotuloAria="Local de retirada" valor={bloco} onMudar={setBloco}
-              opcoes={[{ valor: "", rotulo: "Onde encontrar?" },
-                ...LOCAIS.map((l) => ({ valor: l, rotulo: l }))]} />
-          </div>
+            <button className="btn btn-primary btn-block" type="submit">
+              {enviando && <span className="spinner" />}
+              {enviando ? "Salvando…" : "Salvar alterações"}
+            </button>
+          </form>
+        </main>
+      )}
 
-          {erro && <p className="login-erro">{erro}</p>}
-
-          <button className="btn btn-primary btn-block" type="submit">
-            {enviando && <span className="spinner" />}
-            {enviando
-              ? "Salvando…"
-              : editandoId ? "Salvar alterações" : "Publicar anúncio"}
-          </button>
-        </form>
-        </>
-        )}
-      </main>
-      <Rodape />
+      {editandoId && <Rodape />}
 
       {filaCorte.length > 0 && (
         <EditorFoto
