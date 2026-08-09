@@ -1,6 +1,8 @@
 "use client";
 
 import { BloquearScroll } from "@/components/BloquearScroll";
+import { ErroToast } from "@/components/ErroToast";
+import type { ErroToque } from "@/components/useErroState";
 
 type Props = {
   email: string;
@@ -11,7 +13,7 @@ type Props = {
   onFechar: () => void;
   rotuloFechar: string;
   enviando: boolean;
-  erro: string | null;
+  erro: ErroToque;
   sucesso: string | null;
   saindo: boolean;
 };
@@ -65,7 +67,7 @@ export function PopupCodigo({
             }
           }}
         />
-        {erro && <p className="login-erro">{erro}</p>}
+        <ErroToast erro={erro} />
         {sucesso && <p className="login-ok">{sucesso}</p>}
         <button
           className="btn btn-primary btn-block"

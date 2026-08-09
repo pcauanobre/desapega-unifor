@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { BloquearScroll } from "@/components/BloquearScroll";
+import { ErroToast } from "@/components/ErroToast";
+import { useErroState } from "@/components/useErroState";
 import { EditorFoto } from "@/components/EditorFoto";
 import { prepararFoto } from "@/lib/otimizar-foto";
 import { EtapaCampos, type Perfil } from "@/components/wizard/EtapaCampos";
@@ -32,7 +34,7 @@ export default function BemVindo() {
   });
   const [salvando, setSalvando] = useState(false);
   const [concluido, setConcluido] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
+  const [erro, setErro] = useErroState();
   const [paraCortar, setParaCortar] = useState<File | null>(null);
   /* Aba que a pessoa tentou abrir antes de ter conta; o fim do setup
      leva ela pra lá em vez de despejar na vitrine. */
@@ -128,7 +130,7 @@ export default function BemVindo() {
             <EtapaCampos etapa={etapa} perfil={perfil} onMudar={mudar} onFoto={receberFoto} />
           </div>
 
-          {erro && <p className="login-erro">{erro}</p>}
+          <ErroToast erro={erro} />
 
           <div className="wiz-acoes">
             {etapa > 0 && (

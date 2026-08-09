@@ -140,17 +140,21 @@ body{background:var(--bg)}
 
 /* sem overflow:hidden aqui: ele cortava o painel do droplist de categorias;
    o arredondamento vive nas pontas (gatilho à esquerda, botão à direita) */
-.search{flex:1;max-width:620px;display:flex;align-items:stretch;background:#fff;border-radius:var(--r-sm);
-  box-shadow:0 2px 0 rgba(7,28,61,.18)}
-.search .dl-gatilho-busca{border-top-left-radius:var(--r-sm);border-bottom-left-radius:var(--r-sm)}
-.search .search-btn{border-top-right-radius:var(--r-sm);border-bottom-right-radius:var(--r-sm)}
-.search-cat{border:none;outline:none;background:#F2F5FB;color:#3D4A66;font-size:13.5px;font-weight:600;
-  padding:0 14px;border-right:1px solid #E2E8F2;cursor:pointer}
-.search-input{flex:1;border:none;outline:none;padding:13px 14px;font-size:14px;color:var(--txt);background:#fff}
-.search-btn{border:none;background:var(--azul);color:#fff;padding:0 18px;cursor:pointer;font-size:14px;font-weight:700;
-  display:flex;align-items:center;gap:7px;transition:background 180ms ease}
+/* sem background aqui de propósito: input e botão já pintam 100% da área
+   deles (branco e azul), então um fundo no container só ficava atrás do
+   botão e vazava branco na curva. overflow:hidden é rede de segurança; o
+   raio de verdade vem explícito em cada ponta (categoria à esquerda,
+   botão à direita) com o MESMO valor do container */
+.search{flex:1;max-width:620px;display:flex;align-items:stretch;border-radius:var(--r-sm);
+  overflow:hidden;box-shadow:0 2px 0 rgba(7,28,61,.18)}
+.search .dl-gatilho-busca{border-radius:var(--r-sm) 0 0 var(--r-sm)}
+.search-input{flex:1;border:none;outline:none;padding:13px 14px;font-size:14px;color:var(--txt);
+  background:#fff;border-radius:0}
+.search-btn{border:none;background:var(--azul);color:#fff;padding:0 20px;cursor:pointer;font-size:14px;font-weight:700;
+  display:flex;align-items:center;gap:8px;transition:background 180ms ease;
+  border-radius:0 var(--r-sm) var(--r-sm) 0}
 .search-btn:hover{background:var(--azul-hover)}
-.search-icon{font-size:15px}
+.search-btn svg{flex:none}
 .header-actions{display:flex;align-items:center;gap:10px;flex:none;margin-left:auto}
 
 /* ---------- faixa de números ---------- */
@@ -316,34 +320,33 @@ body{background:var(--bg)}
 
 /* droplist customizado */
 .dl{position:relative}
-/* aberto, o droplist inteiro sobe de camada: o painel nunca fica por
-   baixo de vizinho com contexto próprio (ex: chips com mask no mobile) */
-.dl.aberto{z-index:60}
-/* o menu aberto precisa vencer os campos que vêm depois no formulário: eles
-   entram com animação de fill both, e elemento animado cria contexto de
-   empilhamento próprio, então o z-index de dentro do .dl não bastava */
-.an-linha,.wiz-dl{position:relative}
-.an-linha:has(.dl.aberto),.wiz-dl:has(.dl.aberto){z-index:70}
 .search .dl{display:flex;align-items:stretch}
 .dl-gatilho{border:1.5px solid var(--borda-2);background:#fff;color:var(--txt);font-size:13.5px;font-weight:600;
   padding:9px 12px;border-radius:var(--r-sm);cursor:pointer;display:inline-flex;align-items:center;gap:8px;
   transition:border-color 160ms ease,box-shadow 160ms ease}
 .dl-gatilho:hover{border-color:var(--azul)}
 .dl.aberto .dl-gatilho{border-color:var(--azul);box-shadow:0 0 0 3px rgba(10,92,255,.12)}
-.dl-gatilho-busca{border:none;background:#fff;color:var(--txt);font-size:13.5px;font-weight:600;
+.dl-gatilho-busca{border:none;border-radius:0;background:#fff;color:var(--txt);font-size:13.5px;font-weight:600;
   padding:0 14px;border-right:1.5px solid var(--borda-2);cursor:pointer;display:flex;align-items:center;gap:8px;
   transition:background 160ms ease}
 .dl-gatilho-busca:hover{background:#F2F6FF}
 .dl-chevron{color:var(--txt-3);transition:transform 200ms var(--ease)}
 .dl.aberto .dl-chevron{transform:rotate(180deg)}
-/* fica montado sempre; abre desdobrando de cima pra baixo (dlIn) e sai
-   subindo de volta pro botão com fade (dlOut). A classe .fechando vem do
-   componente e segura o menu visível até o dlOut terminar */
-.dl-menu{position:absolute;top:calc(100% + 4px);left:0;min-width:210px;background:#fff;
+/* o painel vive num portal em <body> (ver Droplist.tsx): z-index alto
+   garante que ele nunca fica atrás de card/dropdown vizinho, já que não
+   depende mais do contexto de empilhamento do pai. position:absolute com
+   coordenada de documento (não de viewport) faz ele rolar junto com a
+   página sozinho, sem JS ouvindo scroll (isso deixava o painel "atrasado"
+   do gatilho). Só é montado enquanto aberto/fechando; abre desdobrando de
+   cima pra baixo (dlIn) e sai subindo de volta pro botão com fade (dlOut) */
+.dl-menu-portal{position:absolute;box-sizing:border-box;background:#fff;
   border:1px solid var(--borda);border-radius:12px;box-shadow:0 16px 40px rgba(7,28,61,.16);
-  padding:6px;z-index:40;transform-origin:top;opacity:0;visibility:hidden;pointer-events:none}
-.dl.aberto .dl-menu{opacity:1;visibility:visible;pointer-events:auto;animation:dlIn 220ms var(--ease) both}
-.dl.fechando .dl-menu{visibility:visible;animation:dlOut 190ms ease both}
+  padding:6px;z-index:500;transform-origin:top;max-height:min(240px,38vh);overflow-y:auto;
+  /* sem isso, rolar até o fim da lista "vazava" o scroll pra página por
+     trás (scroll chaining) */
+  overscroll-behavior:contain}
+.dl-menu-portal.aberto{animation:dlIn 220ms var(--ease) both}
+.dl-menu-portal.fechando{animation:dlOut 190ms ease both}
 @keyframes dlIn{from{opacity:0;transform:scaleY(.7)}to{opacity:1;transform:scaleY(1)}}
 @keyframes dlOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-10px) scale(.96)}}
 .dl-op{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
@@ -557,10 +560,19 @@ body{background:var(--bg)}
 .an-foto-x:hover{background:var(--navy)}
 .an-foto-capa{position:absolute;left:5px;bottom:5px;background:rgba(255,255,255,.92);color:var(--navy);
   font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;letter-spacing:.08em}
-.an-foto-add{width:104px;height:84px;border-radius:10px;border:1.5px dashed var(--borda-input);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--txt-3);
-  font-size:12px;font-weight:600;cursor:pointer;transition:all 160ms ease;background:#FAFBFE}
-.an-foto-add:hover{border-color:var(--azul);color:var(--azul);background:#F4F8FF}
+/* fica fora da grade de prévias: botão normal, não um card de foto */
+.an-foto-botoes{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.an-foto-btn{padding:10px 18px;font-size:13.5px;cursor:pointer}
+.an-foto-mais{width:100%}
+/* popup "câmera ou galeria": lista de opções grandes, boas pro dedo */
+.escolha-lista{display:flex;flex-direction:column;gap:6px;margin-top:16px}
+.escolha-op{display:flex;align-items:center;gap:12px;width:100%;padding:14px 12px;
+  border:1px solid var(--borda);border-radius:12px;background:#fff;color:var(--txt);
+  font-size:14.5px;font-weight:600;cursor:pointer;transition:background 140ms ease,border-color 140ms ease}
+.escolha-op:hover{background:#F2F6FF;border-color:var(--azul)}
+.escolha-op svg:first-child{color:var(--azul)}
+.escolha-op span{flex:1;text-align:left}
+.escolha-op svg:last-child{color:var(--txt-3)}
 .an-switch{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--txt);
   cursor:pointer;padding-bottom:12px}
 .an-switch input{display:none}
@@ -614,23 +626,21 @@ body{background:var(--bg)}
 .ct-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 .ct-grid .card-photo{height:214px}
 .ct-item{position:relative}
-.ma-icones{position:absolute;top:22px;right:22px;z-index:6;display:flex;gap:8px}
-.ma-ico{width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.96);
+.ma-icones{position:absolute;top:22px;right:22px;z-index:6}
+/* engrenagem: mesmo visual circular flutuante que os ícones tinham */
+.ma-gear{width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.96);
   color:var(--navy);display:flex;align-items:center;justify-content:center;cursor:pointer;
   box-shadow:0 4px 12px rgba(7,28,61,.24);transition:all 160ms var(--ease)}
-.ma-ico:hover{background:var(--azul);color:#fff;transform:translateY(-2px)}
-.ma-ico:disabled{opacity:.55;cursor:default;transform:none}
-.ma-ico-vermelho:hover{background:#C23B3B}
-.ma-ico-verde{color:var(--verde)}
-.ma-ico-verde:hover{background:var(--verde);color:#fff}
+.ma-gear:hover{background:var(--azul);color:#fff;transform:translateY(-2px)}
+.ma-op-perigo{color:#C23B3B}
+.ma-op-perigo svg{color:#C23B3B}
+.ma-op-perigo:hover{background:#FDEDED}
 .ma-vendido-ico{width:58px;height:58px;border-radius:50%;background:#E8F7EE;color:var(--verde);
   display:inline-flex;align-items:center;justify-content:center;margin-bottom:4px}
 /* anúncio encerrado: card apagadinho com o selo por cima da foto */
 .ma-encerrado .card{opacity:.6;filter:grayscale(.4)}
 .ma-selo{position:absolute;top:22px;left:22px;z-index:6;background:var(--verde);color:#fff;
   font-size:12px;font-weight:700;padding:7px 14px;border-radius:999px;box-shadow:0 4px 12px rgba(7,28,61,.24)}
-.pagina-1280 a.ma-ico{color:var(--navy)}
-.pagina-1280 a.ma-ico:hover{color:#fff}
 .ct-perigo{margin-top:44px;border:1px solid #F1C7C7;background:#FFFAFA;border-radius:14px;padding:22px;
   display:flex;align-items:center;gap:20px;justify-content:space-between;max-width:640px}
 .ct-apagar{background:#C23B3B;color:#fff;font-size:14px;padding:12px 20px;white-space:nowrap;flex:none}
@@ -639,8 +649,14 @@ body{background:var(--bg)}
 .ct-avatar-centro .wiz-avatar{width:96px;height:96px}
 
 /* ---------- setup wizard (/bem-vindo) ---------- */
+/* a página vira uma coluna de 100dvh (header + área do card + o que mais
+   tiver); o wiz-fundo ocupa o que sobra e o card nunca passa da altura
+   disponível — se o passo for alto, quem rola é o wiz-passo por dentro,
+   nunca a página. Vale pra desktop e mobile, não só pro celular. */
+.pagina-wizard{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+.pagina-wizard .wiz-fundo{flex:1;min-height:0;height:auto}
 .wiz-fundo{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 24px;
-  background:#EAF3FE url("/bg-shapes.png") right center/cover no-repeat}
+  overflow:hidden;background:#EAF3FE url("/bg-shapes.png") right center/cover no-repeat}
 /* "Tirar foto" só existe no celular; no desktop fica o botão único */
 .so-mobile{display:none}
 
@@ -666,8 +682,11 @@ body{background:var(--bg)}
 .card-vendido{position:absolute;top:10px;left:10px;z-index:3;font-family:var(--sora);font-weight:700;
   font-size:10.5px;letter-spacing:.1em;color:#fff;background:rgba(7,28,61,.88);
   padding:5px 10px;border-radius:7px}
-.wiz-card{width:540px;max-width:100%;background:#fff;border-radius:16px;
-  box-shadow:0 22px 54px rgba(7,28,61,.16);padding:34px 38px;animation:popIn 360ms var(--ease) both}
+.wiz-card{width:540px;max-width:100%;max-height:100%;background:#fff;border-radius:16px;
+  box-shadow:0 22px 54px rgba(7,28,61,.16);padding:34px 38px;animation:popIn 360ms var(--ease) both;
+  display:flex;flex-direction:column;overflow:hidden}
+/* passo alto rola só por dentro do card, nunca a página */
+.wiz-card .wiz-passo{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .wiz-topo{display:flex;align-items:center;justify-content:space-between}
 .wiz-marca{height:34px}
 .wiz-conta{font-family:var(--mono);font-size:11.5px;color:var(--txt-3)}
@@ -698,11 +717,7 @@ body{background:var(--bg)}
 .wiz-foto-acoes{flex:1;display:flex;flex-direction:column;gap:8px}
 .wiz-foto-btn{font-size:13.5px;padding:11px 14px;gap:8px;position:relative}
 .wiz-dl .dl-gatilho{width:100%;justify-content:space-between;padding:11px 13px;font-size:14px}
-/* o painel aberto passa por cima do que vem depois no formulário
-   (o botão do perfil público ficava na frente da lista de cursos) */
-.wiz-dl{position:relative;z-index:1}
-.wiz-dl:has(.dl.aberto){z-index:60}
-.wiz-dl .dl-menu{width:100%;max-height:240px;overflow-y:auto}
+.wiz-dl{position:relative}
 
 /* popup de aviso legal */
 .aviso-overlay{position:fixed;inset:0;background:rgba(7,28,61,.55);backdrop-filter:blur(3px);z-index:80;
@@ -732,9 +747,24 @@ body{background:var(--bg)}
 .is-register .only-login{display:none}
 
 /* ---------- adições nossas (fora do código fonte original) ---------- */
-/* erro real de autenticação, que o protótipo não tinha */
-.login-erro{margin:10px 0 0;padding:10px 12px;border-radius:var(--r-sm);background:#FDECEC;
-  border:1px solid #F5C8C8;color:#8C2B2B;font-size:12.5px;text-align:center}
+/* erro real de autenticação, que o protótipo não tinha. Flutua logo abaixo
+   do header (portal em <body>, ver ErroToast.tsx) em vez de preso no card. */
+.erro-toast{position:fixed;left:50%;transform:translate(-50%,0);z-index:600;
+  display:flex;align-items:center;gap:12px;width:min(560px,calc(100vw - 24px));
+  padding:14px 16px 14px 18px;border-radius:12px;background:#D9393E;border:1px solid #B92E33;
+  color:#fff;font-size:13.5px;font-weight:600;line-height:1.4;text-align:left;
+  box-shadow:0 16px 40px rgba(140,20,20,.4);animation:erroToastIn 280ms var(--ease) both}
+.erro-toast svg{color:#fff;flex:none}
+.erro-toast span{flex:1}
+.erro-toast-x{border:none;background:transparent;color:rgba(255,255,255,.85);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;padding:4px;border-radius:6px;
+  flex:none;transition:background 140ms ease}
+.erro-toast-x:hover{background:rgba(255,255,255,.18);color:#fff}
+.erro-toast.is-saindo{animation:erroToastOut 200ms ease both}
+@keyframes erroToastIn{from{opacity:0;transform:translate(-50%,-16px) scale(.94)}
+  to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes erroToastOut{from{opacity:1;transform:translate(-50%,0) scale(1)}
+  to{opacity:0;transform:translate(-50%,-10px) scale(.96)}}
 /* mensagem de SUCESSO do card de acesso (verde, no topo do card) */
 .login-ok{margin:14px 0 0;padding:10px 12px;border-radius:var(--r-sm);background:var(--verde-bg);
   border:1px solid var(--verde-borda);color:var(--verde);font-size:12.5px;font-weight:600;
@@ -883,8 +913,11 @@ body{background:var(--bg)}
 .pd-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .pd-thumb:hover{opacity:1}
 .pd-thumb.is-active{border-color:var(--azul);opacity:1}
-.pd-cat-row{display:flex;align-items:center;gap:10px}
-.pd-estado{background:#F2F5FB;color:#3D4A66;font-size:11px;font-weight:700;padding:5px 9px;border-radius:6px}
+.pd-cat-row{display:flex;align-items:center;gap:12px}
+/* maior que no card da vitrine: aqui é a página do produto, tem espaço
+   e o rótulo merece mais destaque, tipo um "kicker" de verdade */
+.pd-cat-row .card-cat{font-size:15px;font-weight:700;letter-spacing:.1em;color:var(--azul)}
+.pd-estado{background:#F2F5FB;color:#3D4A66;font-size:13.5px;font-weight:700;padding:7px 13px;border-radius:8px}
 .pd-titulo{font-family:var(--sora);font-weight:700;font-size:30px;line-height:1.15;
   letter-spacing:-.025em;color:var(--navy);margin:10px 0 0}
 .pd-preco-row{margin-top:14px;display:flex;align-items:center;gap:12px}
@@ -906,8 +939,8 @@ body{background:var(--bg)}
 .pd-vend-curso svg{color:var(--azul)}
 /* o par avatar+nome vira link pro perfil público do vendedor */
 .pd-vend-link{display:flex;align-items:center;gap:14px;border-radius:10px;padding:4px 8px;margin:-4px -8px;
-  transition:background 150ms ease}
-.pd-vend-link:hover{background:#F2F6FF}
+  transition:background 150ms ease;-webkit-tap-highlight-color:transparent}
+.pd-vend-link:hover,.pd-vend-link:active,.pd-vend-link:focus-visible{background:#F2F6FF}
 .pagina-1280 a.pd-vend-link .pd-vend-nome{color:var(--navy)}
 .pagina-1280 a.pd-vend-link:hover .pd-vend-nome{color:var(--azul)}
 .pagina-1280 a.pd-vend-link .pd-vend-curso{color:var(--txt-3)}
@@ -1063,7 +1096,9 @@ body{background:var(--bg)}
   .header-actions{display:none}
   .search{flex:1 1 100%;order:3;max-width:none}
   .search .dl{display:none}
-  .search-input{border-radius:var(--r-sm)}
+  /* herda do .search em vez de repetir var(--r-sm): garante o mesmo raio
+     dos dois lados sem depender de duas declarações baterem por acaso */
+  .search-input{border-radius:inherit}
   /* abas de gestão não têm busca */
   .header.sem-busca .search{display:none}
   /* o filtro sai da vitrine e vira ícone dentro da barra, à direita,
@@ -1173,7 +1208,7 @@ body{background:var(--bg)}
   .card-cond{font-size:10px;padding:4px 7px;top:7px;left:7px}
   .card-demo{top:7px;right:7px;font-size:9px;padding:4px 6px}
   .ma-icones{top:14px;right:14px}
-  .ma-ico{width:32px;height:32px}
+  .ma-gear{width:32px;height:32px}
   .ma-selo{top:14px;left:14px;font-size:11px;padding:6px 11px}
   .pf-selo{top:14px;left:14px}
 
@@ -1227,16 +1262,10 @@ body{background:var(--bg)}
   .login{min-height:100vh}
   .login-cardwrap{padding:36px 16px;justify-content:center}
   .login-card,.login-body .login-card{width:100%;padding:26px 20px}
-  /* wizard no celular: a página inteira vira uma coluna de 100dvh, então
-     o card fica com EXATAMENTE o que sobra depois do header e da bottom
-     nav (sem chutar altura). Passo grande rola dentro do card. */
-  .pagina-wizard{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-  .pagina-wizard .wiz-fundo{flex:1;min-height:0;height:auto}
-  /* o card acompanha o tamanho do conteúdo em vez de esticar até o rodapé:
-     etapa curta deixava metade da tela vazia */
-  .wiz-fundo{padding:10px 12px;align-items:flex-start;overflow:hidden}
-  .wiz-card{padding:16px 15px;width:100%;max-height:100%;display:flex;flex-direction:column;
-    overflow:hidden}
+  /* centralizado verticalmente (não esticado: o card só cresce até onde o
+     conteúdo pedir, `align-items` não estica flex item por padrão) */
+  .wiz-fundo{padding:10px 12px;align-items:center}
+  .wiz-card{padding:68px 18px;width:100%}
   /* visualizador no celular: setas menores e miniaturas rentes à borda */
   .visor-palco{padding:0 6px}
   .visor-seta{width:42px;height:42px}
@@ -1251,19 +1280,18 @@ body{background:var(--bg)}
   .wiz-topo{margin-bottom:8px}
   .wiz-passo{padding-top:2px}
   .wiz-corpo{margin-top:12px;gap:12px}
-  .wiz-card .wiz-passo{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
   .wiz-card .wiz-acoes{margin-top:14px;flex:none}
   .wiz-titulo{font-size:20px}
   .wiz-sub{font-size:13px}
   .an-fotos{gap:8px}
-  .an-foto,.an-foto-add{width:92px;height:76px}
+  .an-foto{width:92px;height:76px}
+  .an-foto-btn{flex:1;padding:11px 14px}
   /* o wizard de anunciar entra por baixo do header do app */
   .wiz-card-anuncio{margin-top:0}
 
   /* pares desktop/mobile (foto pela câmera, CTAs que mudam de destino) */
   .so-desktop{display:none!important}
   .so-mobile{display:inline-flex}
-  .an-foto-add.so-mobile{display:flex}
 
   /* no app de bolso o rodapé institucional sai de cena; a bottom nav é
      quem navega, e o aviso legal continua no popup */

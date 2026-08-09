@@ -15,6 +15,8 @@ import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
 import { Rodape } from "@/components/landing/Rodape";
 import { Droplist } from "@/components/Droplist";
+import { ErroToast } from "@/components/ErroToast";
+import { useErroState } from "@/components/useErroState";
 import { CURSOS, SEMESTRES, formatarCelular } from "@/components/wizard/EtapaCampos";
 import { BloquearScroll } from "@/components/BloquearScroll";
 import { EditorFoto } from "@/components/EditorFoto";
@@ -40,12 +42,12 @@ export default function Conta() {
   const [curso, setCurso] = useState("");
   const [semestre, setSemestre] = useState("");
   const [salvando, setSalvando] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
+  const [erro, setErro] = useErroState();
   const [salvo, setSalvo] = useState(false);
   const [confirmando, setConfirmando] = useState(false);
   const [apagando, setApagando] = useState(false);
   const [senhaConfirma, setSenhaConfirma] = useState("");
-  const [erroApagar, setErroApagar] = useState<string | null>(null);
+  const [erroApagar, setErroApagar] = useErroState();
   const [paraCortar, setParaCortar] = useState<File | null>(null);
   const [contaApagada, setContaApagada] = useState(false);
   const [privAberto, setPrivAberto] = useState(false);
@@ -249,7 +251,7 @@ export default function Conta() {
               </div>
             </div>
 
-            {erro && <p className="login-erro">{erro}</p>}
+            <ErroToast erro={erro} />
             {salvo && <p className="login-ok">Perfil salvo!</p>}
 
             <button className="btn btn-primary btn-block" type="submit">
@@ -342,7 +344,7 @@ export default function Conta() {
                 onChange={(e) => setSenhaConfirma(e.target.value)}
               />
             </label>
-            {erroApagar && <p className="login-erro">{erroApagar}</p>}
+            <ErroToast erro={erroApagar} />
             <div className="wiz-acoes">
               <button
                 className="btn wiz-voltar"

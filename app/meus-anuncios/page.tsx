@@ -14,6 +14,7 @@ import { TopBar } from "@/components/landing/TopBar";
 import { HeaderNav } from "@/components/landing/HeaderNav";
 import { Rodape } from "@/components/landing/Rodape";
 import { CardAnuncio } from "@/components/CardAnuncio";
+import { MenuAcoes } from "@/components/MenuAcoes";
 import { BloquearScroll } from "@/components/BloquearScroll";
 import { useSaidaAnimada } from "@/components/useSaidaAnimada";
 
@@ -171,35 +172,32 @@ export default function MeusAnuncios() {
                   </span>
                 )}
                 <div className="ma-icones">
-                  {!a.vendido_em && (
-                    <>
-                      <button
-                        className="ma-ico ma-ico-verde"
-                        onClick={() => setVendendo(a)}
-                        title={a.is_doacao ? "Marcar como doado" : "Marcar como vendido"}
-                        aria-label={a.is_doacao ? "Marcar como doado" : "Marcar como vendido"}
-                      >
-                        <CheckIcon sx={{ fontSize: 18 }} />
-                      </button>
-                      <Link
-                        className="ma-ico"
-                        href={`/anunciar/novo?editar=${a.id}`}
-                        title="Editar anúncio"
-                        aria-label="Editar anúncio"
-                      >
-                        <EditIcon sx={{ fontSize: 17 }} />
-                      </Link>
-                    </>
-                  )}
-                  <button
-                    className="ma-ico ma-ico-vermelho"
-                    onClick={() => setExcluindo(a)}
-                    disabled={apagando === a.id}
-                    title="Excluir anúncio"
-                    aria-label="Excluir anúncio"
-                  >
-                    <DeleteOutlineIcon sx={{ fontSize: 18 }} />
-                  </button>
+                  <MenuAcoes
+                    rotuloAria="Ações do anúncio"
+                    acoes={[
+                      ...(!a.vendido_em
+                        ? [
+                            {
+                              rotulo: a.is_doacao ? "Marcar como doado" : "Marcar como vendido",
+                              icone: <CheckIcon sx={{ fontSize: 17 }} />,
+                              onClick: () => setVendendo(a),
+                            },
+                            {
+                              rotulo: "Editar anúncio",
+                              icone: <EditIcon sx={{ fontSize: 16 }} />,
+                              onClick: () => router.push(`/anunciar/novo?editar=${a.id}`),
+                            },
+                          ]
+                        : []),
+                      {
+                        rotulo: "Excluir anúncio",
+                        icone: <DeleteOutlineIcon sx={{ fontSize: 17 }} />,
+                        onClick: () => setExcluindo(a),
+                        disabled: apagando === a.id,
+                        perigo: true,
+                      },
+                    ]}
+                  />
                 </div>
                 <CardAnuncio anuncio={a} />
                 <div className="ma-stats">

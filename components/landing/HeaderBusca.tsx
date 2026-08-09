@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import TuneIcon from "@mui/icons-material/Tune";
+import SearchIcon from "@mui/icons-material/Search";
 import { createClient } from "@/lib/supabase/client";
 import { BotaoInstalar } from "@/components/BotaoInstalar";
 import { SaudacaoApp } from "@/components/SaudacaoApp";
@@ -181,7 +182,8 @@ export function HeaderBusca({
             </button>
           )}
           <button className="search-btn" type="submit">
-            <span className="search-icon">⌕</span>Buscar
+            <SearchIcon sx={{ fontSize: 18 }} />
+            Buscar
           </button>
         </form>
 
