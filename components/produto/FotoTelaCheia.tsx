@@ -145,7 +145,6 @@ export function FotoTelaCheia({ fotos, titulo, inicial, onFechar }: Props) {
 
       <figure
         className="visor-palco"
-        onClick={(e) => e.stopPropagation()}
         style={
           puxada > 0
             ? {
@@ -155,15 +154,37 @@ export function FotoTelaCheia({ fotos, titulo, inicial, onFechar }: Props) {
             : undefined
         }
       >
+        {/* só a imagem e as setas barram o fechamento; o resto da figura é
+            área "vazia" no desktop (a foto não preenche tudo) e clicar
+            nela tem que fechar igual clicar no fundo */}
         {fotos.length > 1 && (
-          <button className="visor-seta esq" onClick={anterior} aria-label="Foto anterior">
+          <button
+            className="visor-seta esq"
+            onClick={(e) => {
+              e.stopPropagation();
+              anterior();
+            }}
+            aria-label="Foto anterior"
+          >
             <ChevronLeftIcon sx={{ fontSize: 28 }} />
           </button>
         )}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img key={atual} src={fotos[atual]} alt={`${titulo}, foto ${atual + 1}`} />
+        <img
+          key={atual}
+          src={fotos[atual]}
+          alt={`${titulo}, foto ${atual + 1}`}
+          onClick={(e) => e.stopPropagation()}
+        />
         {fotos.length > 1 && (
-          <button className="visor-seta dir" onClick={proxima} aria-label="Próxima foto">
+          <button
+            className="visor-seta dir"
+            onClick={(e) => {
+              e.stopPropagation();
+              proxima();
+            }}
+            aria-label="Próxima foto"
+          >
             <ChevronRightIcon sx={{ fontSize: 28 }} />
           </button>
         )}

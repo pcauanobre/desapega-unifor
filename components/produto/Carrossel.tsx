@@ -27,8 +27,14 @@ export function Carrossel({
   const [cheia, setCheia] = useState(false);
   if (fotos.length === 0) return null;
 
-  const anterior = () => setAtual((atual - 1 + fotos.length) % fotos.length);
-  const proxima = () => setAtual((atual + 1) % fotos.length);
+  const anterior = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setAtual((atual - 1 + fotos.length) % fotos.length);
+  };
+  const proxima = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setAtual((atual + 1) % fotos.length);
+  };
 
   return (
     <div>
