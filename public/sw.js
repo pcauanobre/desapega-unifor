@@ -14,7 +14,7 @@
  * A versão participa do nome do cache: mudar a versão descarta os caches
  * antigos no activate, sem sobrar lixo de deploy passado.
  */
-const VERSAO = "desapega-v3";
+const VERSAO = "desapega-v4";
 const CASCO = [
   "/",
   "/produtos",
