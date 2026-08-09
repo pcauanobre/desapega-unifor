@@ -11,18 +11,29 @@ import { useSaidaAnimada } from "@/components/useSaidaAnimada";
  * POR QUE: o site usa nome e referências da Unifor como contexto do
  *          exercício; o aviso deixa a natureza do projeto explícita.
  * CHAMA: só a landing. Aparece UMA vez por sessão do navegador: ir na
- *        vitrine e voltar não mostra de novo; fechar a aba, sim.
+ *        vitrine e voltar não mostra de novo; fechar a aba ou dar reload
+ *        na página, sim.
  * QUEBRA SE: nada; sem sessionStorage ele só volta a aparecer sempre.
  */
 const CHAVE = "aviso-legal-visto";
+
+/* type "reload" cobre F5 e o reload forçado (Ctrl+Shift+R); só não conta
+   quando o usuário navega clicando em link/voltando (aí o aviso já visto
+   continua valendo). */
+function foiReload() {
+  const [nav] = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
+  return nav?.type === "reload";
+}
 
 export function AvisoLegal() {
   const [aberto, setAberto] = useState(false);
   const { saindo, fecharCom } = useSaidaAnimada();
 
   useEffect(() => {
-    // sessionStorage: vale enquanto a aba viver, some ao fechar.
-    if (sessionStorage.getItem(CHAVE)) return;
+    // sessionStorage vale enquanto a aba viver, MAS um reload da página
+    // reseta a intenção de "já vi": ele some, você recarrega, ele volta.
+    if (sessionStorage.getItem(CHAVE) && !foiReload()) return;
+    sessionStorage.removeItem(CHAVE);
     const id = requestAnimationFrame(() => setAberto(true));
     return () => cancelAnimationFrame(id);
   }, []);
