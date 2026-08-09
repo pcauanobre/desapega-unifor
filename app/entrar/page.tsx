@@ -12,6 +12,8 @@ import XIcon from "@mui/icons-material/X";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { createClient } from "@/lib/supabase/client";
 import { problemaDaSenha } from "@/lib/senha";
+import { ErroToast } from "@/components/ErroToast";
+import { useErroState } from "@/components/useErroState";
 import { MedidorSenha } from "@/components/MedidorSenha";
 import { PopupCodigo } from "@/components/PopupCodigo";
 import { useSaidaAnimada } from "@/components/useSaidaAnimada";
@@ -66,7 +68,7 @@ export default function Entrar() {
   const [verSenha, setVerSenha] = useState(false);
   const [aceite, setAceite] = useState(false);
   const [enviando, setEnviando] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
+  const [erro, setErro] = useErroState();
   const [sucesso, setSucesso] = useState<string | null>(null);
   /* Recuperação em TRÊS etapas (estrutura reaproveitada de outro projeto
      meu): email → popup do
@@ -424,7 +426,7 @@ export default function Entrar() {
                     </label>
                   )}
 
-                  {erro && <p className="login-erro">{erro}</p>}
+                  <ErroToast erro={erro} />
 
                   <button className="btn btn-primary btn-block" type="submit">
                     {enviando && <span className="spinner" />}
@@ -500,7 +502,7 @@ export default function Entrar() {
                 <a href="#" onClick={irPraRecuperar}>Esqueci minha senha</a>
               </div>
 
-              {erro && <p className="login-erro">{erro}</p>}
+              <ErroToast erro={erro} />
 
               <button className="btn btn-primary btn-block" type="submit">
                 {enviando && <span className="spinner" />}
