@@ -17,9 +17,12 @@ import { useSaidaAnimada } from "@/components/useSaidaAnimada";
  */
 const CHAVE = "aviso-legal-visto";
 
-/* type "reload" cobre F5 e o reload forçado (Ctrl+Shift+R); só não conta
-   quando o usuário navega clicando em link/voltando (aí o aviso já visto
-   continua valendo). */
+/* módulo só é avaliado de novo num carregamento de página de verdade (F5
+   inclusive); navegação por Link dentro do site reusa o mesmo módulo, então
+   esta flag em memória (não sessionStorage) marca "já conferi o tipo de
+   carregamento desta página" e evita reagir de novo a cada volta pra LP. */
+let jaConferiuCarregamento = false;
+
 function foiReload() {
   const [nav] = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
   return nav?.type === "reload";
@@ -30,10 +33,15 @@ export function AvisoLegal() {
   const { saindo, fecharCom } = useSaidaAnimada();
 
   useEffect(() => {
-    // sessionStorage vale enquanto a aba viver, MAS um reload da página
-    // reseta a intenção de "já vi": ele some, você recarrega, ele volta.
-    if (sessionStorage.getItem(CHAVE) && !foiReload()) return;
-    sessionStorage.removeItem(CHAVE);
+    // sessionStorage vale enquanto a aba viver, MAS um reload de verdade da
+    // página (F5) reseta a intenção de "já vi": ele some, você recarrega,
+    // ele volta. Só conta como reload UMA vez por carregamento de página;
+    // ir pra outra rota e voltar pela LP (sem F5) não deve reabrir.
+    if (!jaConferiuCarregamento) {
+      jaConferiuCarregamento = true;
+      if (foiReload()) sessionStorage.removeItem(CHAVE);
+    }
+    if (sessionStorage.getItem(CHAVE)) return;
     const id = requestAnimationFrame(() => setAberto(true));
     return () => cancelAnimationFrame(id);
   }, []);
