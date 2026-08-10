@@ -41,7 +41,7 @@ export function Rodape() {
           <LocalizacaoMapa>
             <a href="mailto:desapega@unifor.br">desapega@unifor.br</a>
             <a href="tel:+558534773000">(85) 3477-3000</a>
-            <a href="https://www.instagram.com/unifor" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.instagram.com/uniforcomunica" target="_blank" rel="noopener noreferrer">
               Instagram
             </a>
             <Link href="/ajuda">Central de ajuda</Link>
