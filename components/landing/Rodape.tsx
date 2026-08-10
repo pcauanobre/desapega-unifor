@@ -32,6 +32,7 @@ export function Rodape() {
         <div className="footer-col">
           <span className="footer-head mono">PLATAFORMA</span>
           <Link href="/#como-funciona">Como funciona</Link>
+          <Link href="/privacidade">Privacidade</Link>
           <Link href="/regras">Regras do desapego</Link>
           <Link href="/seguranca">Segurança nas trocas</Link>
           <Link href="/doacoes">Doações</Link>
